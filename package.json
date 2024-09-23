@@ -1,0 +1,27 @@
+{
+  "name": "grow-academy",
+  "private": "true",
+  "version": "1.0.0",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "install-server": "cd server && bun install",
+    "install-client": "cd client && bun install",
+    "install": "bun run install-server && bun run install-client",
+    "watch-server": "cd server && bun run watch",
+    "watch-client": "cd client && bun run dev",
+    "watch": "bun run watch-server & bun run watch-client",
+    "deploy": "cd client && bun run build && cd ../server && bun run start"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/jest": "^29.5.13",
+    "jest": "^29.7.0",
+    "prettier": "^3.3.3",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

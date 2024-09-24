@@ -1,0 +1,39 @@
+name: App Checks
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Run Prettier
+        run: bun run prettier --check .
+
+      - name: TypeScript Check
+        run: bun run tsc --noEmit
+
+      - name: Run Tests
+        run: bun test
+
+      - name: Build Client
+        run: cd client && bun run build
+
+      - name: Build Server
+        run: cd server && bun run build

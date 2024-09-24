@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-import { type Request, type Response } from 'express';
+import { PrismaClient } from "@prisma/client";
+import { type Request, type Response } from "express";
 
 const prisma = new PrismaClient();
 
@@ -8,7 +8,7 @@ export const getUsers = async (req: Request, res: Response) => {
     const users = await prisma.user.findMany();
     res.json(users);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch users' });
+    res.status(500).json({ error: "Failed to fetch users" });
   }
 };
 
@@ -22,6 +22,6 @@ export const createDummyUser = async (req: Request, res: Response) => {
     });
     res.status(201).json(user);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create user' });
+    res.status(500).json({ error: "Failed to create user" });
   }
 };

@@ -12,7 +12,8 @@
     "dev-client": "cd client && bun run dev",
     "dev": "bun run dev-server & bun run dev-client",
     "deploy": "cd client && bun run build && cd ../server && bun run start",
-    "prepare": "husky"
+    "prepare": "husky install",
+    "format": "prettier --write \"./**/*.{js,jsx,ts,tsx}\""
   },
   "devDependencies": {
     "@types/bun": "latest",

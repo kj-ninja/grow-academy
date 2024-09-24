@@ -28,3 +28,9 @@ jobs:
 
       - name: Run Tests
         run: bun test
+
+      - name: Build and Deploy Server
+        run: |
+          cd client && bun run build
+          cd ../server && bun run start &  # Run server in the background
+          sleep 10 && pkill -f "bun run start" # Let it run for 10 seconds, then kill the process

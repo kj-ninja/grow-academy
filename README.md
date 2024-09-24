@@ -1,4 +1,3 @@
-
 # My Project
 
 ## Overview
@@ -36,21 +35,25 @@ This project is a full-stack application built using Vite for the frontend and E
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone <repository_url>
    ```
 
 2. Navigate to the project directory:
+
    ```bash
    cd grow-academy
    ```
 
 3. Install dependencies:
+
    ```bash
    bun install
    ```
 
 4. Run the development environment:
+
    ```bash
    bun run deploy
    ```
@@ -60,6 +63,7 @@ This project is a full-stack application built using Vite for the frontend and E
 ### Prisma Setup
 
 1. **Run Prisma Migrations**:
+
    ```bash
    npx prisma migrate dev --name init
    ```
@@ -80,6 +84,7 @@ This project is a full-stack application built using Vite for the frontend and E
 ### Formatting with Prettier
 
 Run the Prettier formatter to maintain consistent code style:
+
 ```bash
 bun run prettier --write .
 ```
@@ -87,6 +92,7 @@ bun run prettier --write .
 ### Running Tests
 
 To run the test suite using Jest:
+
 ```bash
 bun run test
 ```

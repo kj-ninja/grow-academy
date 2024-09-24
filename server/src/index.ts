@@ -1,33 +1,35 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import morgan from 'morgan';
-import cors from 'cors';
-import userRouter from './routes/users.ts';
-import { errorHandler } from './middleware/errorHandler.ts';
-import path from 'path';
+import express from "express";
+import dotenv from "dotenv";
+import morgan from "morgan";
+import cors from "cors";
+import userRouter from "./routes/users.ts";
+import { errorHandler } from "./middleware/errorHandler.ts";
+import path from "path";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 4000;
 
 // Enable CORS
-app.use(cors({
-  origin: 'http://localhost:5174'
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Adjust if your frontend is hosted on another port
+  })
+);
 
 // Middlewares
 app.use(express.json());
-app.use(morgan('dev')); // Logging middleware for monitoring requests
+app.use(morgan("dev")); // Logging middleware for monitoring requests
 
-app.use('/users', userRouter);
+app.use("/users", userRouter);
 
 // Serve static files from public (correct the path)
-app.use(express.static(path.join(process.cwd(), 'public')));
+app.use(express.static(path.join(process.cwd(), "public")));
 
 // Serve the index.html for any unknown routes (for client-side routing)
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
 
 // Error handler middleware

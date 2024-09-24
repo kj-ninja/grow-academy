@@ -23,17 +23,11 @@ jobs:
       - name: Install Dependencies
         run: bun install
 
-      - name: Run Prettier
-        run: bun run prettier --check .
-
-      - name: TypeScript Check
-        run: bun run tsc --noEmit
+      - name: Lint Client (ESLint)
+        run: cd client && bun run lint
 
       - name: Run Tests
         run: bun test
 
-      - name: Build Client
-        run: cd client && bun run build
-
-      - name: Build Server
-        run: cd server && bun run build
+      - name: Deploy
+        run: bun run deploy

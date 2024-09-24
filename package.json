@@ -11,13 +11,17 @@
     "dev-server": "cd server && bun run watch",
     "dev-client": "cd client && bun run dev",
     "dev": "bun run dev-server & bun run dev-client",
-    "deploy": "cd client && bun run build && cd ../server && bun run start"
+    "deploy": "cd client && bun run build && cd ../server && bun run start",
+    "prepare": "husky install",
+    "format": "prettier --write \"./**/*.{js,jsx,ts,tsx}\""
   },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/jest": "^29.5.13",
+    "husky": "^9.1.6",
     "jest": "^29.7.0",
     "prettier": "^3.3.3",
+    "pretty-quick": "^4.0.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5"
   },

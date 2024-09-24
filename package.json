@@ -8,9 +8,9 @@
     "install-server": "cd server && bun install",
     "install-client": "cd client && bun install",
     "install": "bun run install-server && bun run install-client",
-    "dev-server": "cd server && bun run watch",
-    "dev-client": "cd client && bun run dev",
-    "dev": "bun run dev-server & bun run dev-client",
+    "server": "cd server && bun run watch",
+    "client": "cd client && bun run dev",
+    "dev": "bun run server & bun run client",
     "deploy": "cd client && bun run build && cd ../server && bun run start",
     "prepare": "husky install",
     "format": "prettier --write \"./**/*.{js,jsx,ts,tsx}\""

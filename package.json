@@ -11,7 +11,7 @@
     "dev-server": "cd server && bun run watch",
     "dev-client": "cd client && bun run dev",
     "dev": "bun run dev-server & bun run dev-client",
-    "deploy": "cd client && bun run build && cd ../server && bun run prisma generate && bun run start",
+    "deploy": "cd client && bun run build && cd ../server && bun run start",
     "prepare": "husky install",
     "format": "prettier --write \"./**/*.{js,jsx,ts,tsx}\""
   },

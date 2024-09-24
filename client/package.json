@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build --outDir ../server/public --emptyOutDir",
-    "lint": "CI=true eslint --ignore-pattern '*.d.ts' --ignore-pattern '*.test.*' --ext ts,tsx --max-warnings 0 src",
+    "lint": "CI=true eslint --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {

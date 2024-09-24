@@ -1,5 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-bun run format
-cd client && bun run lint
+bunx pretty-quick --staged

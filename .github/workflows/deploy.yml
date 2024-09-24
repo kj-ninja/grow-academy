@@ -1,19 +1,16 @@
-name: App Checks
+name: App Deploy
 
 on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 
 jobs:
-  ci:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Install Bun
         uses: oven-sh/setup-bun@v1
@@ -23,8 +20,7 @@ jobs:
       - name: Install Dependencies
         run: bun install
 
-      - name: Lint Client (ESLint)
-        run: cd client && bun run lint
-
-      - name: Run Tests
-        run: bun test
+      - name: Deploy Server
+        run: |
+          cd client && bun run build
+          cd ../server && bun run start

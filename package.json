@@ -8,9 +8,9 @@
     "install-server": "cd server && bun install",
     "install-client": "cd client && bun install",
     "install": "bun run install-server && bun run install-client",
-    "watch-server": "cd server && bun run watch",
-    "watch-client": "cd client && bun run dev",
-    "watch": "bun run watch-server & bun run watch-client",
+    "dev-server": "cd server && bun run watch",
+    "dev-client": "cd client && bun run dev",
+    "dev": "bun run dev-server & bun run dev-client",
     "deploy": "cd client && bun run build && cd ../server && bun run start"
   },
   "devDependencies": {

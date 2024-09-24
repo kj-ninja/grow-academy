@@ -9,11 +9,11 @@ import path from 'path';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT;
 
 // Enable CORS
 app.use(cors({
-  origin: 'http://localhost:3000', // Adjust if your frontend is hosted on another port
+  origin: 'http://localhost:5174'
 }));
 
 // Middlewares

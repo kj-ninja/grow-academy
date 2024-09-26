@@ -5,11 +5,19 @@ import cors from "cors";
 import userRouter from "./routes/users.ts";
 import { errorHandler } from "./middleware/errorHandler.ts";
 import path from "path";
+import swaggerFile from "../swagger-output.json";
+import swaggerUi from "swagger-ui-express";
 
 dotenv.config();
 
 const app = express();
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 const PORT = process.env.PORT || 4000;
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // Enable CORS
 app.use(
@@ -27,7 +35,6 @@ app.use("/api/users", userRouter);
 // Serve static files from public (correct the path)
 app.use(express.static(path.join(process.cwd(), "public")));
 
-// Serve the index.html for any unknown routes (for client-side routing)
 app.get("/*", (req, res) => {
   res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });

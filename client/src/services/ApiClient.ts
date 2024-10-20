@@ -7,15 +7,6 @@ export const ApiClient = axios.create({
   },
 });
 
-ApiClient.interceptors.response.use((response) => {
-  return {
-    ...response,
-    data: response.data,
-    status: response.status,
-    headers: response.headers,
-  };
-});
-
 ApiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("authToken");
   if (token) {

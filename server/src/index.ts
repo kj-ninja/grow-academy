@@ -9,6 +9,10 @@ import path from "path";
 dotenv.config();
 
 const app = express();
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 const PORT = process.env.PORT || 4000;
 
 // Enable CORS
@@ -27,7 +31,6 @@ app.use("/api/users", userRouter);
 // Serve static files from public (correct the path)
 app.use(express.static(path.join(process.cwd(), "public")));
 
-// Serve the index.html for any unknown routes (for client-side routing)
 app.get("/*", (req, res) => {
   res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });

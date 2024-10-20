@@ -1,9 +1,11 @@
-import { userApi } from "@/features/auth/api";
-import { createQueryKeys } from "@/services/ReactQuery";
+import { authApi } from "@/features/auth/api/authApi";
+import { queryOptions } from "@tanstack/react-query";
 
-export const AuthQueries = createQueryKeys("auth", {
-  getUsers: {
-    queryKey: ["getUsers"],
-    queryFn: () => userApi.getUsers(),
-  },
-});
+export const AuthQueries = {
+  getUsers: () =>
+    queryOptions({
+      queryKey: ["getUsers"],
+      queryFn: () => authApi.getUsers(),
+      staleTime: 60 * 1000,
+    }),
+};

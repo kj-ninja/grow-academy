@@ -5,8 +5,6 @@ import cors from "cors";
 import userRouter from "./routes/users.ts";
 import { errorHandler } from "./middleware/errorHandler.ts";
 import path from "path";
-import swaggerFile from "../swagger-output.json";
-import swaggerUi from "swagger-ui-express";
 
 dotenv.config();
 
@@ -16,8 +14,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
-
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // Enable CORS
 app.use(

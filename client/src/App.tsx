@@ -1,10 +1,10 @@
 import "./App.css";
-import { useUsers } from "@/features/auth/services/useUsers";
+import { useUsers } from "@/features/auth/hooks/useUsers";
 
 function App() {
-  const { users } = useUsers();
+  const { data } = useUsers();
 
-  console.log("users", users);
+  console.log("users data", data);
 
   return (
     <>

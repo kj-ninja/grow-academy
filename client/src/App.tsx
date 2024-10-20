@@ -1,4 +1,3 @@
-import "./App.css";
 import { useUsers } from "@/features/auth/hooks/useUsers";
 
 function App() {

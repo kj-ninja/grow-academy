@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { getUsers } from "../controllers/userController";
+import { getUsers } from "../controllers/user.controller";
+import { authenticateJWT } from "../middleware/authenticateJWT";
 
 const router = Router();
 
-router.get("/", getUsers);
+router.get("/", authenticateJWT, getUsers);
 
 export default router;

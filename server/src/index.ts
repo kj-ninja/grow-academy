@@ -5,6 +5,9 @@ import cors from "cors";
 import userRouter from "./routes/users.ts";
 import { errorHandler } from "./middleware/errorHandler.ts";
 import path from "path";
+import passport from "passport";
+import authRouter from "./routes/auth.router";
+import "./config/passportConfig";
 
 dotenv.config();
 
@@ -12,6 +15,7 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(passport.initialize());
 
 const PORT = process.env.PORT || 4000;
 
@@ -27,6 +31,7 @@ app.use(express.json());
 app.use(morgan("dev")); // Logging middleware for monitoring requests
 
 app.use("/api/users", userRouter);
+app.use("/auth", authRouter);
 
 // Serve static files from public (correct the path)
 app.use(express.static(path.join(process.cwd(), "public")));

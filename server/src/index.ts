@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import cors from "cors";
 import userRouter from "./routes/users.ts";
-import { errorHandler } from "./middleware/errorHandler.ts";
+import { errorHandler } from "@middleware/errorHandler";
 import path from "path";
 import passport from "passport";
 import authRouter from "./routes/auth.router";

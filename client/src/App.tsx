@@ -1,9 +1,10 @@
 import { useUsers } from "@/features/auth/hooks/useUsers";
+import { Button } from "@/components/ui/Button";
 
 function App() {
-  const { data } = useUsers();
+  const { data, refetch } = useUsers();
 
-  console.log("users data", data);
+  console.log(data);
 
   return (
     <>
@@ -11,7 +12,8 @@ function App() {
       <div className="card">
         <h1>Hello world!</h1>
       </div>
-      <p className="read-the-docs">POC with react-query and axios</p>
+      <p className="read-the-docs mb-1">POC with react-query and axios</p>
+      <Button onClick={() => refetch()}>Click me</Button>
     </>
   );
 }

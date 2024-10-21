@@ -2,13 +2,13 @@ import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { FC, ReactElement } from "react";
 import { FullPageLoader } from "@/components/ui/FullPageLoader";
 
-export type AuthenticationGuardProps = {
+type AuthenticationGuardProps = {
   children?: ReactElement;
   redirectPath?: string;
 };
 
 // TODO: remove mocks
-export const useAuthState = () => ({
+const useAuthState = () => ({
   status: "unauthenticated",
 });
 

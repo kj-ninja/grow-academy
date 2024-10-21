@@ -4,11 +4,6 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -53,5 +48,26 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    function ({ addUtilities }) {
+      addUtilities({
+        ".hover-overlay": {
+          position: "relative",
+          overflow: "hidden",
+        },
+        ".hover-overlay::before": {
+          content: '""',
+          position: "absolute",
+          inset: 0,
+          backgroundColor: "white",
+          opacity: 0,
+          transition: "opacity 0.3s ease-out",
+        },
+        ".hover-overlay:hover::before": {
+          opacity: 0.05,
+        },
+      });
+    },
+  ],
 };

@@ -13,25 +13,25 @@ export const useAuthState = () => ({
 });
 
 export const AuthenticationGuard: FC<AuthenticationGuardProps> = ({ redirectPath = "/auth", ...props }) => {
-  // const authState = useAuthState();
+  const authState = useAuthState();
 
-  if (useAuthState().status === "idle" || useAuthState().status === "initializing") {
+  if (authState.status === "idle" || authState.status === "initializing") {
     return <FullPageLoader />;
   }
 
-  const isAllowed = useAuthState().status === "authenticated";
+  const isAllowed = authState.status === "authenticated";
 
   return <ProtectedRoute redirectPath={redirectPath} isAllowed={isAllowed} {...props} />;
 };
 
 export const UnAuthenticationGuard: FC<AuthenticationGuardProps> = ({ redirectPath = "/", ...props }) => {
-  // const authState = useAuthState();
+  const authState = useAuthState();
 
-  if (useAuthState().status === "idle" || useAuthState().status === "initializing") {
+  if (authState.status === "idle" || authState.status === "initializing") {
     return <FullPageLoader />;
   }
 
-  const isAllowed = useAuthState().status !== "authenticated";
+  const isAllowed = authState.status !== "authenticated";
 
   return <ProtectedRoute redirectPath={redirectPath} isAllowed={isAllowed} {...props} />;
 };

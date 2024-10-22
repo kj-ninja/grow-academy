@@ -16,10 +16,10 @@ export const AppFrame = ({ header, children }: AppFrameProps) => {
       <div className="min-h-[100vh]">
         {header}
         <AnimatePresence>
-          <div>
+          <main>
             {navigation.state === "loading" && <FullPageLoader />}
             {children ?? <Outlet />}
-          </div>
+          </main>
         </AnimatePresence>
       </div>
     </>

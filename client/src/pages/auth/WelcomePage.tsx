@@ -1,5 +1,7 @@
-function WelcomePage() {
-  return <h2>Hello World!</h2>;
+export function WelcomePage() {
+  return (
+    <div className="flex justify-center mt-20">
+      <h2>Welcome! Please authenticate yourself.</h2>
+    </div>
+  );
 }
-
-export const Component = WelcomePage;

@@ -1,4 +1,4 @@
-# My Project
+# Grow Academy
 
 ## Overview
 

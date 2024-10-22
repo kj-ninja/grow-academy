@@ -10,8 +10,9 @@ import { AppFrame } from "@/components/layout/frames/AppFrame";
 import { AuthHeader } from "@/components/layout/headers/AuthHeader";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { AuthenticationGuard, UnAuthenticationGuard } from "@/features/auth/components/AuthenticationGuard";
-
-const AuthWelcomePage = () => import("./auth/WelcomePage");
+import { LoginPage } from "@/pages/auth/LoginPage";
+import { RegisterPage } from "@/pages/auth/RegisterPage";
+import { WelcomePage } from "@/pages/auth/WelcomePage";
 
 export const RouterProvider = () => {
   const router = createBrowserRouter(
@@ -20,7 +21,9 @@ export const RouterProvider = () => {
         <Route element={<AppFrame header={<AuthHeader />} />}>
           {/* Auth flow */}
           <Route path="/auth" element={<UnAuthenticationGuard />}>
-            <Route index lazy={AuthWelcomePage} />
+            <Route index element={<WelcomePage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
 

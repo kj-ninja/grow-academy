@@ -1,12 +1,12 @@
+import { RouterProvider } from "@/pages/router";
+import { queryClient } from "@/services/ReactQuery";
+import { QueryClientProvider } from "@tanstack/react-query";
+
 function App() {
   return (
-    <>
-      <h1>React</h1>
-      <div className="card">
-        <h1>Hello world!</h1>
-      </div>
-      <p className="read-the-docs mb-1">POC with react-query and axios</p>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider />
+    </QueryClientProvider>
   );
 }
 

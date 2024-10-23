@@ -17,7 +17,6 @@ export function RegisterPage() {
         password: credentials.password,
       });
       setAuthState({ status: "authenticated", user: loginResponse.user });
-      console.log("loginResponse: ", loginResponse);
     } catch (error) {
       console.error("Registration or login failed:", error);
     }

@@ -29,6 +29,7 @@ ApiClient.interceptors.response.use(
         if (!refreshToken) {
           throw new Error("No refresh token available.");
         }
+        // todo: add to mutations
         const { data } = await ApiClient.post("/auth/refresh", { refreshToken });
         localStorage.setItem("token", data.token);
         originalRequest.headers.Authorization = `Bearer ${data.token}`;

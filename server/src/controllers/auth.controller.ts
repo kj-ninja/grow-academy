@@ -25,8 +25,6 @@ export const loginUser = async (req: Request, res: Response) => {
     const user = await prisma.user.findUnique({ where: { username } });
     if (!user) return res.status(400).json({ error: "Invalid credentials" });
 
-    console.log("login user: ", user);
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return res.status(400).json({ error: "Invalid credentials" });
 
@@ -71,11 +69,9 @@ export const validateToken = async (req: Request, res: Response) => {
   }
 
   const token = authHeader.split(" ")[1];
-  console.log("token from request?: ", token);
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET!);
-    console.log("verify: ", payload);
 
     if (typeof payload === "string" || !payload.userId) {
       return res.status(403).json({ message: "Invalid Token" });

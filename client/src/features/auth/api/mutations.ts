@@ -17,6 +17,7 @@ export const useLoginMutation = () => {
     onSuccess: (data) => {
       console.log("success login:", data);
       localStorage.setItem("token", data.token);
+      localStorage.setItem("refreshToken", data.refreshToken);
     },
   });
 };

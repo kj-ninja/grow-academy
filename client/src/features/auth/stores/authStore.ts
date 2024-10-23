@@ -20,7 +20,14 @@ export const useAuthState = create<AuthState & AuthActions>()(
     (set) => ({
       status: "idle",
       user: null,
-      setAuthState: ({ status, user }) => set({ status, user }),
+      setAuthState: ({ status, user }) => {
+        const token = localStorage.getItem("token");
+        if (status === "authenticated" && !token) {
+          set({ status: "unauthenticated", user: null });
+        } else {
+          set({ status, user });
+        }
+      },
       logout: () => {
         localStorage.removeItem("token");
         set({ status: "unauthenticated", user: null });

@@ -6,6 +6,5 @@ export const AuthQueries = {
     queryOptions({
       queryKey: ["getUsers"],
       queryFn: () => authApi.getUsers(),
-      staleTime: 60 * 1000,
     }),
 };

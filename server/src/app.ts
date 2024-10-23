@@ -19,28 +19,25 @@ app.use(passport.initialize());
 
 const PORT = process.env.PORT || 4000;
 
-// Enable CORS
 app.use(
   cors({
-    origin: "http://localhost:5173", // Adjust if your frontend is hosted on another port
+    origin: "http://localhost:5173",
   })
 );
 
-// Middlewares
 app.use(express.json());
-app.use(morgan("dev")); // Logging middleware for monitoring requests
+app.use(morgan("dev"));
 
 app.use("/api/users", userRouter);
-app.use("/auth", authRouter);
+app.use("/api/auth", authRouter);
 
-// Serve static files from public (correct the path)
+// Serve static files from public
 app.use(express.static(path.join(process.cwd(), "public")));
 
 app.get("/*", (req, res) => {
   res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
 
-// Error handler middleware
 app.use(errorHandler);
 
 app.listen(PORT, () => {

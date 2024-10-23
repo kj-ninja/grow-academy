@@ -1,6 +1,10 @@
 import { Link, NavLink } from "react-router-dom";
+import { useAuthState } from "@/features/auth/stores/authStore";
+import { Button } from "@/components/ui/Button";
 
 export const AuthHeader = () => {
+  const { status, logout } = useAuthState();
+
   return (
     <header className="w-full border-b-2">
       <div className="w-full max-w-5xl mx-auto flex justify-between p-4">
@@ -10,8 +14,17 @@ export const AuthHeader = () => {
 
         <nav>
           <ul className="flex gap-2">
-            <NavLink to={"/auth/login"}>Login</NavLink>
-            <NavLink to={"/auth/register"}>Register</NavLink>
+            {status === "authenticated" && (
+              <Button onClick={logout} variant="ghost">
+                Logout
+              </Button>
+            )}
+            {status === "unauthenticated" && (
+              <>
+                <NavLink to={"/auth/login"}>Login</NavLink>
+                <NavLink to={"/auth/register"}>Register</NavLink>
+              </>
+            )}
           </ul>
         </nav>
       </div>

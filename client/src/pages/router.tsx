@@ -1,7 +1,6 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
-  Navigate,
   Route,
   RouterProvider as RouterProviderDom,
 } from "react-router-dom";
@@ -13,6 +12,7 @@ import { AuthenticationGuard, UnAuthenticationGuard } from "@/features/auth/comp
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { RegisterPage } from "@/pages/auth/RegisterPage";
 import { WelcomePage } from "@/pages/auth/WelcomePage";
+import { HomePage } from "@/pages/HomePage";
 
 export const RouterProvider = () => {
   const router = createBrowserRouter(
@@ -29,9 +29,7 @@ export const RouterProvider = () => {
 
           <Route element={<AuthenticationGuard />}>
             <Route path="*" element={<NotFoundPage />} />
-            {/* Navigate to / from the old home path. */}
-            <Route path="/home" element={<Navigate to="/" replace />} />
-            <Route path="/communities" element={<Navigate to="/" replace />} />
+            <Route path="/" element={<HomePage />} />
           </Route>
         </Route>
       </Route>

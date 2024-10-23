@@ -23,7 +23,7 @@ export function AuthForm({ onSubmit }: AuthFormProps) {
     } catch (e) {
       if (!(e instanceof Error)) throw e;
 
-      console.log("error: ", e);
+      console.error("error: ", e);
 
       form.setError("root", {
         type: "manual",

@@ -1,21 +1,18 @@
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { FC, ReactElement } from "react";
 import { FullPageLoader } from "@/components/ui/FullPageLoader";
+import { useAuthState } from "@/features/auth/stores/authStore";
 
 type AuthenticationGuardProps = {
   children?: ReactElement;
   redirectPath?: string;
 };
 
-// TODO: remove mocks
-const useAuthState = () => ({
-  status: "unauthenticated",
-});
-
 export const AuthenticationGuard: FC<AuthenticationGuardProps> = ({ redirectPath = "/auth", ...props }) => {
   const authState = useAuthState();
 
-  if (authState.status === "idle" || authState.status === "initializing") {
+  // todo: idle removed from check
+  if (authState.status === "initializing") {
     return <FullPageLoader />;
   }
 
@@ -27,7 +24,8 @@ export const AuthenticationGuard: FC<AuthenticationGuardProps> = ({ redirectPath
 export const UnAuthenticationGuard: FC<AuthenticationGuardProps> = ({ redirectPath = "/", ...props }) => {
   const authState = useAuthState();
 
-  if (authState.status === "idle" || authState.status === "initializing") {
+  // todo: idle removed from check
+  if (authState.status === "initializing") {
     return <FullPageLoader />;
   }
 

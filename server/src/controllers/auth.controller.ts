@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { type Request, type Response } from "express";
@@ -9,13 +9,24 @@ export const registerUser = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await prisma.user.create({
+    await prisma.user.create({
       data: { username, password: hashedPassword },
     });
-    console.log("register new user: ", newUser);
     res.status(201).json({ message: "User registered successfully!" });
   } catch (error) {
-    res.status(500).json({ error: "Failed to register user" });
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // P2022: Unique constraint failed
+      // Prisma error codes: https://www.prisma.io/docs/reference/api-reference/error-reference#error-codes
+      if (error.code === "P2002" && Array.isArray(error.meta?.target) && error.meta.target.includes("username")) {
+        return res.status(409).json({
+          message: `Username already exists`,
+          fields: {
+            username: `Username ${username} already exists`,
+          },
+        });
+      }
+    }
+    res.status(500).json({ message: "Failed to register user" });
   }
 };
 
@@ -23,10 +34,14 @@ export const loginUser = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
     const user = await prisma.user.findUnique({ where: { username } });
-    if (!user) return res.status(400).json({ error: "Invalid credentials" });
+    if (!user)
+      return res
+        .status(400)
+        .json({ message: "Invalid credentials", fields: { username: `Username ${username} doesn't exist` } });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) return res.status(400).json({ error: "Invalid credentials" });
+    if (!isPasswordValid)
+      return res.status(400).json({ message: "Invalid credentials", fields: { password: "Invalid password" } });
 
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
       expiresIn: "1h",
@@ -38,7 +53,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
     res.json({ token, refreshToken });
   } catch (error) {
-    res.status(500).json({ error: "Failed to login" });
+    res.status(500).json({ message: "Failed to login" });
   }
 };
 

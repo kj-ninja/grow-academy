@@ -18,7 +18,7 @@ export function RegisterPage() {
       });
       setAuthState({ status: "authenticated", user: loginResponse.user });
     } catch (error) {
-      console.error("Registration or login failed:", error);
+      throw error;
     }
   };
 

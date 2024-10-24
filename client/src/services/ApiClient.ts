@@ -35,7 +35,7 @@ ApiClient.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${data.token}`;
         return ApiClient(originalRequest);
       } catch (refreshError) {
-        useAuthState.getState().logout(); // Log out if refresh fails
+        useAuthState.getState().logout();
         return Promise.reject(refreshError);
       }
     }

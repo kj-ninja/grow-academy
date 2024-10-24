@@ -9,16 +9,11 @@ export function LoginPage() {
   const { setAuthState } = useAuthState();
 
   const handleLogin = async (credentials: AuthFormValues) => {
-    try {
-      const loginResponse = await loginMutation.mutateAsync({
-        username: credentials.username,
-        password: credentials.password,
-      });
-      setAuthState({ status: "authenticated", user: loginResponse.user });
-      console.log("loginResponse: ", loginResponse);
-    } catch (error) {
-      console.error("Registration or login failed:", error);
-    }
+    const loginResponse = await loginMutation.mutateAsync({
+      username: credentials.username,
+      password: credentials.password,
+    });
+    setAuthState({ status: "authenticated", user: loginResponse.user });
   };
 
   return (

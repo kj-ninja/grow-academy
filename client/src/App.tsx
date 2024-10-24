@@ -2,6 +2,7 @@ import { RouterProvider } from "@/pages/router";
 import { queryClient } from "@/services/ReactQuery";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useAuthInitializer } from "@/features/auth/hooks/useAuthInitializer";
+import { Toaster } from "@/components/ui/Toaster";
 
 function App() {
   useAuthInitializer();
@@ -9,6 +10,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider />
+      <Toaster />
     </QueryClientProvider>
   );
 }

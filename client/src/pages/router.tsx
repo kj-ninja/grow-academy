@@ -27,9 +27,10 @@ export const RouterProvider = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Route>
 
+          {/*Private routes*/}
           <Route element={<AuthenticationGuard />}>
-            <Route path="*" element={<NotFoundPage />} />
             <Route path="/" element={<HomePage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Route>
       </Route>

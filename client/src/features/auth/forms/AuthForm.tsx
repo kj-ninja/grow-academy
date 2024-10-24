@@ -1,7 +1,17 @@
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/Form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormRootError,
+} from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { AuthFormSchema, AuthFormValues } from "@/features/auth/forms/AuthForm.schema";
+import ErrorHandler from "@/services/ErrorHandler";
 
 interface AuthFormProps {
   onSubmit: (values: AuthFormValues) => Promise<void>;
@@ -21,14 +31,7 @@ export function AuthForm({ onSubmit }: AuthFormProps) {
     try {
       await onSubmit(values);
     } catch (e) {
-      if (!(e instanceof Error)) throw e;
-
-      console.error("error: ", e);
-
-      form.setError("root", {
-        type: "manual",
-        message: e.message,
-      });
+      ErrorHandler.handle(e, form);
     }
   };
 
@@ -44,7 +47,7 @@ export function AuthForm({ onSubmit }: AuthFormProps) {
               <FormControl>
                 <Input placeholder="Username" {...field} />
               </FormControl>
-              <FormDescription>This is your public display name.</FormDescription>
+              <FormDescription>This is your public display name</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -62,6 +65,8 @@ export function AuthForm({ onSubmit }: AuthFormProps) {
             </FormItem>
           )}
         />
+        <FormRootError />
+
         <Button type="submit" className="w-full">
           Submit
         </Button>

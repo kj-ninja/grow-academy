@@ -14,12 +14,11 @@ export const AuthHeader = () => {
 
         <nav>
           <ul className="flex gap-2">
-            {status === "authenticated" && (
+            {status === "authenticated" ? (
               <Button onClick={logout} variant="ghost">
                 Logout
               </Button>
-            )}
-            {status === "unauthenticated" && (
+            ) : (
               <>
                 <NavLink to={"/auth/login"}>Login</NavLink>
                 <NavLink to={"/auth/register"}>Register</NavLink>

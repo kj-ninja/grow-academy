@@ -10,16 +10,12 @@ export function RegisterPage() {
   const { setAuthState } = useAuthState();
 
   const handleRegister = async (credentials: AuthFormValues) => {
-    try {
-      await registerMutation.mutateAsync(credentials);
-      const loginResponse = await loginMutation.mutateAsync({
-        username: credentials.username,
-        password: credentials.password,
-      });
-      setAuthState({ status: "authenticated", user: loginResponse.user });
-    } catch (error) {
-      console.error("Registration or login failed:", error);
-    }
+    await registerMutation.mutateAsync(credentials);
+    const loginResponse = await loginMutation.mutateAsync({
+      username: credentials.username,
+      password: credentials.password,
+    });
+    setAuthState({ status: "authenticated", user: loginResponse.user });
   };
 
   return (

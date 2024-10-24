@@ -2,7 +2,7 @@
 
 ## Overview
 
-Community platform for sharing knowledge in different science topics. This project is a full-stack application built using Vite for the frontend and Express.js for the backend. It leverages a modular structure with shared logic between the client and server.
+Community / tutoring platform for sharing knowledge in different science topics. This project is a full-stack application built using Vite for the frontend and TypeScript-powered Express server with Prisma ORM and JWT-based authentication. It leverages a modular structure with shared logic between the client and server.
 
 ## Tech Stack
 
@@ -11,7 +11,7 @@ Community platform for sharing knowledge in different science topics. This proje
 - **Vite**: For fast development and optimized builds.
 - **React + TypeScript**: The core of the frontend.
 - **State Management**: Zustand and Context API.
-- **Form Management**: useForm and Zod for validation.
+- **Form Management**: React Hook Form and Zod for validation.
 - **Data Fetching**: React Query and Axios.
 - **UI Framework**: Shadcn components with Tailwind CSS.
 - **Routing**: React Router.
@@ -35,6 +35,7 @@ Community platform for sharing knowledge in different science topics. This proje
 - Community creation flow
 - User / Community settings
 - Roles mamagement
+- Onboarding
 
 ## How to Run the Project
 
@@ -82,12 +83,6 @@ Community platform for sharing knowledge in different science topics. This proje
    ```bash
    npx prisma studio
    ```
-
-## Features
-
-- **Frontend**: Built with React, Vite, Zustand, and Tailwind for fast development and state management.
-- **Backend**: TypeScript-powered Express server with Prisma ORM and JWT-based authentication.
-- **Common Package**: Shared logic across both client and server apps for consistency.
 
 ## Additional Commands
 

@@ -1,9 +1,14 @@
 import axios from "axios";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 
-// todo: add toast notifications
+interface ErrorHandlerOptions<T extends FieldValues> {
+  error: unknown;
+  form?: UseFormReturn<T>;
+  onToast?: () => void;
+}
+
 class ErrorHandler {
-  static handle<T extends FieldValues>(error: unknown, form?: UseFormReturn<T>) {
+  static handle<T extends FieldValues>({ error, form, onToast }: ErrorHandlerOptions<T>) {
     if (axios.isAxiosError(error)) {
       const data = error.response?.data;
 
@@ -34,11 +39,7 @@ class ErrorHandler {
       return;
     }
 
-    console.log(error);
-    form?.setError("root", {
-      type: "manual",
-      message: "Something went wrong",
-    });
+    onToast?.();
     return;
   }
 }

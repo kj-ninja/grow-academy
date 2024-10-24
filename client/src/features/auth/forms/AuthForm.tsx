@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { AuthFormSchema, AuthFormValues } from "@/features/auth/forms/AuthForm.schema";
 import ErrorHandler from "@/services/ErrorHandler";
+import { useToast } from "@/hooks/useToast";
 
 interface AuthFormProps {
   onSubmit: (values: AuthFormValues) => Promise<void>;
@@ -26,12 +27,21 @@ export function AuthForm({ onSubmit }: AuthFormProps) {
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
+  const { toast } = useToast();
 
   const handleSubmit = async (values: AuthFormValues) => {
     try {
       await onSubmit(values);
-    } catch (e) {
-      ErrorHandler.handle(e, form);
+    } catch (error) {
+      ErrorHandler.handle({
+        error,
+        form,
+        onToast: () =>
+          toast({
+            title: "Error",
+            description: "Something went wrong",
+          }),
+      });
     }
   };
 

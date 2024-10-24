@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a full-stack application built using Vite for the frontend and Express.js for the backend. It leverages a modular structure with shared logic between the client and server.
+Community platform for sharing knowledge in different science topics. This project is a full-stack application built using Vite for the frontend and Express.js for the backend. It leverages a modular structure with shared logic between the client and server.
 
 ## Tech Stack
 
@@ -25,6 +25,16 @@ This project is a full-stack application built using Vite for the frontend and E
 ### Common
 
 - Shared types, validation schemas, and utilities for consistent logic across client and server.
+
+## Main Features:
+
+- Video calls - **livekit sdk**
+- Live streams - **livekit sdk**
+- Board chat - **getStream sdk**
+- Authentication for users
+- Community creation flow
+- User / Community settings
+- Roles mamagement
 
 ## How to Run the Project
 

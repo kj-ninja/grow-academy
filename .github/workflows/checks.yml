@@ -31,7 +31,7 @@ jobs:
 
       - name: Run Tests
         run: |
-          npx prisma db push
+          run: npx prisma db push --schema=./server/prisma/schema.prisma
           bun test
 
       - name: Build and Deploy Server

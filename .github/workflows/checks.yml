@@ -29,7 +29,9 @@ jobs:
         run: cd client && bun run lint
 
       - name: Run Tests
-        run: bun test
+        run: |
+          export NODE_ENV=test
+          bun test
 
       - name: Build and Deploy Server
         run: |

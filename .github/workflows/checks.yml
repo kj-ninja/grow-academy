@@ -20,16 +20,19 @@ jobs:
       - name: Install Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: latest
+          bun-version: 1.1.32
 
       - name: Install Dependencies
         run: bun install
 
-      - name: Lint Client (ESLint)
+      - name: Lint Client
         run: cd client && bun run lint
 
-      - name: Run Tests
-        run: bun test
+      - name: Type Check Client
+        run: cd client && bun run check-types
+
+      - name: Run Client Tests
+        run: cd client && bun run test
 
       - name: Build and Deploy Server
         run: |

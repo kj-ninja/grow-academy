@@ -5,11 +5,10 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-beforeEach(async () => {
-  // Clean up existing test user, if any
+beforeAll(async () => {
+  // Clean up existing test user, if any, and seed a new user
   await prisma.user.deleteMany({ where: { username: "testuser" } });
 
-  // Seed a test user
   const hashedPassword = await bcrypt.hash("password123", 10);
   await prisma.user.create({
     data: { username: "testuser", password: hashedPassword },
@@ -17,6 +16,7 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
+  // Disconnect the Prisma Client
   await prisma.$disconnect();
 });
 
@@ -41,7 +41,7 @@ describe("Rate Limiting", () => {
       password: "password123",
     });
 
-    console.log("Response Body:", res.body); // Add this line
+    console.log("Response Body:", res.body);
 
     expect(res.status).toBe(429);
     expect(res.body.message).toContain("Too many requests");

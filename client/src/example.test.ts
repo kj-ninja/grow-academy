@@ -3,6 +3,6 @@ import { describe, test, expect } from "vitest";
 
 describe("Dummy Test Suite", () => {
   test("Dummy Test Case", () => {
-    expect(1 + 1).toBe(2);
+    expect(2 + 2).toBe(4);
   });
 });

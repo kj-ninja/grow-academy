@@ -35,25 +35,18 @@ export const loginUser = async (req: Request, res: Response) => {
   try {
     const user = await prisma.user.findUnique({ where: { username } });
     if (!user) {
-      console.log(`User not found: ${username}`);
-      return res
-        .status(400)
-        .json({ message: "Invalid credentials", fields: { username: `Username ${username} doesn't exist` } });
+      console.log("Login failed: User not found");
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      console.log(`Invalid password for user: ${username}`);
-      return res.status(400).json({ message: "Invalid credentials", fields: { password: "Invalid password" } });
+      console.log("Login failed: Invalid password");
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
-      expiresIn: "1h",
-    });
-
-    const refreshToken = jwt.sign({ userId: user.id }, process.env.JWT_REFRESH_SECRET!, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: "1h" });
+    const refreshToken = jwt.sign({ userId: user.id }, process.env.JWT_REFRESH_SECRET!, { expiresIn: "7d" });
 
     res.json({ token, refreshToken });
   } catch (error) {

@@ -29,6 +29,9 @@ jobs:
       - name: Lint Client (ESLint)
         run: cd client && bun run lint
 
+      - name: Verify Environment Variables
+        run: echo "JWT_SECRET=$JWT_SECRET" && echo "DATABASE_URL=$DATABASE_URL"
+
       - name: Run Tests
         run: |
           npx prisma db push --schema=./server/prisma/schema.prisma

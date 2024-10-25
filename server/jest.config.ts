@@ -13,6 +13,7 @@ const config: Config = {
   transform: {
     "^.+\\.ts$": "ts-jest",
   },
+  setupFiles: ["<rootDir>/testSetup.ts"],
 };
 
 export default config;

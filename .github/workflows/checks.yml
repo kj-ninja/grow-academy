@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      DATABASE_URL: "file:./test.db"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -30,7 +31,7 @@ jobs:
 
       - name: Run Tests
         run: |
-          export NODE_ENV=test
+          npx prisma db push
           bun test
 
       - name: Build and Deploy Server

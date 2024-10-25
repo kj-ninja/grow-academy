@@ -31,8 +31,7 @@
       "@controllers/*": ["controllers/*"],
       "@middleware/*": ["middleware/*"],
       "@routes/*": ["routes/*"],
-      "@config/*": ["config/*"],
-      "@app": ["./app.ts"]
+      "@config/*": ["config/*"]
     }
   }
 }

@@ -28,6 +28,9 @@ jobs:
       - name: Lint Client
         run: cd client && bun run lint
 
+      - name: Type Check Client
+        run: cd client && bun run check-types
+
       - name: Run Client Tests
         run: cd client && bun run test
 

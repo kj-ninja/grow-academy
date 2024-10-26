@@ -12,7 +12,7 @@
     "client": "cd client && bun run dev",
     "dev": "bun run server & bun run client",
     "deploy": "cd client && bun run build && cd ../server && bun run start",
-    "prepare": "husky install",
+    "prepare": "husky",
     "format": "prettier --config ./common/.prettierrc --write \"./**/*.{js,jsx,ts,tsx}\""
   },
   "devDependencies": {

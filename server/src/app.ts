@@ -2,7 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import cors from "cors";
-import userRouter from "@routes/users.ts";
 import { errorHandler } from "@middleware/errorHandler";
 import path from "path";
 import passport from "passport";
@@ -20,13 +19,12 @@ app.use(passport.initialize());
 app.use(
   cors({
     origin: "http://localhost:5173",
-  })
+  }),
 );
 
 app.use(express.json());
 app.use(morgan("dev"));
 
-app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
 
 // Serve static files from public

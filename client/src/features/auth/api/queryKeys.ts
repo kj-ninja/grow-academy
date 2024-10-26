@@ -7,4 +7,9 @@ export const AuthQueries = {
       queryKey: ["getUsers"],
       queryFn: () => authApi.getUsers(),
     }),
+  validateToken: () =>
+    queryOptions({
+      queryKey: ["validateToken"],
+      queryFn: () => authApi.validate(),
+    }),
 };

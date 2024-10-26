@@ -15,7 +15,6 @@ export const useLoginMutation = () => {
       return authApi.login(credentials);
     },
     onSuccess: (data) => {
-      console.log("success login:", data);
       localStorage.setItem("token", data.token);
       localStorage.setItem("refreshToken", data.refreshToken);
     },

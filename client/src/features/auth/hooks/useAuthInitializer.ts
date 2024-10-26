@@ -1,27 +1,20 @@
-import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { AuthQueries } from "@/features/auth/api";
 import { useAuthState } from "@/features/auth/stores/authStore";
-import { ApiClient } from "@/services/ApiClient";
+import { useEffect } from "react";
 
 export const useAuthInitializer = () => {
   const { setAuthState, logout } = useAuthState();
+  const { data, isError } = useQuery(AuthQueries.validateToken());
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setAuthState({ status: "unauthenticated", user: null });
+    if (isError) {
+      logout();
       return;
     }
 
-    const validateToken = async () => {
-      try {
-        // todo add to queryKeys
-        const response = await ApiClient.get("/auth/validate");
-        setAuthState({ status: "authenticated", user: response.data.user });
-      } catch {
-        logout();
-      }
-    };
-
-    validateToken();
-  }, [setAuthState, logout]);
+    if (data) {
+      setAuthState({ status: "authenticated", user: data });
+    }
+  }, [data, isError, setAuthState, logout]);
 };

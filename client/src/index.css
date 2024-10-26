@@ -23,13 +23,4 @@ body {
   :root {
     --app-navbar-width: 68px;
   }
-
-  .dark {
-  }
-}
-
-@layer base {
-  body {
-    @apply bg-background text-foreground;
-  }
 }

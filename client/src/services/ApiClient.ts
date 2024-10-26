@@ -29,10 +29,13 @@ ApiClient.interceptors.response.use(
         if (!refreshToken) {
           throw new Error("No refresh token available.");
         }
-        // todo: add to mutations
-        const { data } = await ApiClient.post("/auth/refresh", { refreshToken });
+
+        const { data } = await ApiClient.post("/auth/refresh", {
+          refreshToken,
+        });
         localStorage.setItem("token", data.token);
         originalRequest.headers.Authorization = `Bearer ${data.token}`;
+
         return ApiClient(originalRequest);
       } catch (refreshError) {
         useAuthState.getState().logout();
@@ -40,5 +43,5 @@ ApiClient.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );

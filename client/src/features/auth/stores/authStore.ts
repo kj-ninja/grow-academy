@@ -12,7 +12,7 @@ export type User = {
   lastName: string;
   bio?: string;
   role: Role;
-  avatarImage?: string | { data: number[]; type: "Buffer" };
+  avatarImage?: null | { data: number[]; type: "Buffer" };
   createdAt: Date;
   isActive: boolean;
 };
@@ -24,6 +24,7 @@ interface AuthState {
 
 interface AuthActions {
   setAuthState: ({ status, user }: AuthState) => void;
+  setUser: (user: User) => void;
   logout: () => void;
 }
 
@@ -39,6 +40,9 @@ export const useAuthState = create<AuthState & AuthActions>()(
         } else {
           set({ status, user });
         }
+      },
+      setUser: (user) => {
+        set({ user });
       },
       logout: () => {
         localStorage.removeItem("token");

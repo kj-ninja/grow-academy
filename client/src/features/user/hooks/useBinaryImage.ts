@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 
 type BinaryImage = { data: number[]; type: "Buffer" };
 
-function isBinaryAvatarImage(
-  image: string | BinaryImage,
-): image is BinaryImage {
-  return typeof image === "object" && "data" in image;
+function isBinaryAvatarImage(image: null | BinaryImage): image is BinaryImage {
+  return typeof image === "object" && !!image && "data" in image;
 }
 
-export const useBinaryImage = (image: string | BinaryImage) => {
+export const useBinaryImage = (image: BinaryImage | null) => {
   const [imagePreview, setImagePreview] = useState("");
 
   useEffect(() => {

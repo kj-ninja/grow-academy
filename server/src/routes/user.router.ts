@@ -1,5 +1,5 @@
 import express from "express";
-import { updateUser } from "@controllers/auth.controller";
+import { getUser, updateUser } from "@controllers/user.controller";
 import { upload } from "@middleware/uploadMiddleware";
 import { authenticateJWT } from "@middleware/authenticateJWT";
 
@@ -11,5 +11,7 @@ router.put(
   upload.single("avatarImage"),
   updateUser,
 );
+
+router.get("/profile/:id", authenticateJWT, getUser);
 
 export default router;

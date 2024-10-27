@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, type User } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { type Request, type Response } from "express";
 import {
@@ -6,8 +6,6 @@ import {
   generateToken,
   verifyToken,
 } from "@controllers/utils";
-
-type RequestWithUser = Request & { user?: User };
 
 const prisma = new PrismaClient();
 
@@ -18,6 +16,7 @@ export const registerUser = async (req: Request, res: Response) => {
     await prisma.user.create({
       data: { username, password: hashedPassword },
     });
+
     res.status(201).json({ message: "User registered successfully!" });
   } catch (error) {
     if (
@@ -38,7 +37,9 @@ export const registerUser = async (req: Request, res: Response) => {
 export const loginUser = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
-    const user = await prisma.user.findUnique({ where: { username } });
+    const user = await prisma.user.findUnique({
+      where: { username },
+    });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(400).json({
@@ -50,9 +51,8 @@ export const loginUser = async (req: Request, res: Response) => {
         },
       });
     }
-    const userWithoutPassword: Prisma.UserGetPayload<{
-      select: { password: false };
-    }> = user;
+    // Remove the password field before sending the response
+    const { password: _, ...userWithoutPassword } = user;
 
     res.json({
       user: userWithoutPassword,
@@ -68,10 +68,13 @@ export const refreshToken = async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
   const payload = verifyToken(refreshToken, process.env.JWT_REFRESH_SECRET!);
 
-  if (!payload)
+  if (!payload) {
     return res.status(403).json({ message: "Invalid Refresh Token" });
+  }
 
-  const user = await prisma.user.findUnique({ where: { id: payload.userId } });
+  const user = await prisma.user.findUnique({
+    where: { id: payload.userId },
+  });
   if (!user) return res.status(401).json({ message: "Unauthorized" });
 
   res.json({ token: generateToken(user.id) });
@@ -88,39 +91,13 @@ export const validateToken = async (req: Request, res: Response) => {
 
   if (!payload) return res.status(403).json({ message: "Invalid Token" });
 
-  const user = await prisma.user.findUnique({ where: { id: payload.userId } });
+  const user = await prisma.user.findUnique({
+    omit: { password: true },
+    where: { id: payload.userId },
+  });
+
+  console.log("validate: user: ", user);
   if (!user) return res.status(401).json({ message: "Unauthorized" });
 
-  const userWithoutPassword: Prisma.UserGetPayload<{
-    select: { password: false };
-  }> = user;
-  res.json(userWithoutPassword);
-};
-
-export const updateUser = async (req: RequestWithUser, res: Response) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  const { firstName, lastName, bio } = req.body;
-  const avatarImage = req.file;
-
-  try {
-    await prisma.user.update({
-      where: { id: req.user.id },
-      data: {
-        firstName: firstName || null,
-        lastName: lastName || null,
-        bio: bio || null,
-        isActive: true,
-        avatarImage: avatarImage ? avatarImage.buffer : null,
-      },
-    });
-
-    res.status(200).json({
-      message: "User updated successfully!",
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to update user" });
-  }
+  res.json(user);
 };

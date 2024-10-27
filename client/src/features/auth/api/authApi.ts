@@ -13,10 +13,6 @@ export interface AuthCredentials {
 }
 
 export const authApi = {
-  getUsers: async (): Promise<User[]> => {
-    const response = await ApiClient.get<User[]>("/users");
-    return response.data;
-  },
   register: async (credentials: AuthCredentials) => {
     const response = await ApiClient.post<AuthCredentials>(
       "/auth/register",

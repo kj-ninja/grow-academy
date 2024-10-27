@@ -18,7 +18,7 @@ import { useAuthState } from "@/features/auth/stores/authStore";
 import { useBinaryImage } from "@/features/user/hooks/useBinaryImage";
 import { Textarea } from "@/components/ui/Textarea";
 import { useNavigate } from "react-router-dom";
-import { useUpdateUserMutation } from "@/features/user/api/mutations";
+import { useUpdateUserMutation } from "@/features/user/api";
 
 export function OnboardingForm() {
   const { user } = useAuthState();
@@ -30,8 +30,8 @@ export function OnboardingForm() {
   const form = OnboardingFormSchema.useForm({
     defaultValues: {
       username: user?.username,
-      firstName: user?.firstName ?? "",
-      lastName: user?.lastName ?? "",
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
       bio: user?.bio || "",
     },
     mode: "onChange",

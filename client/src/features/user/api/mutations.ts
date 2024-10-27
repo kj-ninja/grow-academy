@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useAuthState, User } from "@/features/auth/stores/authStore";
-import { userApi } from "@/features/user/api/userApi";
+import { userApi } from "@/features/user/api";
 
 export const useUpdateUserMutation = () => {
   const { setUser } = useAuthState();

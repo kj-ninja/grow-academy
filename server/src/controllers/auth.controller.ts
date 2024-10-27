@@ -75,9 +75,10 @@ export const refreshToken = async (req: Request, res: Response) => {
   const user = await prisma.user.findUnique({
     where: { id: payload.userId },
   });
+
   if (!user) return res.status(401).json({ message: "Unauthorized" });
 
-  res.json({ token: generateToken(user.id) });
+  res.status(200).json({ token: generateToken(user.id) });
 };
 
 export const validateToken = async (req: Request, res: Response) => {
@@ -96,8 +97,7 @@ export const validateToken = async (req: Request, res: Response) => {
     where: { id: payload.userId },
   });
 
-  console.log("validate: user: ", user);
   if (!user) return res.status(401).json({ message: "Unauthorized" });
 
-  res.json(user);
+  res.status(200).json(user);
 };

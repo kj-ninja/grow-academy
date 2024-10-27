@@ -11,5 +11,6 @@ export const AuthQueries = {
     queryOptions({
       queryKey: ["validateToken"],
       queryFn: () => authApi.validate(),
+      retry: false,
     }),
 };

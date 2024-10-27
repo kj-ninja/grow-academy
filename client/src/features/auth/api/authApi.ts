@@ -1,13 +1,5 @@
 import { ApiClient } from "@/services/ApiClient";
-
-type Role = "admin" | "user";
-
-export interface User {
-  id: number;
-  username: string;
-  role: Role;
-  createdAt: Date;
-}
+import { type User } from "@/features/auth/stores/authStore";
 
 export interface LoginResponse {
   token: string;

@@ -16,11 +16,13 @@ const options = {
 passport.use(
   new JwtStrategy(options, async (payload, done) => {
     try {
-      const user = await prisma.user.findUnique({ where: { id: payload.userId } });
+      const user = await prisma.user.findUnique({
+        where: { id: payload.userId },
+      });
       if (user) return done(null, user);
       return done(null, false);
     } catch (error) {
       return done(error, false);
     }
-  })
+  }),
 );

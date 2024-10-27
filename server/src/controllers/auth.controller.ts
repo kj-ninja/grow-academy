@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, type User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { type Request, type Response } from "express";
 import {
@@ -6,6 +6,8 @@ import {
   generateToken,
   verifyToken,
 } from "@controllers/utils";
+
+type RequestWithUser = Request & { user?: User };
 
 const prisma = new PrismaClient();
 
@@ -48,7 +50,12 @@ export const loginUser = async (req: Request, res: Response) => {
         },
       });
     }
+    const userWithoutPassword: Prisma.UserGetPayload<{
+      select: { password: false };
+    }> = user;
+
     res.json({
+      user: userWithoutPassword,
       token: generateToken(user.id),
       refreshToken: generateRefreshToken(user.id),
     });
@@ -72,8 +79,9 @@ export const refreshToken = async (req: Request, res: Response) => {
 
 export const validateToken = async (req: Request, res: Response) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader)
+  if (!authHeader) {
     return res.status(401).json({ message: "No token provided" });
+  }
 
   const token = authHeader.split(" ")[1];
   const payload = verifyToken(token, process.env.JWT_SECRET!);
@@ -83,12 +91,36 @@ export const validateToken = async (req: Request, res: Response) => {
   const user = await prisma.user.findUnique({ where: { id: payload.userId } });
   if (!user) return res.status(401).json({ message: "Unauthorized" });
 
-  res.json({
-    user: {
-      id: user.id,
-      username: user.username,
-      role: user.role,
-      createdAt: user.createdAt,
-    },
-  });
+  const userWithoutPassword: Prisma.UserGetPayload<{
+    select: { password: false };
+  }> = user;
+  res.json(userWithoutPassword);
+};
+
+export const updateUser = async (req: RequestWithUser, res: Response) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const { firstName, lastName, bio } = req.body;
+  const avatarImage = req.file;
+
+  try {
+    await prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        firstName: firstName || null,
+        lastName: lastName || null,
+        bio: bio || null,
+        isActive: true,
+        avatarImage: avatarImage ? avatarImage.buffer : null,
+      },
+    });
+
+    res.status(200).json({
+      message: "User updated successfully!",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update user" });
+  }
 };

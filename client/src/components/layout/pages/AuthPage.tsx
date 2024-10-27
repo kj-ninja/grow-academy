@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
 import { PropsWithChildren } from "react";
 
 interface AuthPageProps extends PropsWithChildren {
@@ -9,7 +15,7 @@ interface AuthPageProps extends PropsWithChildren {
 export function AuthPage({ title, description, children }: AuthPageProps) {
   return (
     <div className="flex justify-center mx-auto mt-20">
-      <Card className="w-[350px]">
+      <Card>
         <CardHeader>
           <CardTitle>{title}</CardTitle>
           <CardDescription>{description}</CardDescription>

@@ -11,9 +11,14 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  password  String
-  role      String   @default("user")
-  createdAt DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  username    String   @unique
+  password    String
+  role        String   @default("user")
+  createdAt   DateTime @default(now())
+  firstName   String?
+  lastName    String?
+  bio         String?
+  avatarImage Bytes?
+  isActive    Boolean  @default(false)
 }

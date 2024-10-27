@@ -8,28 +8,44 @@ type AuthenticationGuardProps = {
   redirectPath?: string;
 };
 
-export const AuthenticationGuard: FC<AuthenticationGuardProps> = ({ redirectPath = "/auth", ...props }) => {
+export const AuthenticationGuard: FC<AuthenticationGuardProps> = ({
+  redirectPath = "/auth",
+  ...props
+}) => {
   const authState = useAuthState();
 
-  // todo: idle removed from check
   if (authState.status === "initializing") {
     return <FullPageLoader />;
   }
 
   const isAllowed = authState.status === "authenticated";
 
-  return <ProtectedRoute redirectPath={redirectPath} isAllowed={isAllowed} {...props} />;
+  return (
+    <ProtectedRoute
+      redirectPath={redirectPath}
+      isAllowed={isAllowed}
+      {...props}
+    />
+  );
 };
 
-export const UnAuthenticationGuard: FC<AuthenticationGuardProps> = ({ redirectPath = "/", ...props }) => {
+export const UnAuthenticationGuard: FC<AuthenticationGuardProps> = ({
+  redirectPath = "/",
+  ...props
+}) => {
   const authState = useAuthState();
 
-  // todo: idle removed from check
   if (authState.status === "initializing") {
     return <FullPageLoader />;
   }
 
   const isAllowed = authState.status !== "authenticated";
 
-  return <ProtectedRoute redirectPath={redirectPath} isAllowed={isAllowed} {...props} />;
+  return (
+    <ProtectedRoute
+      redirectPath={redirectPath}
+      isAllowed={isAllowed}
+      {...props}
+    />
+  );
 };

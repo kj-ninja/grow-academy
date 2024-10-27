@@ -3,7 +3,19 @@ import { persist } from "zustand/middleware";
 
 type AuthStatus = "idle" | "initializing" | "authenticated" | "unauthenticated";
 
-type User = { id: number; username: string; role: string; createdAt: Date };
+type Role = "admin" | "user";
+
+export type User = {
+  id: number;
+  username: string;
+  firstName: string;
+  lastName: string;
+  bio?: string;
+  role: Role;
+  avatarImage?: string | { data: number[]; type: "Buffer" };
+  createdAt: Date;
+  isActive: boolean;
+};
 
 interface AuthState {
   status: AuthStatus;
@@ -30,11 +42,12 @@ export const useAuthState = create<AuthState & AuthActions>()(
       },
       logout: () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
         set({ status: "unauthenticated", user: null });
       },
     }),
     {
       name: "authState",
-    }
-  )
+    },
+  ),
 );

@@ -8,11 +8,19 @@ import { RootErrorBoundary } from "@/pages/RootErrorBoundary";
 import { AppFrame } from "@/components/layout/frames/AppFrame";
 import { AuthHeader } from "@/components/layout/headers/AuthHeader";
 import { NotFoundPage } from "@/pages/NotFoundPage";
-import { AuthenticationGuard, UnAuthenticationGuard } from "@/features/auth/components/AuthenticationGuard";
+import {
+  AuthenticationGuard,
+  UnAuthenticationGuard,
+} from "@/features/auth/components/AuthenticationGuard";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { RegisterPage } from "@/pages/auth/RegisterPage";
 import { WelcomePage } from "@/pages/auth/WelcomePage";
-import { HomePage } from "@/pages/HomePage";
+import { ActiveUserGuard } from "@/features/user/components/ActiveUserGuard";
+import { UserProfileErrorBoundary } from "@/features/user/components/UserProfileErrorBoundary";
+
+const OnboardingPage = () => import("./user/OnboardingPage");
+const HomePage = () => import("./HomePage");
+const UserProfilePage = () => import("./user/UserProfilePage");
 
 export const RouterProvider = () => {
   const router = createBrowserRouter(
@@ -27,14 +35,28 @@ export const RouterProvider = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Route>
 
-          {/*Private routes*/}
+          {/*Onboarding*/}
           <Route element={<AuthenticationGuard />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="*" element={<NotFoundPage />} />
+            <Route path="onboarding" lazy={OnboardingPage} />
           </Route>
         </Route>
-      </Route>
-    )
+
+        <Route element={<AppFrame header={<AuthHeader />} />}>
+          {/*Private routes*/}
+          <Route element={<AuthenticationGuard />}>
+            <Route element={<ActiveUserGuard />}>
+              <Route path="/" lazy={HomePage} />
+
+              <Route errorElement={<UserProfileErrorBoundary />}>
+                <Route path="user" lazy={UserProfilePage} />
+              </Route>
+
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+          </Route>
+        </Route>
+      </Route>,
+    ),
   );
 
   return <RouterProviderDom router={router} />;

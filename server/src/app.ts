@@ -6,6 +6,7 @@ import { errorHandler } from "@middleware/errorHandler";
 import path from "path";
 import passport from "passport";
 import authRouter from "@routes/auth.router";
+import userRouter from "@routes/user.router";
 import "@config/passportConfig";
 
 dotenv.config();
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
 
 // Serve static files from public
 app.use(express.static(path.join(process.cwd(), "public")));

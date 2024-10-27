@@ -35,7 +35,7 @@ Community / tutoring platform for sharing knowledge in different science topics.
 - Community creation flow
 - User / Community settings
 - Roles mamagement
-- OnboardingPage
+- Onboarding
 
 ## How to Run the Project
 

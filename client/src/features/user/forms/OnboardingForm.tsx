@@ -18,10 +18,13 @@ import { useAuthState } from "@/features/auth/stores/authStore";
 import { ApiClient } from "@/services/ApiClient";
 import { useBinaryImage } from "@/features/user/hooks/useBinaryImage";
 import { Textarea } from "@/components/ui/Textarea";
+import { useNavigate } from "react-router-dom";
 
 export function OnboardingForm() {
   const { user } = useAuthState();
   const { image, setImage } = useBinaryImage(user?.avatarImage || "");
+
+  const navigate = useNavigate();
 
   const form = OnboardingFormSchema.useForm({
     defaultValues: {
@@ -58,6 +61,7 @@ export function OnboardingForm() {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
+        navigate("/");
       } catch (error) {
         console.error("Error updating user:", error);
       }
@@ -137,7 +141,7 @@ export function OnboardingForm() {
           <FormField
             control={form.control}
             name="avatarImage"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormLabel htmlFor="picture">Avatar Image</FormLabel>
                 <FormControl>

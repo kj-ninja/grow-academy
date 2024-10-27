@@ -15,22 +15,23 @@ import {
   OnboardingFormValues,
 } from "@/features/user/forms/OnboardingForm.schema";
 import { useAuthState } from "@/features/auth/stores/authStore";
-import { ApiClient } from "@/services/ApiClient";
 import { useBinaryImage } from "@/features/user/hooks/useBinaryImage";
 import { Textarea } from "@/components/ui/Textarea";
 import { useNavigate } from "react-router-dom";
+import { useUpdateUserMutation } from "@/features/user/api";
 
 export function OnboardingForm() {
   const { user } = useAuthState();
-  const { image, setImage } = useBinaryImage(user?.avatarImage || "");
+  const { image, setImage } = useBinaryImage(user?.avatarImage || null);
 
+  const updateUserMutation = useUpdateUserMutation();
   const navigate = useNavigate();
 
   const form = OnboardingFormSchema.useForm({
     defaultValues: {
-      username: user?.username ?? "",
-      firstName: user?.firstName ?? "",
-      lastName: user?.lastName ?? "",
+      username: user?.username,
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
       bio: user?.bio || "",
     },
     mode: "onChange",
@@ -48,18 +49,15 @@ export function OnboardingForm() {
       formData.append("firstName", values.firstName);
       formData.append("lastName", values.lastName);
       formData.append("bio", values.bio || "");
-      formData.append("isActive", String(user.isActive));
 
       if (values.avatarImage instanceof File) {
         formData.append("avatarImage", values.avatarImage);
       }
 
       try {
-        await ApiClient.put(`/user/update/${user.id}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+        await updateUserMutation.mutateAsync({
+          id: String(user.id),
+          data: formData,
         });
         navigate("/");
       } catch (error) {

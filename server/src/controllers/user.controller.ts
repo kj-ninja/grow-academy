@@ -12,14 +12,6 @@ export const updateUser = async (req: RequestWithUser, res: Response) => {
 
   const { firstName, lastName, bio } = req.body;
   const avatarImage = req.file;
-  console.log("avatarImage: ", avatarImage);
-  if (avatarImage === null) {
-    console.log("its null");
-  }
-
-  if (avatarImage === undefined) {
-    console.log("its undefined");
-  }
 
   const updateData: Pick<
     User,

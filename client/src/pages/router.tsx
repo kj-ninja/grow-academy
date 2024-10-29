@@ -20,7 +20,6 @@ import { WelcomePage } from "@/pages/auth/WelcomePage";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { RegisterPage } from "@/pages/auth/RegisterPage";
 
-// Lazy-loaded routes
 const OnboardingPage = () => import("./user/OnboardingPage");
 const HomePage = () => import("./HomePage");
 const UserProfilePage = () => import("./user/profile/UserProfilePage");
@@ -30,14 +29,19 @@ export const RouterProvider = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route errorElement={<RootErrorBoundary />}>
-        {/* Authentication */}
+        {/* Auth flow */}
         <Route element={<AppFrame header={<AuthHeader />} />}>
           <Route path="/auth" element={<UnAuthenticationGuard />}>
             <Route index element={<WelcomePage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
-          <Route path="*" element={<NotFoundPage />} />
+
+          {/*Onboarding*/}
+          <Route element={<AuthenticationGuard />}>
+            <Route path="/onboarding" lazy={OnboardingPage} />
+          </Route>
         </Route>
 
         {/* Main App Layout with Header */}

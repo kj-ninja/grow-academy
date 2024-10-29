@@ -23,7 +23,7 @@ import { useUpdateUserMutation } from "@/features/user/api";
 export function UpdateUserProfileForm() {
   const { user } = useAuthState();
   const { image, setImage } = useBinaryImage(user?.avatarImage);
-  console.log("user: ", user);
+
   const updateUserMutation = useUpdateUserMutation();
   const navigate = useNavigate();
 

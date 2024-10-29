@@ -2,9 +2,9 @@ import { queryOptions } from "@tanstack/react-query";
 import { userApi } from "@/features/user/api";
 
 export const UserQueries = {
-  getUser: (id: string) =>
+  getUser: (username: string) =>
     queryOptions({
-      queryKey: ["getUser", id],
-      queryFn: () => userApi.getUser(id),
+      queryKey: ["getUser", username],
+      queryFn: () => userApi.getUser(username),
     }),
 };

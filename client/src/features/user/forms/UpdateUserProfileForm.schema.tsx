@@ -1,7 +1,7 @@
 import { createFormSchema } from "@/lib/forms";
 import * as zod from "zod";
 
-const onboardingFormSchema = zod.object({
+const updateUserFormSchema = zod.object({
   username: zod.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
@@ -17,9 +17,10 @@ const onboardingFormSchema = zod.object({
     zod.string().url().optional(),
     zod.literal("").optional(),
     zod.object({ data: zod.array(zod.number()) }).optional(),
+    zod.null().optional(),
   ]),
 });
 
-export const OnboardingFormSchema = createFormSchema(onboardingFormSchema);
+export const UpdateUserFormSchema = createFormSchema(updateUserFormSchema);
 
-export type OnboardingFormValues = zod.infer<typeof onboardingFormSchema>;
+export type UpdateUserFormValues = zod.infer<typeof updateUserFormSchema>;

@@ -12,6 +12,6 @@ router.put(
   updateUser,
 );
 
-router.get("/profile/:id", authenticateJWT, getUser);
+router.get("/profile/:username", authenticateJWT, getUser);
 
 export default router;

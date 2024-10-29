@@ -12,6 +12,14 @@ export const updateUser = async (req: RequestWithUser, res: Response) => {
 
   const { firstName, lastName, bio } = req.body;
   const avatarImage = req.file;
+  console.log("avatarImage: ", avatarImage);
+  if (avatarImage === null) {
+    console.log("its null");
+  }
+
+  if (avatarImage === undefined) {
+    console.log("its undefined");
+  }
 
   const updateData: Pick<
     User,
@@ -38,14 +46,10 @@ export const updateUser = async (req: RequestWithUser, res: Response) => {
 };
 
 export const getUser = async (req: RequestWithUser, res: Response) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
   try {
     const user = await prisma.user.findUnique({
       omit: { password: true },
-      where: { id: req.user.id },
+      where: { username: req.params.username },
     });
 
     if (!user) return res.status(404).json({ message: "User not found" });

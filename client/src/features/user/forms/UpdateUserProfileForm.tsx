@@ -11,23 +11,23 @@ import {
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import {
-  OnboardingFormSchema,
-  OnboardingFormValues,
-} from "@/features/user/forms/OnboardingForm.schema";
+  UpdateUserFormSchema,
+  UpdateUserFormValues,
+} from "@/features/user/forms/UpdateUserProfileForm.schema";
 import { useAuthState } from "@/features/auth/stores/authStore";
-import { useBinaryImage } from "@/features/user/hooks/useBinaryImage";
+import { useBinaryImage } from "@/hooks/useBinaryImage";
 import { Textarea } from "@/components/ui/Textarea";
 import { useNavigate } from "react-router-dom";
 import { useUpdateUserMutation } from "@/features/user/api";
 
-export function OnboardingForm() {
+export function UpdateUserProfileForm() {
   const { user } = useAuthState();
-  const { image, setImage } = useBinaryImage(user?.avatarImage || null);
-
+  const { image, setImage } = useBinaryImage(user?.avatarImage);
+  console.log("user: ", user);
   const updateUserMutation = useUpdateUserMutation();
   const navigate = useNavigate();
 
-  const form = OnboardingFormSchema.useForm({
+  const form = UpdateUserFormSchema.useForm({
     defaultValues: {
       username: user?.username,
       firstName: user?.firstName || "",
@@ -38,7 +38,7 @@ export function OnboardingForm() {
     reValidateMode: "onChange",
   });
 
-  const handleSubmit = async (values: OnboardingFormValues) => {
+  const handleSubmit = async (values: UpdateUserFormValues) => {
     const formData = new FormData();
 
     if (user) {
@@ -52,6 +52,13 @@ export function OnboardingForm() {
 
       if (values.avatarImage instanceof File) {
         formData.append("avatarImage", values.avatarImage);
+      } else if (values.avatarImage === null) {
+        formData.append("avatarImage", "");
+      } else if (user?.avatarImage) {
+        const blob = new Blob([new Uint8Array(user.avatarImage.data)], {
+          type: "image/jpeg",
+        });
+        formData.append("avatarImage", blob, "avatar.jpg");
       }
 
       try {
@@ -59,7 +66,8 @@ export function OnboardingForm() {
           id: String(user.id),
           data: formData,
         });
-        navigate("/");
+
+        navigate(`/user/${user.username}`);
       } catch (error) {
         console.error("Error updating user:", error);
       }
@@ -75,8 +83,8 @@ export function OnboardingForm() {
   };
 
   const handleRemoveImage = () => {
-    setImage("");
-    form.setValue("avatarImage", "");
+    setImage(undefined);
+    form.setValue("avatarImage", null);
   };
 
   return (
@@ -97,32 +105,34 @@ export function OnboardingForm() {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>First Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="First Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Last Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Last Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex gap-4">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>First Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="First Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Last Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
             name="bio"

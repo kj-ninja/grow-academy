@@ -12,7 +12,7 @@ export type User = {
   lastName: string;
   bio?: string;
   role: Role;
-  avatarImage?: null | { data: number[]; type: "Buffer" };
+  avatarImage?: { data: number[]; type: "Buffer" };
   createdAt: Date;
   isActive: boolean;
 };

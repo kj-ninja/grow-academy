@@ -11,11 +11,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { useBinaryImage } from "@/hooks/useBinaryImage";
+import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 
 export const AppHeader = () => {
-  const { user } = useAuthState();
+  const { currentUser } = useCurrentUser();
   const { logout } = useAuthState();
-  const { image } = useBinaryImage(user?.avatarImage);
+  const { image } = useBinaryImage(currentUser?.avatarImage);
 
   const navigate = useNavigate();
 
@@ -39,14 +40,14 @@ export const AppHeader = () => {
             <DropdownMenuContent className="w-56" side="bottom" align="end">
               <DropdownMenuGroup>
                 <DropdownMenuItem
-                  onClick={() => navigate(`/user/${user?.username}`)}
+                  onClick={() => navigate(`/user/${currentUser?.username}`)}
                 >
                   Profile
                   <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() =>
-                    navigate(`/user/${user?.username}/settings/edit`)
+                    navigate(`/user/${currentUser?.username}/settings/edit`)
                   }
                 >
                   Settings

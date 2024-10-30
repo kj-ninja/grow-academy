@@ -14,7 +14,7 @@ export const AuthenticationGuard: FC<AuthenticationGuardProps> = ({
 }) => {
   const authState = useAuthState();
 
-  if (authState.status === "initializing") {
+  if (authState.status === "initializing" || authState.status === "idle") {
     return <FullPageLoader />;
   }
 
@@ -35,7 +35,7 @@ export const UnAuthenticationGuard: FC<AuthenticationGuardProps> = ({
 }) => {
   const authState = useAuthState();
 
-  if (authState.status === "initializing") {
+  if (authState.status === "initializing" || authState.status === "idle") {
     return <FullPageLoader />;
   }
 

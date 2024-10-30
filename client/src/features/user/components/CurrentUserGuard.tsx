@@ -1,11 +1,11 @@
 import { Navigate, Outlet, useParams } from "react-router-dom";
-import { useAuthState } from "@/features/auth/stores/authStore";
+import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 
 export const CurrentUserGuard = () => {
   const { username } = useParams<{ username: string }>();
-  const { user } = useAuthState();
+  const { currentUser } = useCurrentUser();
 
-  if (username && username !== user?.username) {
+  if (username && currentUser && username !== currentUser?.username) {
     return <Navigate to={`/user/${username}`} />;
   }
 

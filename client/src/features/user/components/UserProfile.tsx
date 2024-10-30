@@ -9,14 +9,13 @@ export function UserProfile() {
   const { username } = useValidateRouteParams({
     username: zod.string().min(1),
   });
-  const navigate = useNavigate();
   const { data } = useQuery(UserQueries.getUser(username));
 
-  console.log("data: ", data);
+  const navigate = useNavigate();
 
   return (
     <div className="flex gap-4 items-center">
-      <div>Username: {data.username}</div>
+      <div>Username: {data?.username}</div>
       <Button variant="default" onClick={() => navigate("settings/edit")}>
         Edit
       </Button>

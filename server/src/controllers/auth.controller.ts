@@ -99,5 +99,6 @@ export const validateToken = async (req: Request, res: Response) => {
 
   if (!user) return res.status(401).json({ message: "Unauthorized" });
 
+  // await new Promise((resolve) => setTimeout(resolve, 2000));
   res.status(200).json(user);
 };

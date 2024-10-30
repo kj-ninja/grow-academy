@@ -4,6 +4,8 @@ import { AuthFormValues } from "@/features/auth/forms/AuthForm.schema";
 import { useLoginMutation } from "@/features/auth/api";
 import { useAuthState } from "@/features/auth/stores/authStore";
 import { useNavigate } from "react-router-dom";
+import { queryClient } from "@/services/ReactQuery";
+import { UserQueries } from "@/features/user/api";
 
 export function LoginPage() {
   const loginMutation = useLoginMutation();
@@ -16,7 +18,11 @@ export function LoginPage() {
       username: credentials.username,
       password: credentials.password,
     });
-    setAuthState({ status: "authenticated", user: loginResponse.user });
+    queryClient.setQueryData(
+      UserQueries.getCurrentUser().queryKey,
+      loginResponse.user,
+    );
+    setAuthState("authenticated");
 
     if (loginResponse.user.isActive) {
       navigate("/");

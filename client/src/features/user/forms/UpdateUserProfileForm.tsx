@@ -14,28 +14,26 @@ import {
   UpdateUserFormSchema,
   UpdateUserFormValues,
 } from "@/features/user/forms/UpdateUserProfileForm.schema";
-import { useAuthState } from "@/features/auth/stores/authStore";
 import { useBinaryImage } from "@/hooks/useBinaryImage";
 import { Textarea } from "@/components/ui/Textarea";
 import { useNavigate } from "react-router-dom";
-import { UserQueries, useUpdateUserMutation } from "@/features/user/api";
-import { useQuery } from "@tanstack/react-query";
+import { useUpdateUserMutation } from "@/features/user/api";
+import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 
 export function UpdateUserProfileForm() {
-  const { data } = useQuery(UserQueries.getUser("chris"));
-  // const { user } = useAuthState();
+  const { currentUser, refetchUserProfile } = useCurrentUser();
 
-  const { image, setImage } = useBinaryImage(data?.avatarImage);
+  const { image, setImage } = useBinaryImage(currentUser?.avatarImage);
 
   const updateUserMutation = useUpdateUserMutation();
   const navigate = useNavigate();
 
   const form = UpdateUserFormSchema.useForm({
     defaultValues: {
-      username: data?.username,
-      firstName: data?.firstName || "",
-      lastName: data?.lastName || "",
-      bio: data?.bio || "",
+      username: currentUser?.username,
+      firstName: currentUser?.firstName || "",
+      lastName: currentUser?.lastName || "",
+      bio: currentUser?.bio || "",
     },
     mode: "onChange",
     reValidateMode: "onChange",
@@ -44,11 +42,11 @@ export function UpdateUserProfileForm() {
   const handleSubmit = async (values: UpdateUserFormValues) => {
     const formData = new FormData();
 
-    if (data) {
-      formData.append("id", String(data.id));
-      formData.append("username", data.username);
-      formData.append("role", data.role);
-      formData.append("createdAt", String(data.createdAt));
+    if (currentUser) {
+      formData.append("id", String(currentUser.id));
+      formData.append("username", currentUser.username);
+      formData.append("role", currentUser.role);
+      formData.append("createdAt", String(currentUser.createdAt));
       formData.append("firstName", values.firstName);
       formData.append("lastName", values.lastName);
       formData.append("bio", values.bio || "");
@@ -57,8 +55,8 @@ export function UpdateUserProfileForm() {
         formData.append("avatarImage", values.avatarImage);
       } else if (values.avatarImage === null) {
         formData.append("avatarImage", "");
-      } else if (data?.avatarImage) {
-        const blob = new Blob([new Uint8Array(data.avatarImage.data)], {
+      } else if (currentUser?.avatarImage) {
+        const blob = new Blob([new Uint8Array(currentUser.avatarImage.data)], {
           type: "image/jpeg",
         });
         formData.append("avatarImage", blob, "avatar.jpg");
@@ -66,10 +64,12 @@ export function UpdateUserProfileForm() {
 
       try {
         await updateUserMutation.mutateAsync({
-          id: String(data.id),
+          id: String(currentUser.id),
           data: formData,
         });
-        navigate(`/user/${data.username}`);
+        await refetchUserProfile();
+
+        navigate(`/user/${currentUser.username}`);
       } catch (error) {
         // todo: add toast
         console.error("Error updating user:", error);

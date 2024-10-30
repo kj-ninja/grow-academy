@@ -40,19 +40,19 @@ export const RouterProvider = () => {
 
           {/*Onboarding*/}
           <Route element={<AuthenticationGuard />}>
-            <Route path="/onboarding" lazy={OnboardingPage} />
+            <Route path="onboarding" lazy={OnboardingPage} />
           </Route>
         </Route>
 
-        {/* Main App Layout with Header */}
+        {/*Private routes*/}
         <Route element={<AppFrame header={<AppHeader />} />}>
           <Route element={<AuthenticationGuard />}>
-            <Route path="/" lazy={HomePage} />
-            {/* User Profile */}
             <Route
               element={<ActiveUserGuard />}
               errorElement={<UserProfileErrorBoundary />}
             >
+              <Route path="*" element={<NotFoundPage />} />
+              <Route path="/" lazy={HomePage} />
               <Route path="user/:username" lazy={UserProfilePage} />
               <Route element={<CurrentUserGuard />}>
                 <Route

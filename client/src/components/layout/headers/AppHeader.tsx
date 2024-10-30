@@ -10,10 +10,12 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
+import { useBinaryImage } from "@/hooks/useBinaryImage";
 
 export const AppHeader = () => {
   const { user } = useAuthState();
   const { logout } = useAuthState();
+  const { image } = useBinaryImage(user?.avatarImage);
 
   const navigate = useNavigate();
 
@@ -28,10 +30,7 @@ export const AppHeader = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer">
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                />
+                <AvatarImage src={image} alt="@shadcn" />
                 <AvatarFallback>GA</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>

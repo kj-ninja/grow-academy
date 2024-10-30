@@ -18,21 +18,24 @@ import { useAuthState } from "@/features/auth/stores/authStore";
 import { useBinaryImage } from "@/hooks/useBinaryImage";
 import { Textarea } from "@/components/ui/Textarea";
 import { useNavigate } from "react-router-dom";
-import { useUpdateUserMutation } from "@/features/user/api";
+import { UserQueries, useUpdateUserMutation } from "@/features/user/api";
+import { useQuery } from "@tanstack/react-query";
 
 export function UpdateUserProfileForm() {
-  const { user } = useAuthState();
-  const { image, setImage } = useBinaryImage(user?.avatarImage);
+  const { data } = useQuery(UserQueries.getUser("chris"));
+  // const { user } = useAuthState();
+
+  const { image, setImage } = useBinaryImage(data?.avatarImage);
 
   const updateUserMutation = useUpdateUserMutation();
   const navigate = useNavigate();
 
   const form = UpdateUserFormSchema.useForm({
     defaultValues: {
-      username: user?.username,
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      bio: user?.bio || "",
+      username: data?.username,
+      firstName: data?.firstName || "",
+      lastName: data?.lastName || "",
+      bio: data?.bio || "",
     },
     mode: "onChange",
     reValidateMode: "onChange",
@@ -41,11 +44,11 @@ export function UpdateUserProfileForm() {
   const handleSubmit = async (values: UpdateUserFormValues) => {
     const formData = new FormData();
 
-    if (user) {
-      formData.append("id", String(user.id));
-      formData.append("username", user.username);
-      formData.append("role", user.role);
-      formData.append("createdAt", String(user.createdAt));
+    if (data) {
+      formData.append("id", String(data.id));
+      formData.append("username", data.username);
+      formData.append("role", data.role);
+      formData.append("createdAt", String(data.createdAt));
       formData.append("firstName", values.firstName);
       formData.append("lastName", values.lastName);
       formData.append("bio", values.bio || "");
@@ -54,8 +57,8 @@ export function UpdateUserProfileForm() {
         formData.append("avatarImage", values.avatarImage);
       } else if (values.avatarImage === null) {
         formData.append("avatarImage", "");
-      } else if (user?.avatarImage) {
-        const blob = new Blob([new Uint8Array(user.avatarImage.data)], {
+      } else if (data?.avatarImage) {
+        const blob = new Blob([new Uint8Array(data.avatarImage.data)], {
           type: "image/jpeg",
         });
         formData.append("avatarImage", blob, "avatar.jpg");
@@ -63,12 +66,12 @@ export function UpdateUserProfileForm() {
 
       try {
         await updateUserMutation.mutateAsync({
-          id: String(user.id),
+          id: String(data.id),
           data: formData,
         });
-
-        navigate(`/user/${user.username}`);
+        navigate(`/user/${data.username}`);
       } catch (error) {
+        // todo: add toast
         console.error("Error updating user:", error);
       }
     }

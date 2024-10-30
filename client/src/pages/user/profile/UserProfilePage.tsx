@@ -19,13 +19,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     throw new Error("No username provided");
   }
 
-  console.log("params.username: ", params.username);
-
   const userQuery: User = await queryClient.fetchQuery({
     ...UserQueries.getUser(params.username),
   });
-
-  console.log("userQuery: ", userQuery);
 
   if (!userQuery) {
     throw new Error("No user found");

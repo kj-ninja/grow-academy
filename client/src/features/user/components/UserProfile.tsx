@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/Button";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { UserQueries } from "@/features/user/api";
 import { useValidateRouteParams } from "@/hooks/useValidateRouteParams";
@@ -7,9 +9,17 @@ export function UserProfile() {
   const { username } = useValidateRouteParams({
     username: zod.string().min(1),
   });
-
+  const navigate = useNavigate();
   const { data } = useQuery(UserQueries.getUser(username));
-  console.log("data", data);
 
-  return <div>Username: {data.username}</div>;
+  console.log("data: ", data);
+
+  return (
+    <div className="flex gap-4 items-center">
+      <div>Username: {data.username}</div>
+      <Button variant="default" onClick={() => navigate("settings/edit")}>
+        Edit
+      </Button>
+    </div>
+  );
 }

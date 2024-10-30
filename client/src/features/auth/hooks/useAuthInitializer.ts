@@ -13,7 +13,7 @@ export const useAuthInitializer = () => {
     if (isLoading && !data) {
       setAuthState("initializing");
     }
-  }, [isLoading, data]);
+  }, [isLoading, data, setAuthState]);
 
   useEffect(() => {
     if (isError) {

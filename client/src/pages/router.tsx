@@ -12,22 +12,25 @@ import {
   AuthenticationGuard,
   UnAuthenticationGuard,
 } from "@/features/auth/components/AuthenticationGuard";
-import { LoginPage } from "@/pages/auth/LoginPage";
-import { RegisterPage } from "@/pages/auth/RegisterPage";
-import { WelcomePage } from "@/pages/auth/WelcomePage";
 import { ActiveUserGuard } from "@/features/user/components/ActiveUserGuard";
 import { UserProfileErrorBoundary } from "@/features/user/components/UserProfileErrorBoundary";
+import { AppHeader } from "@/components/layout/headers/AppHeader";
+import { CurrentUserGuard } from "@/features/user/components/CurrentUserGuard";
+import { WelcomePage } from "@/pages/auth/WelcomePage";
+import { LoginPage } from "@/pages/auth/LoginPage";
+import { RegisterPage } from "@/pages/auth/RegisterPage";
 
 const OnboardingPage = () => import("./user/OnboardingPage");
 const HomePage = () => import("./HomePage");
-const UserProfilePage = () => import("./user/UserProfilePage");
+const UserProfilePage = () => import("./user/profile/UserProfilePage");
+const UserSettingsEditPage = () => import("./user/settings/UserSettingsPage");
 
 export const RouterProvider = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route errorElement={<RootErrorBoundary />}>
+        {/* Auth flow */}
         <Route element={<AppFrame header={<AuthHeader />} />}>
-          {/* Auth flow */}
           <Route path="/auth" element={<UnAuthenticationGuard />}>
             <Route index element={<WelcomePage />} />
             <Route path="login" element={<LoginPage />} />
@@ -41,17 +44,22 @@ export const RouterProvider = () => {
           </Route>
         </Route>
 
-        <Route element={<AppFrame header={<AuthHeader />} />}>
-          {/*Private routes*/}
+        {/*Private routes*/}
+        <Route element={<AppFrame header={<AppHeader />} />}>
           <Route element={<AuthenticationGuard />}>
-            <Route element={<ActiveUserGuard />}>
-              <Route path="/" lazy={HomePage} />
-
-              <Route errorElement={<UserProfileErrorBoundary />}>
-                <Route path="user" lazy={UserProfilePage} />
-              </Route>
-
+            <Route
+              element={<ActiveUserGuard />}
+              errorElement={<UserProfileErrorBoundary />}
+            >
               <Route path="*" element={<NotFoundPage />} />
+              <Route path="/" lazy={HomePage} />
+              <Route path="user/:username" lazy={UserProfilePage} />
+              <Route element={<CurrentUserGuard />}>
+                <Route
+                  path="user/:username/settings/edit"
+                  lazy={UserSettingsEditPage}
+                />
+              </Route>
             </Route>
           </Route>
         </Route>

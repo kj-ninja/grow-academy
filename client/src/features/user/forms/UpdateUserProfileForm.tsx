@@ -11,56 +11,67 @@ import {
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import {
-  OnboardingFormSchema,
-  OnboardingFormValues,
-} from "@/features/user/forms/OnboardingForm.schema";
-import { useAuthState } from "@/features/auth/stores/authStore";
-import { useBinaryImage } from "@/features/user/hooks/useBinaryImage";
+  UpdateUserFormSchema,
+  UpdateUserFormValues,
+} from "@/features/user/forms/UpdateUserProfileForm.schema";
+import { useBinaryImage } from "@/hooks/useBinaryImage";
 import { Textarea } from "@/components/ui/Textarea";
 import { useNavigate } from "react-router-dom";
 import { useUpdateUserMutation } from "@/features/user/api";
+import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 
-export function OnboardingForm() {
-  const { user } = useAuthState();
-  const { image, setImage } = useBinaryImage(user?.avatarImage || null);
+export function UpdateUserProfileForm() {
+  const { currentUser, refetchUserProfile } = useCurrentUser();
+
+  const { image, setImage } = useBinaryImage(currentUser?.avatarImage);
 
   const updateUserMutation = useUpdateUserMutation();
   const navigate = useNavigate();
 
-  const form = OnboardingFormSchema.useForm({
+  const form = UpdateUserFormSchema.useForm({
     defaultValues: {
-      username: user?.username,
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      bio: user?.bio || "",
+      username: currentUser?.username,
+      firstName: currentUser?.firstName || "",
+      lastName: currentUser?.lastName || "",
+      bio: currentUser?.bio || "",
     },
     mode: "onChange",
     reValidateMode: "onChange",
   });
 
-  const handleSubmit = async (values: OnboardingFormValues) => {
+  const handleSubmit = async (values: UpdateUserFormValues) => {
     const formData = new FormData();
 
-    if (user) {
-      formData.append("id", String(user.id));
-      formData.append("username", user.username);
-      formData.append("role", user.role);
-      formData.append("createdAt", String(user.createdAt));
+    if (currentUser) {
+      formData.append("id", String(currentUser.id));
+      formData.append("username", currentUser.username);
+      formData.append("role", currentUser.role);
+      formData.append("createdAt", String(currentUser.createdAt));
       formData.append("firstName", values.firstName);
       formData.append("lastName", values.lastName);
       formData.append("bio", values.bio || "");
 
       if (values.avatarImage instanceof File) {
         formData.append("avatarImage", values.avatarImage);
+      } else if (values.avatarImage === null) {
+        formData.append("avatarImage", "");
+      } else if (currentUser?.avatarImage) {
+        const blob = new Blob([new Uint8Array(currentUser.avatarImage.data)], {
+          type: "image/jpeg",
+        });
+        formData.append("avatarImage", blob, "avatar.jpg");
       }
 
       try {
         await updateUserMutation.mutateAsync({
-          id: String(user.id),
+          id: String(currentUser.id),
           data: formData,
         });
-        navigate("/");
+        await refetchUserProfile();
+
+        navigate(`/user/${currentUser.username}`);
       } catch (error) {
+        // todo: add toast
         console.error("Error updating user:", error);
       }
     }
@@ -75,8 +86,8 @@ export function OnboardingForm() {
   };
 
   const handleRemoveImage = () => {
-    setImage("");
-    form.setValue("avatarImage", "");
+    setImage(undefined);
+    form.setValue("avatarImage", null);
   };
 
   return (
@@ -97,32 +108,34 @@ export function OnboardingForm() {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>First Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="First Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Last Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Last Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex gap-4">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>First Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="First Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Last Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
             name="bio"

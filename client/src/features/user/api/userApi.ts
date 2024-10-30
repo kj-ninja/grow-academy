@@ -2,8 +2,12 @@ import { ApiClient } from "@/services/ApiClient";
 import { User } from "@/features/auth/stores/authStore";
 
 export const userApi = {
-  getUser: async (userId: string) => {
-    const response = await ApiClient.get(`/user/profile/${userId}`);
+  getCurrentUser: async () => {
+    const response = await ApiClient.get<User>("/user/me");
+    return response.data;
+  },
+  getUser: async (username: string) => {
+    const response = await ApiClient.get<User>(`/user/profile/${username}`);
     return response.data;
   },
   updateUser: async (userId: string, data: FormData) => {

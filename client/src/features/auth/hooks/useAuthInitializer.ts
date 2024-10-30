@@ -2,10 +2,18 @@ import { useQuery } from "@tanstack/react-query";
 import { AuthQueries } from "@/features/auth/api";
 import { useAuthState } from "@/features/auth/stores/authStore";
 import { useEffect } from "react";
+import { queryClient } from "@/services/ReactQuery";
+import { UserQueries } from "@/features/user/api";
 
 export const useAuthInitializer = () => {
   const { setAuthState, logout } = useAuthState();
-  const { data, isError } = useQuery(AuthQueries.validateToken());
+  const { data, isError, isLoading } = useQuery(AuthQueries.validateToken());
+
+  useEffect(() => {
+    if (isLoading && !data) {
+      setAuthState("initializing");
+    }
+  }, [isLoading, data, setAuthState]);
 
   useEffect(() => {
     if (isError) {
@@ -14,7 +22,16 @@ export const useAuthInitializer = () => {
     }
 
     if (data) {
-      setAuthState({ status: "authenticated", user: data });
+      queryClient
+        .fetchQuery({
+          ...UserQueries.getCurrentUser(),
+        })
+        .then(() => {
+          setAuthState("authenticated");
+        })
+        .catch(() => {
+          logout();
+        });
     }
   }, [data, isError, setAuthState, logout]);
 };

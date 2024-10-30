@@ -1,18 +1,20 @@
 import { AuthPage } from "@/components/layout/pages/AuthPage";
-import { OnboardingForm } from "@/features/user/forms/OnboardingForm";
+import { UpdateUserProfileForm } from "@/features/user/forms/UpdateUserProfileForm";
 import { useAuthState } from "@/features/auth/stores/authStore";
 import { Navigate } from "react-router-dom";
+import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 
 function OnboardingPage() {
-  const { user, status } = useAuthState();
+  const { status } = useAuthState();
+  const { isActive } = useCurrentUser();
 
-  if (status === "authenticated" && user?.isActive) {
+  if (status === "authenticated" && isActive) {
     return <Navigate to="/" replace />;
   }
 
   return (
     <AuthPage title="Onboarding" description="Please finish your registration">
-      <OnboardingForm />
+      <UpdateUserProfileForm />
     </AuthPage>
   );
 }

@@ -3,6 +3,8 @@ import { AuthPage } from "@/components/layout/pages/AuthPage";
 import { AuthFormValues } from "@/features/auth/forms/AuthForm.schema";
 import { useLoginMutation, useRegisterMutation } from "@/features/auth/api";
 import { useAuthState } from "@/features/auth/stores/authStore";
+import { queryClient } from "@/services/ReactQuery";
+import { UserQueries } from "@/features/user/api";
 
 export function RegisterPage() {
   const registerMutation = useRegisterMutation();
@@ -15,11 +17,18 @@ export function RegisterPage() {
       username: credentials.username,
       password: credentials.password,
     });
-    setAuthState({ status: "authenticated", user: loginResponse.user });
+    queryClient.setQueryData(
+      UserQueries.getCurrentUser().queryKey,
+      loginResponse.user,
+    );
+    setAuthState("authenticated");
   };
 
   return (
-    <AuthPage title="Create account" description="Welcome! Create an account and learn with others!">
+    <AuthPage
+      title="Create account"
+      description="Welcome! Create an account and learn with others!"
+    >
       <AuthForm onSubmit={handleRegister} />
     </AuthPage>
   );

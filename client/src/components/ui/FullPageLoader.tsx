@@ -1,6 +1,7 @@
 import { Spinner } from "@/components/ui/Spinner";
 
 export const FullPageLoader = ({ name }: { name?: string }) => {
+  // todo: add local state / steTimout to show loader with delay
   if (name) {
     // This is useful for debugging. It will help us track which component is causing the loader to show.
     console.log("> FullPageLoader <", name);

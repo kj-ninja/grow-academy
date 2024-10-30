@@ -1,10 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuthState } from "@/features/auth/stores/authStore";
+import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 
 export const ActiveUserGuard = () => {
-  const { user } = useAuthState();
+  const { isActive } = useCurrentUser();
 
-  if (!user?.isActive) {
+  if (!isActive) {
     return <Navigate to="onboarding" />;
   }
 

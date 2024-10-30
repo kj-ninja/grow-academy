@@ -3,7 +3,7 @@ import { User } from "@/features/auth/stores/authStore";
 
 export const userApi = {
   getCurrentUser: async () => {
-    const response = await ApiClient.get<User>("/user/me"); // New endpoint
+    const response = await ApiClient.get<User>("/user/me");
     return response.data;
   },
   getUser: async (username: string) => {

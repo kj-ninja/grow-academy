@@ -1,11 +1,15 @@
-import { Navigate, Outlet, useParams } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
+import { useValidateRouteParams } from "@/hooks/useValidateRouteParams";
+import zod from "zod";
 
 export const CurrentUserGuard = () => {
-  const { username } = useParams<{ username: string }>();
+  const { username } = useValidateRouteParams({
+    username: zod.string().min(1),
+  });
   const { currentUser } = useCurrentUser();
 
-  if (username && currentUser && username !== currentUser?.username) {
+  if (currentUser && username !== currentUser?.username) {
     return <Navigate to={`/user/${username}`} />;
   }
 

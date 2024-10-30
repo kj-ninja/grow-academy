@@ -21,6 +21,7 @@ interface AuthState {
 }
 
 interface AuthActions {
+  // todo: remove to set auth status
   setAuthState: (status: AuthStatus) => void;
   logout: () => void;
 }

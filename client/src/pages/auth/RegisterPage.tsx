@@ -9,7 +9,7 @@ import { UserQueries } from "@/features/user/api";
 export function RegisterPage() {
   const registerMutation = useRegisterMutation();
   const loginMutation = useLoginMutation();
-  const { setAuthState } = useAuthState();
+  const { setAuthStatus } = useAuthState();
 
   const handleRegister = async (credentials: AuthFormValues) => {
     await registerMutation.mutateAsync(credentials);
@@ -21,7 +21,7 @@ export function RegisterPage() {
       UserQueries.getCurrentUser().queryKey,
       loginResponse.user,
     );
-    setAuthState("authenticated");
+    setAuthStatus("authenticated");
   };
 
   return (

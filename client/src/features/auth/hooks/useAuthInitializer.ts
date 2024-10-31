@@ -6,14 +6,14 @@ import { queryClient } from "@/services/ReactQuery";
 import { UserQueries } from "@/features/user/api";
 
 export const useAuthInitializer = () => {
-  const { setAuthState, logout } = useAuthState();
+  const { setAuthStatus, logout } = useAuthState();
   const { data, isError, isLoading } = useQuery(AuthQueries.validateToken());
 
   useEffect(() => {
     if (isLoading && !data) {
-      setAuthState("initializing");
+      setAuthStatus("initializing");
     }
-  }, [isLoading, data, setAuthState]);
+  }, [isLoading, data, setAuthStatus]);
 
   useEffect(() => {
     if (isError) {
@@ -27,11 +27,11 @@ export const useAuthInitializer = () => {
           ...UserQueries.getCurrentUser(),
         })
         .then(() => {
-          setAuthState("authenticated");
+          setAuthStatus("authenticated");
         })
         .catch(() => {
           logout();
         });
     }
-  }, [data, isError, setAuthState, logout]);
+  }, [data, isError, setAuthStatus, logout]);
 };

@@ -9,7 +9,7 @@ import { UserQueries } from "@/features/user/api";
 
 export function LoginPage() {
   const loginMutation = useLoginMutation();
-  const { setAuthState } = useAuthState();
+  const { setAuthStatus } = useAuthState();
 
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ export function LoginPage() {
       UserQueries.getCurrentUser().queryKey,
       loginResponse.user,
     );
-    setAuthState("authenticated");
+    setAuthStatus("authenticated");
 
     if (loginResponse.user.isActive) {
       navigate("/");

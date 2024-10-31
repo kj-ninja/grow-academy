@@ -21,15 +21,14 @@ interface AuthState {
 }
 
 interface AuthActions {
-  // todo: remove to set auth status
-  setAuthState: (status: AuthStatus) => void;
+  setAuthStatus: (status: AuthStatus) => void;
   logout: () => void;
 }
 
 export const useAuthState = create<AuthState & AuthActions>((set) => ({
   status: "idle",
   user: null,
-  setAuthState: (status) => {
+  setAuthStatus: (status) => {
     set({ status });
   },
   logout: () => {

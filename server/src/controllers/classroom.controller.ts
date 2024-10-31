@@ -172,7 +172,7 @@ export const rejectJoinRequest = async (req: Request, res: Response) => {
 
 export const cancelJoinRequest = async (req: Request, res: Response) => {
   const userId = req.user?.id;
-  const classroomId = parseInt(req.params.id, 10);
+  const classroomId = req.params.id;
 
   if (!userId) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -181,7 +181,7 @@ export const cancelJoinRequest = async (req: Request, res: Response) => {
   try {
     const deletedRequest = await prisma.classroomsMembers.deleteMany({
       where: {
-        classroomId,
+        classroomId: parseInt(classroomId),
         userId,
         memberShipStatus: "pending",
       },

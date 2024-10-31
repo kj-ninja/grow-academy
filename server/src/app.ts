@@ -8,6 +8,7 @@ import passport from "passport";
 import authRouter from "@routes/auth.router";
 import userRouter from "@routes/user.router";
 import "@config/passportConfig";
+import classroomRouter from "@routes/classroom.router";
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use(morgan("dev"));
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/classroom", classroomRouter);
 
 // Serve static files from public
 app.use(express.static(path.join(process.cwd(), "public")));

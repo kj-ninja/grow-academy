@@ -12,26 +12,21 @@ datasource db {
 }
 
 model User {
-  id              Int                @id @default(autoincrement())
-  username        String             @unique
-  password        String
-  role            String             @default("user")
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
-  firstName       String?
-  lastName        String?
-  bio             String?
-  avatarImage     Bytes?
-  isActive        Boolean            @default(false)
-  classrooms      ClassroomsMembers[]
-  ownedClassrooms Classroom[]
+  id                Int                 @id @default(autoincrement())
+  username          String              @unique
+  password          String
+  role              String              @default("user")
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  firstName         String?
+  lastName          String?
+  bio               String?
+  avatarImage       Bytes?
+  isActive          Boolean             @default(false)
+  classrooms        ClassroomsMembers[]
+  ownedClassrooms   Classroom[]
+  uploadedResources Resource[]
 }
-
-// todo:
-// ClassroomsApplicants table for private classrooms
-// user id, class room id, status
-// remove status from ClassroomsMembers and add relation to classroom
-// add ot to the User and Classroom
 
 model ClassroomsMembers {
   classroom        Classroom @relation(fields: [classroomId], references: [id])
@@ -45,17 +40,30 @@ model ClassroomsMembers {
 }
 
 model Classroom {
-  id                       Int                @id @default(autoincrement())
-  name                     String             @unique
+  id                       Int                 @id @default(autoincrement())
+  name                     String              @unique
   description              String?
-  accessType               String             @default("public")
-  createdAt                DateTime           @default(now())
-  updatedAt                DateTime           @updatedAt
-  owner                    User               @relation(fields: [ownerId], references: [id])
+  accessType               String              @default("public")
+  createdAt                DateTime            @default(now())
+  updatedAt                DateTime            @updatedAt
+  owner                    User                @relation(fields: [ownerId], references: [id])
   ownerId                  Int
   members                  ClassroomsMembers[]
   communityAvatarImage     Bytes?
   communityBackgroundImage Bytes?
   getStreamChannel         String?
-  isLive                   Boolean            @default(false)
+  isLive                   Boolean             @default(false)
+  resources                Resource[]
+}
+
+model Resource {
+  id           Int       @id @default(autoincrement())
+  fileName     String
+  fileType     String // MIME type of the file, e.g., 'application/pdf'
+  fileData     Bytes // Binary data of the file itself
+  uploadedAt   DateTime  @default(now())
+  uploadedBy   User      @relation(fields: [uploadedById], references: [id])
+  uploadedById Int
+  classroom    Classroom @relation(fields: [classroomId], references: [id])
+  classroomId  Int
 }

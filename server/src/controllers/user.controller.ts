@@ -1,11 +1,9 @@
 import type { Request, Response } from "express";
 import { PrismaClient, type User } from "@prisma/client";
 
-type RequestWithUser = Request & { user?: User };
-
 const prisma = new PrismaClient();
 
-export const updateUser = async (req: RequestWithUser, res: Response) => {
+export const updateUser = async (req: Request, res: Response) => {
   if (!req.user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -37,7 +35,7 @@ export const updateUser = async (req: RequestWithUser, res: Response) => {
   }
 };
 
-export const getUser = async (req: RequestWithUser, res: Response) => {
+export const getUser = async (req: Request, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
       omit: { password: true },
@@ -52,7 +50,7 @@ export const getUser = async (req: RequestWithUser, res: Response) => {
   }
 };
 
-export const getCurrentUser = async (req: RequestWithUser, res: Response) => {
+export const getCurrentUser = async (req: Request, res: Response) => {
   if (!req.user) {
     return res.status(401).json({ message: "Unauthorized" });
   }

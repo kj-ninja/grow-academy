@@ -3,7 +3,7 @@ import { AuthQueries } from "@/features/auth/api";
 import { useAuthState } from "@/features/auth/stores/authStore";
 import { useEffect } from "react";
 import { queryClient } from "@/services/ReactQuery";
-import { UserQueries } from "@/features/user/api";
+import { UserQueries } from "@/features/user/api/queryKeys";
 
 export const useAuthInitializer = () => {
   const { setAuthStatus, logout } = useAuthState();

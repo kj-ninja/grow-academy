@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { UserQueries } from "@/features/user/api";
+import { UserQueries } from "@/features/user/api/queryKeys";
 import { useValidateRouteParams } from "@/hooks/useValidateRouteParams";
 import zod from "zod";
 

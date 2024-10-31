@@ -5,7 +5,7 @@ import { useLoginMutation } from "@/features/auth/api";
 import { useAuthState } from "@/features/auth/stores/authStore";
 import { useNavigate } from "react-router-dom";
 import { queryClient } from "@/services/ReactQuery";
-import { UserQueries } from "@/features/user/api";
+import { UserQueries } from "@/features/user/api/queryKeys";
 
 export function LoginPage() {
   const loginMutation = useLoginMutation();

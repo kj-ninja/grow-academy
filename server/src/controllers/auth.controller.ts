@@ -1,11 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { type Request, type Response } from "express";
-import {
-  generateRefreshToken,
-  generateToken,
-  verifyToken,
-} from "@controllers/utils";
+import { generateRefreshToken, generateToken, verifyToken } from "utils";
 
 const prisma = new PrismaClient();
 

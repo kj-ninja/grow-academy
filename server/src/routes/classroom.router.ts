@@ -1,6 +1,6 @@
 import { authenticateJWT } from "@middleware/authenticateJWT";
 import { Router } from "express";
-import { checkOwner } from "@controllers/utils";
+import { checkOwner } from "utils";
 import {
   approveJoinRequest,
   cancelJoinRequest,

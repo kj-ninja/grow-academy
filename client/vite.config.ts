@@ -16,4 +16,13 @@ export default defineConfig({
     environment: "jsdom",
     include: ["./src/**/*.test.{ts,tsx}"],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "@tanstack/react-query"],
+        },
+      },
+    },
+  },
 });

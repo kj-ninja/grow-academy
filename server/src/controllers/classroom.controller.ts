@@ -172,18 +172,17 @@ export const rejectJoinRequest = async (req: Request, res: Response) => {
 
 export const cancelJoinRequest = async (req: Request, res: Response) => {
   const userId = req.user?.id;
-  const { id: classroomId } = req.params;
+  const classroomId = req.params.id;
 
   if (!userId) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   try {
-    // Find and delete the pending join request
     const deletedRequest = await prisma.classroomsMembers.deleteMany({
       where: {
         classroomId: parseInt(classroomId),
-        userId: userId,
+        userId,
         memberShipStatus: "pending",
       },
     });
@@ -194,6 +193,7 @@ export const cancelJoinRequest = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: "Join request canceled successfully" });
   } catch (error) {
+    console.error("Error during join request cancellation:", error);
     res.status(500).json({ message: "Failed to cancel join request" });
   }
 };

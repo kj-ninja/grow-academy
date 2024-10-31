@@ -1,5 +1,5 @@
 import { useAuthState } from "@/features/auth/stores/authStore";
-import { UserQueries } from "@/features/user/api";
+import { UserQueries } from "@/features/user/api/queryKeys";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useCurrentUser() {

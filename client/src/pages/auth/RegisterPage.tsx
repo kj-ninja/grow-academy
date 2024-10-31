@@ -4,7 +4,7 @@ import { AuthFormValues } from "@/features/auth/forms/AuthForm.schema";
 import { useLoginMutation, useRegisterMutation } from "@/features/auth/api";
 import { useAuthState } from "@/features/auth/stores/authStore";
 import { queryClient } from "@/services/ReactQuery";
-import { UserQueries } from "@/features/user/api";
+import { UserQueries } from "@/features/user/api/queryKeys";
 
 export function RegisterPage() {
   const registerMutation = useRegisterMutation();

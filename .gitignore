@@ -175,6 +175,8 @@ dist
 .DS_Store
 # Ignore the Prisma database file
 /server/prisma/dev.db
+/server/prisma/test.db
 
 # Ignore client build directory
 /server/public/
+

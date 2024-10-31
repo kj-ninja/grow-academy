@@ -197,3 +197,35 @@ export const cancelJoinRequest = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to cancel join request" });
   }
 };
+
+export const getClassrooms = async (req: Request, res: Response) => {
+  const page = parseInt(req.query.page as string) || 1; // Default to page 1
+  const limit = parseInt(req.query.limit as string) || 10; // Default to 10 items per page
+  const skip = (page - 1) * limit;
+
+  try {
+    const [classrooms, totalClassrooms] = await prisma.$transaction([
+      prisma.classroom.findMany({
+        skip: skip,
+        take: limit,
+        orderBy: { createdAt: "desc" }, // Optional: Order by creation date
+      }),
+      prisma.classroom.count(),
+    ]);
+
+    const totalPages = Math.ceil(totalClassrooms / limit);
+
+    res.status(200).json({
+      classrooms,
+      pagination: {
+        totalItems: totalClassrooms,
+        totalPages,
+        currentPage: page,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch classrooms" });
+  }
+};

@@ -6,6 +6,7 @@ import {
   cancelJoinRequest,
   createClassroom,
   deleteClassroom,
+  getClassrooms,
   joinClassroom,
   rejectJoinRequest,
   viewPendingRequests,
@@ -31,5 +32,7 @@ router.patch(
   rejectJoinRequest,
 );
 router.delete("/:id/join", authenticateJWT, cancelJoinRequest);
+
+router.get("/", authenticateJWT, getClassrooms); // GET /api/classroom?page=1&limit=10
 
 export default router;

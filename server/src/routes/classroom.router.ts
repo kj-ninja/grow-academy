@@ -9,6 +9,7 @@ import {
   getClassrooms,
   joinClassroom,
   rejectJoinRequest,
+  removeMember,
   viewPendingRequests,
 } from "@controllers/classroom.controller";
 import { upload } from "@middleware/uploadMiddleware";
@@ -39,6 +40,12 @@ router.patch(
   authenticateJWT,
   checkOwner,
   rejectJoinRequest,
+);
+router.delete(
+  "/:classroomId/members/:userId",
+  authenticateJWT,
+  checkOwner,
+  removeMember,
 );
 
 router.post(

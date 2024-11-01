@@ -259,68 +259,65 @@ export const getClassrooms = async (req: Request, res: Response) => {
   }
 };
 
-// todo: fix
-// export const removeMember = async (req: Request, res: Response) => {
-//   const userId = req.user?.id;
-//   const { classroomId, userId: memberId } = req.params;
-//
-//   if (!userId) {
-//     return res.status(401).json({ message: "Unauthorized" });
-//   }
-//
-//   try {
-//     // Verify that the user requesting is indeed the classroom owner
-//     const classroom = await prisma.classroom.findUnique({
-//       where: { id: parseInt(classroomId) },
-//     });
-//
-//     if (!classroom) {
-//       return res.status(404).json({ message: "Classroom not found" });
-//     }
-//
-//     if (classroom.ownerId !== userId) {
-//       return res
-//         .status(403)
-//         .json({
-//           message: "Only the owner can remove members from this classroom",
-//         });
-//     }
-//
-//     // Confirm the member exists in the classroom and is not the owner
-//     const member = await prisma.classroomsMembers.findUnique({
-//       where: {
-//         userId_classroomId: {
-//           userId: parseInt(memberId),
-//           classroomId: parseInt(classroomId),
-//         },
-//       },
-//     });
-//
-//     if (!member) {
-//       return res
-//         .status(404)
-//         .json({ message: "Member not found in this classroom" });
-//     }
-//
-//     if (member.userId === classroom.ownerId) {
-//       return res
-//         .status(403)
-//         .json({ message: "The owner cannot be removed from the classroom" });
-//     }
-//
-//     // Proceed with deleting the member
-//     await prisma.classroomsMembers.delete({
-//       where: {
-//         userId_classroomId: {
-//           userId: parseInt(memberId),
-//           classroomId: parseInt(classroomId),
-//         },
-//       },
-//     });
-//
-//     res.status(200).json({ message: "Member removed successfully" });
-//   } catch (error) {
-//     console.error("Error removing member:", error);
-//     res.status(500).json({ message: "Failed to remove member from classroom" });
-//   }
-// };
+export const removeMember = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  const { classroomId, userId: memberId } = req.params;
+
+  if (!userId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+    // Verify that the user requesting is indeed the classroom owner
+    const classroom = await prisma.classroom.findUnique({
+      where: { id: parseInt(classroomId) },
+    });
+
+    if (!classroom) {
+      return res.status(404).json({ message: "Classroom not found" });
+    }
+
+    if (classroom.ownerId !== userId) {
+      return res.status(403).json({
+        message: "Only the owner can remove members from this classroom",
+      });
+    }
+
+    // Confirm the member exists in the classroom and is not the owner
+    const member = await prisma.classroomsMembers.findUnique({
+      where: {
+        userId_classroomId: {
+          userId: parseInt(memberId),
+          classroomId: parseInt(classroomId),
+        },
+      },
+    });
+
+    if (!member) {
+      return res
+        .status(404)
+        .json({ message: "Member not found in this classroom" });
+    }
+
+    if (member.userId === classroom.ownerId) {
+      return res
+        .status(403)
+        .json({ message: "The owner cannot be removed from the classroom" });
+    }
+
+    // Proceed with deleting the member
+    await prisma.classroomsMembers.delete({
+      where: {
+        userId_classroomId: {
+          userId: parseInt(memberId),
+          classroomId: parseInt(classroomId),
+        },
+      },
+    });
+
+    res.status(200).json({ message: "Member removed successfully" });
+  } catch (error) {
+    console.error("Error removing member:", error);
+    res.status(500).json({ message: "Failed to remove member from classroom" });
+  }
+};

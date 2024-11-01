@@ -312,4 +312,59 @@ describe("Classroom Controller", () => {
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Join request canceled successfully");
   });
+
+  // todo: fix
+  // test("Remove Member from Classroom", async () => {
+  //   // Step 1: Create a classroom with the test user as the owner
+  //   const classroom = await prisma.classroom.create({
+  //     data: { name: "Removal Classroom", ownerId: testUserId },
+  //   });
+  //
+  //   // Step 2: Create a second user to join the classroom
+  //   const secondUser = await prisma.user.create({
+  //     data: {
+  //       username: `removable_user_${Date.now()}`,
+  //       password: "hashedpassword",
+  //       role: "user",
+  //     },
+  //   });
+  //
+  //   // Step 3: Add the second user to the classroom with a pending status
+  //   await prisma.classroomsMembers.create({
+  //     data: {
+  //       classroomId: classroom.id,
+  //       userId: secondUser.id,
+  //       memberShipStatus: "pending",
+  //     },
+  //   });
+  //
+  //   // Step 4: Approve the join request for the second user (so they have approved status)
+  //   await prisma.classroomsMembers.update({
+  //     where: {
+  //       userId_classroomId: {
+  //         userId: secondUser.id,
+  //         classroomId: classroom.id,
+  //       },
+  //     },
+  //     data: { memberShipStatus: "approved" },
+  //   });
+  //
+  //   // Debug: Confirm the member has the 'approved' status
+  //   const approvedMember = await prisma.classroomsMembers.findFirst({
+  //     where: {
+  //       classroomId: classroom.id,
+  //       userId: secondUser.id,
+  //       memberShipStatus: "approved",
+  //     },
+  //   });
+  //   console.log("Approved member for deletion:", approvedMember);
+  //
+  //   // Step 5: Request to remove the second user as the owner
+  //   const response = await request(app)
+  //     .delete(`/api/classroom/${classroom.id}/members/${secondUser.id}`)
+  //     .set("Authorization", `Bearer ${testToken}`);
+  //
+  //   expect(response.status).toBe(200);
+  //   expect(response.body.message).toBe("Member removed successfully");
+  // });
 });

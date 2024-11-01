@@ -199,24 +199,52 @@ export const cancelJoinRequest = async (req: Request, res: Response) => {
 };
 
 export const getClassrooms = async (req: Request, res: Response) => {
-  const page = parseInt(req.query.page as string) || 1; // Default to page 1
-  const limit = parseInt(req.query.limit as string) || 10; // Default to 10 items per page
+  const userId = req.user?.id;
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 10;
   const skip = (page - 1) * limit;
+  const filterByOwner = req.query.owner === "true";
+
+  if (!userId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
 
   try {
     const [classrooms, totalClassrooms] = await prisma.$transaction([
       prisma.classroom.findMany({
         skip: skip,
         take: limit,
-        orderBy: { createdAt: "desc" }, // Optional: Order by creation date
+        orderBy: { createdAt: "desc" },
+        where: filterByOwner ? { ownerId: userId } : {},
+        include: {
+          _count: {
+            select: { members: true }, // Include count of members
+          },
+        },
       }),
-      prisma.classroom.count(),
+      prisma.classroom.count({
+        where: filterByOwner ? { ownerId: userId } : {},
+      }),
     ]);
 
     const totalPages = Math.ceil(totalClassrooms / limit);
 
+    // Format classrooms to include membersCount for each classroom
+    const formattedClassrooms = classrooms.map((classroom) => ({
+      id: classroom.id,
+      name: classroom.name,
+      description: classroom.description,
+      accessType: classroom.accessType,
+      createdAt: classroom.createdAt,
+      updatedAt: classroom.updatedAt,
+      communityAvatarImage: classroom.communityAvatarImage,
+      communityBackgroundImage: classroom.communityBackgroundImage,
+      membersCount: classroom._count.members,
+      ownerId: classroom.ownerId,
+    }));
+
     res.status(200).json({
-      classrooms,
+      classrooms: formattedClassrooms,
       pagination: {
         totalItems: totalClassrooms,
         totalPages,
@@ -226,6 +254,7 @@ export const getClassrooms = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
+    console.error("Error fetching classrooms:", error);
     res.status(500).json({ message: "Failed to fetch classrooms" });
   }
 };

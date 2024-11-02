@@ -2,6 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { type Request, type Response } from "express";
 import { generateRefreshToken, generateToken, verifyToken } from "utils";
+import { generateStreamToken, updateStreamUser } from "services/Stream";
 
 const prisma = new PrismaClient();
 
@@ -47,6 +48,10 @@ export const loginUser = async (req: Request, res: Response) => {
         },
       });
     }
+
+    const streamToken = generateStreamToken(user.id);
+    await updateStreamUser(user);
+
     // Remove the password field before sending the response
     const { password: _, ...userWithoutPassword } = user;
 
@@ -54,6 +59,7 @@ export const loginUser = async (req: Request, res: Response) => {
       user: userWithoutPassword,
       token: generateToken(user.id),
       refreshToken: generateRefreshToken(user.id),
+      streamToken,
     });
   } catch {
     res.status(500).json({ message: "Failed to login" });

@@ -64,7 +64,6 @@ export function UpdateUserProfileForm() {
 
       try {
         await updateUserMutation.mutateAsync({
-          id: String(currentUser.id),
           data: formData,
         });
         await refetchUserProfile();

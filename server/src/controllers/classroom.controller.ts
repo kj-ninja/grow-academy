@@ -1,109 +1,109 @@
 import type { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { addUserToStreamChannel, createStreamChannel } from "services/Stream";
+import {
+  checkPendingRequest,
+  createClassroomInDB,
+  createMembership,
+  deleteClassroomInDB,
+  deleteClassroomMember,
+  deletePendingMembership,
+  findClassroomById,
+  findPendingRequests,
+  getClassroomsWithPagination,
+  updateMembershipStatus,
+} from "services/Classroom";
+import { errorResponse } from "utils";
+import type { AuthenticatedRequest } from "types/types";
 
-const prisma = new PrismaClient();
-
-export const createClassroom = async (req: Request, res: Response) => {
-  const userId = req.user?.id;
-  const { name, description, accessType } = req.body;
-
-  if (!userId) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+export const createClassroom = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const { id: userId } = req.user!;
+  const {
+    name,
+    description,
+    accessType,
+    communityAvatarImage,
+    communityBackgroundImage,
+  } = req.body;
 
   try {
-    const newClassroom = await prisma.classroom.create({
-      data: {
-        name,
-        description,
-        accessType: accessType || "public",
-        ownerId: userId,
-        communityAvatarImage: req.body.communityAvatarImage || null,
-        communityBackgroundImage: req.body.communityBackgroundImage || null,
-      },
+    const channelId = `classroom-${name.replace(/[^a-zA-Z0-9-_]/g, "")}`;
+    await createStreamChannel(channelId, name, userId);
+
+    const newClassroom = await createClassroomInDB(userId, {
+      name,
+      description,
+      accessType: accessType || "public",
+      communityAvatarImage,
+      communityBackgroundImage,
+      getStreamChannel: channelId,
     });
 
-    res.status(201).json(newClassroom);
+    return res.status(201).json(newClassroom);
   } catch (error) {
-    res.status(500).json({ message: "Failed to create classroom" });
+    console.error("Error creating classroom:", error);
+    return errorResponse(res, "Failed to create classroom");
   }
 };
 
-export const deleteClassroom = async (req: Request, res: Response) => {
-  const userId = req.user?.id;
-  const { id: classroomId } = req.params;
-
-  if (!userId) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+export const deleteClassroom = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const { id: userId } = req.user!;
+  const classroomId = parseInt(req.params.id);
 
   try {
-    // Check if the user is the owner of the classroom
-    const classroom = await prisma.classroom.findUnique({
-      where: { id: parseInt(classroomId) },
-    });
+    const classroom = await findClassroomById(classroomId);
 
     if (!classroom) {
-      return res.status(404).json({ message: "Classroom not found" });
+      return errorResponse(res, "Classroom not found", 404);
     }
 
     if (classroom.ownerId !== userId) {
-      return res
-        .status(403)
-        .json({ message: "Only the owner can delete the classroom" });
+      return errorResponse(res, "Only the owner can delete the classroom", 403);
     }
 
-    await prisma.classroom.delete({
-      where: { id: parseInt(classroomId) },
-    });
-
+    await deleteClassroomInDB(classroomId);
     res.status(200).json({ message: "Classroom deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete classroom" });
+    console.error("Error deleting classroom:", error);
+    return errorResponse(res, "Failed to delete classroom");
   }
 };
 
-export const joinClassroom = async (req: Request, res: Response) => {
-  const userId = req.user?.id;
+export const joinClassroom = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const userId = req.user!.id;
   const { id: classroomId } = req.params;
 
-  if (!userId) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
   try {
-    const classroom = await prisma.classroom.findUnique({
-      where: { id: parseInt(classroomId) },
-    });
+    const classroom = await findClassroomById(parseInt(classroomId));
 
     if (!classroom) {
-      return res.status(404).json({ message: "Classroom not found" });
+      return errorResponse(res, "Classroom not found", 404);
     }
 
-    // Check if classroom is public or private
+    if (!classroom.getStreamChannel) {
+      return errorResponse(res, "Classroom chat channel not available", 500);
+    }
+
     if (classroom.accessType === "public") {
-      // Directly add user to ClassroomsMembers with approved status
-      await prisma.classroomsMembers.create({
-        data: {
-          classroomId: parseInt(classroomId),
-          userId,
-          memberShipStatus: "approved",
-        },
-      });
+      await createMembership(classroom.id, userId, "approved");
+      await addUserToStreamChannel(classroom.getStreamChannel, userId);
+
       return res.status(201).json({ message: "Joined classroom successfully" });
     } else {
-      // Create pending join request for private classrooms
-      await prisma.classroomsMembers.create({
-        data: {
-          classroomId: parseInt(classroomId),
-          userId,
-          memberShipStatus: "pending",
-        },
-      });
+      await createMembership(classroom.id, userId, "pending");
       return res.status(201).json({ message: "Join request submitted" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Failed to join classroom" });
+    console.error("Error joining classroom:", error);
+    return errorResponse(res, "Failed to join classroom");
   }
 };
 
@@ -111,17 +111,10 @@ export const viewPendingRequests = async (req: Request, res: Response) => {
   const { id: classroomId } = req.params;
 
   try {
-    const pendingRequests = await prisma.classroomsMembers.findMany({
-      where: {
-        classroomId: parseInt(classroomId),
-        memberShipStatus: "pending",
-      },
-      include: { user: true }, // Include user details if needed
-    });
-
+    const pendingRequests = await findPendingRequests(parseInt(classroomId));
     res.status(200).json(pendingRequests);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch pending requests" });
+    return errorResponse(res, "Failed to fetch pending requests");
   }
 };
 
@@ -129,22 +122,19 @@ export const approveJoinRequest = async (req: Request, res: Response) => {
   const { id: classroomId, userId } = req.params;
 
   try {
-    const membership = await prisma.classroomsMembers.updateMany({
-      where: {
-        classroomId: parseInt(classroomId),
-        userId: parseInt(userId),
-        memberShipStatus: "pending",
-      },
-      data: { memberShipStatus: "approved" },
-    });
+    const updatedCount = await updateMembershipStatus(
+      parseInt(classroomId),
+      parseInt(userId),
+      "approved",
+    );
 
-    if (membership.count === 0) {
-      return res.status(404).json({ message: "Request not found" });
+    if (updatedCount === 0) {
+      return errorResponse(res, "Request not found", 404);
     }
 
     res.status(200).json({ message: "Join request approved" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to approve request" });
+    return errorResponse(res, "Failed to approve request");
   }
 };
 
@@ -152,172 +142,127 @@ export const rejectJoinRequest = async (req: Request, res: Response) => {
   const { id: classroomId, userId } = req.params;
 
   try {
-    const membership = await prisma.classroomsMembers.deleteMany({
-      where: {
-        classroomId: parseInt(classroomId),
-        userId: parseInt(userId),
-        memberShipStatus: "pending",
-      },
-    });
+    const deletedCount = await deletePendingMembership(
+      parseInt(classroomId),
+      parseInt(userId),
+    );
 
-    if (membership.count === 0) {
-      return res.status(404).json({ message: "Request not found" });
+    if (deletedCount === 0) {
+      return errorResponse(res, "Request not found", 404);
     }
 
     res.status(200).json({ message: "Join request rejected" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to reject request" });
+    return errorResponse(res, "Failed to reject request");
   }
 };
 
-export const cancelJoinRequest = async (req: Request, res: Response) => {
-  const userId = req.user?.id;
-  const classroomId = req.params.id;
-
-  if (!userId) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+export const cancelJoinRequest = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const userId = req.user!.id;
+  const classroomId = parseInt(req.params.id);
 
   try {
-    const deletedRequest = await prisma.classroomsMembers.deleteMany({
-      where: {
-        classroomId: parseInt(classroomId),
-        userId,
-        memberShipStatus: "pending",
-      },
-    });
+    const deletedCount = await deletePendingMembership(classroomId, userId);
 
-    if (deletedRequest.count === 0) {
-      return res.status(404).json({ message: "No pending join request found" });
+    if (deletedCount === 0) {
+      return errorResponse(res, "No pending join request found", 404);
     }
 
     res.status(200).json({ message: "Join request canceled successfully" });
   } catch (error) {
-    console.error("Error during join request cancellation:", error);
-    res.status(500).json({ message: "Failed to cancel join request" });
+    return errorResponse(res, "Failed to cancel join request");
   }
 };
 
-export const getClassrooms = async (req: Request, res: Response) => {
-  const userId = req.user?.id;
+export const getClassrooms = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const userId = req.user!.id;
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
-  const skip = (page - 1) * limit;
   const filterByOwner = req.query.owner === "true";
 
-  if (!userId) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
   try {
-    const [classrooms, totalClassrooms] = await prisma.$transaction([
-      prisma.classroom.findMany({
-        skip: skip,
-        take: limit,
-        orderBy: { createdAt: "desc" },
-        where: filterByOwner ? { ownerId: userId } : {},
-        include: {
-          _count: {
-            select: { members: true }, // Include count of members
-          },
-        },
-      }),
-      prisma.classroom.count({
-        where: filterByOwner ? { ownerId: userId } : {},
-      }),
-    ]);
+    const classroomsData = await getClassroomsWithPagination(
+      userId,
+      page,
+      limit,
+      filterByOwner,
+    );
 
-    const totalPages = Math.ceil(totalClassrooms / limit);
-
-    // Format classrooms to include membersCount for each classroom
-    const formattedClassrooms = classrooms.map((classroom) => ({
-      id: classroom.id,
-      name: classroom.name,
-      description: classroom.description,
-      accessType: classroom.accessType,
-      createdAt: classroom.createdAt,
-      updatedAt: classroom.updatedAt,
-      communityAvatarImage: classroom.communityAvatarImage,
-      communityBackgroundImage: classroom.communityBackgroundImage,
-      membersCount: classroom._count.members,
-      ownerId: classroom.ownerId,
-    }));
-
-    res.status(200).json({
-      classrooms: formattedClassrooms,
-      pagination: {
-        totalItems: totalClassrooms,
-        totalPages,
-        currentPage: page,
-        hasNextPage: page < totalPages,
-        hasPrevPage: page > 1,
-      },
-    });
+    return res.status(200).json(classroomsData);
   } catch (error) {
     console.error("Error fetching classrooms:", error);
-    res.status(500).json({ message: "Failed to fetch classrooms" });
+    return errorResponse(res, "Failed to fetch classrooms");
   }
 };
 
-export const removeMember = async (req: Request, res: Response) => {
-  const userId = req.user?.id;
+export const removeMember = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const userId = req.user!.id;
   const { classroomId, userId: memberId } = req.params;
 
-  if (!userId) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
   try {
-    // Verify that the user requesting is indeed the classroom owner
-    const classroom = await prisma.classroom.findUnique({
-      where: { id: parseInt(classroomId) },
-    });
+    const classroom = await findClassroomById(parseInt(classroomId));
 
     if (!classroom) {
-      return res.status(404).json({ message: "Classroom not found" });
+      return errorResponse(res, "Classroom not found", 404);
     }
 
     if (classroom.ownerId !== userId) {
-      return res.status(403).json({
-        message: "Only the owner can remove members from this classroom",
-      });
+      return errorResponse(
+        res,
+        "Only the owner can remove members from this classroom",
+        403,
+      );
     }
 
-    // Confirm the member exists in the classroom and is not the owner
-    const member = await prisma.classroomsMembers.findUnique({
-      where: {
-        userId_classroomId: {
-          userId: parseInt(memberId),
-          classroomId: parseInt(classroomId),
-        },
-      },
-    });
+    const deletedCount = await deleteClassroomMember(
+      parseInt(classroomId),
+      parseInt(memberId),
+      classroom.ownerId,
+    );
 
-    if (!member) {
-      return res
-        .status(404)
-        .json({ message: "Member not found in this classroom" });
+    if (deletedCount === 0) {
+      return errorResponse(res, "Member not found in this classroom", 404);
     }
-
-    if (member.userId === classroom.ownerId) {
-      return res
-        .status(403)
-        .json({ message: "The owner cannot be removed from the classroom" });
-    }
-
-    // Proceed with deleting the member
-    await prisma.classroomsMembers.delete({
-      where: {
-        userId_classroomId: {
-          userId: parseInt(memberId),
-          classroomId: parseInt(classroomId),
-        },
-      },
-    });
 
     res.status(200).json({ message: "Member removed successfully" });
   } catch (error) {
-    console.error("Error removing member:", error);
-    res.status(500).json({ message: "Failed to remove member from classroom" });
+    return errorResponse(res, "Failed to remove member from classroom");
+  }
+};
+
+export const getClassroomDetails = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const userId = req.user!.id;
+  const classroomId = parseInt(req.params.id);
+
+  try {
+    const classroom = await findClassroomById(classroomId);
+
+    if (!classroom) {
+      return errorResponse(res, "Classroom not found", 404);
+    }
+
+    const isPendingRequest = await checkPendingRequest(classroomId, userId);
+
+    return res.status(200).json({
+      data: {
+        ...classroom,
+        isPendingRequest,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching classroom details:", error);
+    return errorResponse(res, "Failed to fetch classroom details");
   }
 };

@@ -1,13 +1,13 @@
 import type { Request, Response } from "express";
 import { PrismaClient, type User } from "@prisma/client";
+import type { AuthenticatedRequest } from "types/types";
+import { updateStreamUser } from "services/Stream";
+import { errorResponse } from "utils";
 
 const prisma = new PrismaClient();
 
-export const updateUser = async (req: Request, res: Response) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
+export const updateUser = async (req: AuthenticatedRequest, res: Response) => {
+  const { id: userId } = req.user!;
   const { firstName, lastName, bio } = req.body;
   const avatarImage = req.file;
 
@@ -24,14 +24,17 @@ export const updateUser = async (req: Request, res: Response) => {
 
   try {
     const updatedUser = await prisma.user.update({
-      where: { id: req.user.id },
+      where: { id: userId },
       data: updateData,
       omit: { password: true },
     });
 
-    res.status(201).json(updatedUser);
+    await updateStreamUser(updatedUser);
+
+    return res.status(201).json(updatedUser);
   } catch (error) {
-    res.status(500).json({ message: "Failed to update user" });
+    console.error("Error updating user:", error);
+    return errorResponse(res, "Failed to update user");
   }
 };
 
@@ -42,29 +45,31 @@ export const getUser = async (req: Request, res: Response) => {
       where: { username: req.params.username },
     });
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return errorResponse(res, "User not found", 404);
 
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch user profile" });
   }
 };
 
-export const getCurrentUser = async (req: Request, res: Response) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+export const getCurrentUser = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const { id: userId } = req.user!;
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id: req.user.id },
+      where: { id: userId },
       omit: { password: true },
     });
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return errorResponse(res, "User not found", 404);
 
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch current user" });
+    console.error("Error fetching current user:", error);
+    return errorResponse(res, "Failed to fetch current user");
   }
 };

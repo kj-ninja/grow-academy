@@ -3,4 +3,5 @@ export {
   generateRefreshToken,
   verifyToken,
   checkOwner,
+  errorResponse,
 } from "./utils";

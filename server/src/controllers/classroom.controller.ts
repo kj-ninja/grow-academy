@@ -2,7 +2,6 @@ import type { Request, Response } from "express";
 import {
   addUserToStreamChannel,
   createStreamChannel,
-  generateStreamToken,
 } from "services/streamService";
 import {
   createClassroomInDB,
@@ -15,7 +14,7 @@ import {
   getClassroomsWithPagination,
   updateMembershipStatus,
 } from "services/classroomService";
-import { errorResponse, successResponse } from "utils";
+import { errorResponse } from "utils";
 import type { AuthenticatedRequest } from "types/types";
 
 export const createClassroom = async (
@@ -44,12 +43,7 @@ export const createClassroom = async (
       getStreamChannel: channelId,
     });
 
-    return successResponse(
-      res,
-      newClassroom,
-      "Classroom created successfully",
-      201,
-    );
+    return res.status(201).json(newClassroom);
   } catch (error) {
     console.error("Error creating classroom:", error);
     return errorResponse(res, "Failed to create classroom");
@@ -75,7 +69,7 @@ export const deleteClassroom = async (
     }
 
     await deleteClassroomInDB(classroomId);
-    return successResponse(res, null, "Classroom deleted successfully", 200);
+    res.status(200).json({ message: "Classroom deleted successfully" });
   } catch (error) {
     console.error("Error deleting classroom:", error);
     return errorResponse(res, "Failed to delete classroom");
@@ -96,7 +90,6 @@ export const joinClassroom = async (
       return errorResponse(res, "Classroom not found", 404);
     }
 
-    // Ensure getStreamChannel is a string before proceeding
     if (!classroom.getStreamChannel) {
       return errorResponse(res, "Classroom chat channel not available", 500);
     }
@@ -104,26 +97,11 @@ export const joinClassroom = async (
     if (classroom.accessType === "public") {
       await createMembership(classroom.id, userId, "approved");
       await addUserToStreamChannel(classroom.getStreamChannel, userId);
-      const token = generateStreamToken(userId);
 
-      return successResponse(
-        res,
-        {
-          message: "Joined classroom successfully",
-          token,
-          channelId: classroom.getStreamChannel,
-        },
-        "Joined classroom successfully",
-        201,
-      );
+      return res.status(201).json({ message: "Joined classroom successfully" });
     } else {
       await createMembership(classroom.id, userId, "pending");
-      return successResponse(
-        res,
-        { message: "Join request submitted" },
-        "Join request submitted",
-        201,
-      );
+      return res.status(201).json({ message: "Join request submitted" });
     }
   } catch (error) {
     console.error("Error joining classroom:", error);
@@ -136,11 +114,7 @@ export const viewPendingRequests = async (req: Request, res: Response) => {
 
   try {
     const pendingRequests = await findPendingRequests(parseInt(classroomId));
-    return successResponse(
-      res,
-      pendingRequests,
-      "Pending requests fetched successfully",
-    );
+    res.status(200).json(pendingRequests);
   } catch (error) {
     return errorResponse(res, "Failed to fetch pending requests");
   }
@@ -160,7 +134,7 @@ export const approveJoinRequest = async (req: Request, res: Response) => {
       return errorResponse(res, "Request not found", 404);
     }
 
-    return successResponse(res, null, "Join request approved");
+    res.status(200).json({ message: "Join request approved" });
   } catch (error) {
     return errorResponse(res, "Failed to approve request");
   }
@@ -179,7 +153,7 @@ export const rejectJoinRequest = async (req: Request, res: Response) => {
       return errorResponse(res, "Request not found", 404);
     }
 
-    return successResponse(res, null, "Join request rejected");
+    res.status(200).json({ message: "Join request rejected" });
   } catch (error) {
     return errorResponse(res, "Failed to reject request");
   }
@@ -199,7 +173,7 @@ export const cancelJoinRequest = async (
       return errorResponse(res, "No pending join request found", 404);
     }
 
-    return successResponse(res, null, "Join request canceled successfully");
+    res.status(200).json({ message: "Join request canceled successfully" });
   } catch (error) {
     return errorResponse(res, "Failed to cancel join request");
   }
@@ -221,12 +195,10 @@ export const getClassrooms = async (
       limit,
       filterByOwner,
     );
-    return successResponse(
-      res,
-      classroomsData,
-      "Classrooms fetched successfully",
-    );
+
+    return res.status(200).json(classroomsData);
   } catch (error) {
+    console.error("Error fetching classrooms:", error);
     return errorResponse(res, "Failed to fetch classrooms");
   }
 };
@@ -263,7 +235,7 @@ export const removeMember = async (
       return errorResponse(res, "Member not found in this classroom", 404);
     }
 
-    return successResponse(res, null, "Member removed successfully");
+    res.status(200).json({ message: "Member removed successfully" });
   } catch (error) {
     return errorResponse(res, "Failed to remove member from classroom");
   }

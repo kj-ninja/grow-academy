@@ -10,8 +10,8 @@ import { authenticateJWT } from "@middleware/authenticateJWT";
 const router = express.Router();
 
 router.get("/me", authenticateJWT, getCurrentUser);
-router.put(
-  "/update/:id",
+router.patch(
+  "/update",
   authenticateJWT,
   upload.single("avatarImage"),
   updateUser,

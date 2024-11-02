@@ -46,9 +46,9 @@ describe("Classroom Controller", () => {
       });
 
     expect(response.status).toBe(201);
-    expect(response.body.data).toHaveProperty("id");
-    expect(response.body.data.name).toBe("Test Classroom");
-    expect(response.body.message).toBe("Classroom created successfully");
+    expect(response.body).toHaveProperty("id");
+    expect(response.body).toHaveProperty("getStreamChannel");
+    expect(response.body.name).toBe("Test Classroom");
   });
 
   test("Delete Classroom", async () => {
@@ -70,13 +70,14 @@ describe("Classroom Controller", () => {
 
   test("Join Classroom (Public)", async () => {
     const channelId = `classroom-public-${Date.now()}`;
+
     const classroom = await prisma.classroom.create({
       data: {
         name: "Public Classroom",
         description: "Open to all",
         ownerId: testUserId,
         accessType: "public",
-        getStreamChannel: channelId, // Store the channel ID
+        getStreamChannel: channelId,
       },
     });
 
@@ -113,7 +114,7 @@ describe("Classroom Controller", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(response.status).toBe(200);
-    expect(response.body.data).toEqual(
+    expect(response.body).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           userId: testUserId,
@@ -121,7 +122,6 @@ describe("Classroom Controller", () => {
         }),
       ]),
     );
-    expect(response.body.message).toBe("Pending requests fetched successfully");
   });
 
   test("Approve Join Request", async () => {
@@ -164,114 +164,6 @@ describe("Classroom Controller", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Join request rejected");
-  });
-
-  test("Get Classrooms (Pagination)", async () => {
-    await prisma.classroom.createMany({
-      data: [
-        { name: "Classroom 1", ownerId: testUserId },
-        { name: "Classroom 2", ownerId: testUserId },
-        { name: "Classroom 3", ownerId: testUserId },
-      ],
-    });
-
-    const response = await request(app)
-      .get(`/api/classroom?page=1&limit=2`)
-      .set("Authorization", `Bearer ${testToken}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body.data).toHaveProperty("classrooms");
-    expect(response.body.data).toHaveProperty("pagination");
-    expect(response.body.data.classrooms.length).toBeGreaterThan(0);
-    expect(response.body.message).toBe("Classrooms fetched successfully");
-  });
-
-  test("Get Classrooms with Members Count", async () => {
-    // Create a second user to use in the classroomsMembers
-    const secondUser = await prisma.user.create({
-      data: {
-        username: "seconduser",
-        password: "hashedpassword",
-        role: "user",
-      },
-    });
-
-    // Create multiple classrooms with members
-    const classroom1 = await prisma.classroom.create({
-      data: { name: "Classroom with Members 1", ownerId: testUserId },
-    });
-
-    const classroom2 = await prisma.classroom.create({
-      data: { name: "Classroom with Members 2", ownerId: testUserId },
-    });
-
-    // Add members to classrooms
-    await prisma.classroomsMembers.createMany({
-      data: [
-        {
-          classroomId: classroom1.id,
-          userId: testUserId,
-          memberShipStatus: "approved",
-        },
-        {
-          classroomId: classroom1.id,
-          userId: secondUser.id,
-          memberShipStatus: "approved",
-        },
-        {
-          classroomId: classroom2.id,
-          userId: testUserId,
-          memberShipStatus: "approved",
-        },
-      ],
-    });
-
-    const response = await request(app)
-      .get(`/api/classroom?page=1&limit=2`)
-      .set("Authorization", `Bearer ${testToken}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body.data.classrooms).toBeDefined();
-    expect(response.body.data.classrooms.length).toBeGreaterThan(0);
-
-    response.body.data.classrooms.forEach((classroom: any) => {
-      expect(classroom).toHaveProperty("membersCount");
-      expect(typeof classroom.membersCount).toBe("number");
-    });
-    expect(response.body.message).toBe("Classrooms fetched successfully");
-  });
-
-  test("Get Only Owned Classrooms (owner=true)", async () => {
-    // Create a classroom owned by another user
-    const otherUser = await prisma.user.create({
-      data: { username: "otheruser", password: "hashedpassword", role: "user" },
-    });
-
-    await prisma.classroom.create({
-      data: { name: "Classroom by Other User", ownerId: otherUser.id },
-    });
-
-    // Create classrooms owned by the test user
-    await prisma.classroom.create({
-      data: { name: "Owned Classroom 1", ownerId: testUserId },
-    });
-    await prisma.classroom.create({
-      data: { name: "Owned Classroom 2", ownerId: testUserId },
-    });
-
-    // Fetch classrooms with the owner filter
-    const response = await request(app)
-      .get(`/api/classroom?page=1&limit=10&owner=true`)
-      .set("Authorization", `Bearer ${testToken}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body.data.classrooms).toBeDefined();
-    expect(response.body.data.classrooms.length).toBeGreaterThan(0);
-
-    response.body.data.classrooms.forEach((classroom: any) => {
-      expect(classroom.ownerId).toBe(testUserId);
-    });
-    expect(response.body.message).toBe("Classrooms fetched successfully");
   });
 
   test("Cancel Join Request", async () => {
@@ -321,5 +213,110 @@ describe("Classroom Controller", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Join request canceled successfully");
+  });
+
+  test("Get Classrooms (Pagination)", async () => {
+    await prisma.classroom.createMany({
+      data: [
+        { name: "Classroom 1", ownerId: testUserId },
+        { name: "Classroom 2", ownerId: testUserId },
+        { name: "Classroom 3", ownerId: testUserId },
+      ],
+    });
+
+    const response = await request(app)
+      .get(`/api/classroom?page=1&limit=2`)
+      .set("Authorization", `Bearer ${testToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("classrooms");
+    expect(response.body).toHaveProperty("pagination");
+    expect(response.body.classrooms.length).toBeGreaterThan(0);
+  });
+
+  test("Get Classrooms with Members Count", async () => {
+    // Create a second user to use in the classroomsMembers
+    const secondUser = await prisma.user.create({
+      data: {
+        username: "seconduser",
+        password: "hashedpassword",
+        role: "user",
+      },
+    });
+
+    // Create multiple classrooms with members
+    const classroom1 = await prisma.classroom.create({
+      data: { name: "Classroom with Members 1", ownerId: testUserId },
+    });
+
+    const classroom2 = await prisma.classroom.create({
+      data: { name: "Classroom with Members 2", ownerId: testUserId },
+    });
+
+    // Add members to classrooms
+    await prisma.classroomsMembers.createMany({
+      data: [
+        {
+          classroomId: classroom1.id,
+          userId: testUserId,
+          memberShipStatus: "approved",
+        },
+        {
+          classroomId: classroom1.id,
+          userId: secondUser.id,
+          memberShipStatus: "approved",
+        },
+        {
+          classroomId: classroom2.id,
+          userId: testUserId,
+          memberShipStatus: "approved",
+        },
+      ],
+    });
+
+    const response = await request(app)
+      .get(`/api/classroom?page=1&limit=2`)
+      .set("Authorization", `Bearer ${testToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.classrooms).toBeDefined();
+    expect(response.body.classrooms.length).toBeGreaterThan(0);
+
+    response.body.classrooms.forEach((classroom: any) => {
+      expect(classroom).toHaveProperty("membersCount");
+      expect(typeof classroom.membersCount).toBe("number");
+    });
+  });
+
+  test("Get Only Owned Classrooms (owner=true)", async () => {
+    // Create a classroom owned by another user
+    const otherUser = await prisma.user.create({
+      data: { username: "otheruser", password: "hashedpassword", role: "user" },
+    });
+
+    await prisma.classroom.create({
+      data: { name: "Classroom by Other User", ownerId: otherUser.id },
+    });
+
+    // Create classrooms owned by the test user
+    await prisma.classroom.create({
+      data: { name: "Owned Classroom 1", ownerId: testUserId },
+    });
+    await prisma.classroom.create({
+      data: { name: "Owned Classroom 2", ownerId: testUserId },
+    });
+
+    // Fetch classrooms with the owner filter
+    const response = await request(app)
+      .get(`/api/classroom?page=1&limit=10&owner=true`)
+      .set("Authorization", `Bearer ${testToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.classrooms).toBeDefined();
+    expect(response.body.classrooms.length).toBeGreaterThan(0);
+
+    response.body.classrooms.forEach((classroom: any) => {
+      expect(classroom.ownerId).toBe(testUserId);
+    });
   });
 });

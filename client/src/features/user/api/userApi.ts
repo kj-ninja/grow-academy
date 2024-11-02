@@ -10,8 +10,8 @@ export const userApi = {
     const response = await ApiClient.get<User>(`/user/profile/${username}`);
     return response.data;
   },
-  updateUser: async (userId: string, data: FormData) => {
-    const response = await ApiClient.put<User>(`/user/update/${userId}`, data, {
+  updateUser: async (data: FormData) => {
+    const response = await ApiClient.patch<User>("/user/update", data, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${localStorage.getItem("token")}`,

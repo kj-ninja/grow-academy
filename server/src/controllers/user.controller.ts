@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
 import { PrismaClient, type User } from "@prisma/client";
-import streamClient from "@config/streamChat";
 import type { AuthenticatedRequest } from "types/types";
+import { updateStreamUser } from "services/streamService";
+import { errorResponse } from "utils";
 
 const prisma = new PrismaClient();
 
@@ -28,21 +29,12 @@ export const updateUser = async (req: AuthenticatedRequest, res: Response) => {
       omit: { password: true },
     });
 
-    await streamClient.upsertUsers([
-      {
-        id: updatedUser.id.toString(),
-        name:
-          `${updatedUser.firstName} ${updatedUser.lastName}`.trim() || "User",
-        bio: updatedUser.bio,
-        avatarImage: updatedUser.avatarImage
-          ? `data:image/png;base64,${updatedUser.avatarImage.toString("base64")}`
-          : null,
-      },
-    ]);
+    await updateStreamUser(updatedUser);
 
-    res.status(201).json(updatedUser);
+    return res.status(201).json(updatedUser);
   } catch (error) {
-    res.status(500).json({ message: "Failed to update user" });
+    console.error("Error updating user:", error);
+    return errorResponse(res, "Failed to update user");
   }
 };
 
@@ -53,9 +45,9 @@ export const getUser = async (req: Request, res: Response) => {
       where: { username: req.params.username },
     });
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return errorResponse(res, "User not found", 404);
 
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch user profile" });
   }
@@ -73,10 +65,11 @@ export const getCurrentUser = async (
       omit: { password: true },
     });
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return errorResponse(res, "User not found", 404);
 
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch current user" });
+    console.error("Error fetching current user:", error);
+    return errorResponse(res, "Failed to fetch current user");
   }
 };

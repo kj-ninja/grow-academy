@@ -45,15 +45,6 @@ export const checkOwner = async (
   }
 };
 
-export const successResponse = (
-  res: Response,
-  data: any,
-  message = "Success",
-  status = 200,
-) => {
-  res.status(status).json({ message, data });
-};
-
 export const errorResponse = (
   res: Response,
   message = "An error occurred",

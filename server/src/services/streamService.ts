@@ -1,4 +1,5 @@
 import streamClient from "@config/streamChat";
+import type { User } from "@prisma/client";
 
 export const createStreamChannel = async (
   channelId: string,
@@ -25,4 +26,17 @@ export const addUserToStreamChannel = async (
 
 export const generateStreamToken = (userId: number) => {
   return streamClient.createToken(userId.toString());
+};
+
+export const updateStreamUser = async (updatedUser: Omit<User, "password">) => {
+  const name =
+    `${updatedUser.firstName ?? ""} ${updatedUser.lastName ?? ""}`.trim() ||
+    "User";
+  await streamClient.upsertUsers([
+    {
+      id: updatedUser.id.toString(),
+      username: updatedUser.username,
+      name,
+    },
+  ]);
 };

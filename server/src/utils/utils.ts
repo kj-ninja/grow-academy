@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
-import type { Request, Response, NextFunction } from "express";
+import type { Response, NextFunction } from "express";
+import type { AuthenticatedRequest } from "types/types";
 
 export const generateToken = (userId: number) =>
   jwt.sign({ userId }, process.env.JWT_SECRET!, { expiresIn: "1h" });
@@ -19,16 +20,12 @@ export const verifyToken = (token: string, secret: string) => {
 const prisma = new PrismaClient();
 
 export const checkOwner = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
 ) => {
   const { id: classroomId } = req.params;
-  const userId = req.user?.id;
-
-  if (!userId) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+  const userId = req.user!.id;
 
   try {
     // Check if the user is the classroom owner
@@ -46,4 +43,21 @@ export const checkOwner = async (
   } catch (error) {
     return res.status(500).json({ message: "Failed to verify permissions" });
   }
+};
+
+export const successResponse = (
+  res: Response,
+  data: any,
+  message = "Success",
+  status = 200,
+) => {
+  res.status(status).json({ message, data });
+};
+
+export const errorResponse = (
+  res: Response,
+  message = "An error occurred",
+  status = 500,
+) => {
+  res.status(status).json({ message });
 };

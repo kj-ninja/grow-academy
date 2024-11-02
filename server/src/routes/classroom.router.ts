@@ -22,7 +22,7 @@ import {
 
 const router = Router();
 
-router.get("/", authenticateJWT, getClassrooms); // GET /api/classroom?page=1&limit=10
+router.get("/", authenticateJWT, getClassrooms);
 router.post("/", authenticateJWT, createClassroom);
 router.delete("/:id", authenticateJWT, deleteClassroom);
 

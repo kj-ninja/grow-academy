@@ -2,6 +2,7 @@ import request from "supertest";
 import app from "app";
 import { PrismaClient } from "@prisma/client";
 import { generateToken } from "utils";
+import { createStreamChannel } from "services/streamService";
 
 const prisma = new PrismaClient();
 
@@ -45,8 +46,9 @@ describe("Classroom Controller", () => {
       });
 
     expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty("id");
-    expect(response.body.name).toBe("Test Classroom");
+    expect(response.body.data).toHaveProperty("id");
+    expect(response.body.data.name).toBe("Test Classroom");
+    expect(response.body.message).toBe("Classroom created successfully");
   });
 
   test("Delete Classroom", async () => {
@@ -67,14 +69,19 @@ describe("Classroom Controller", () => {
   });
 
   test("Join Classroom (Public)", async () => {
+    const channelId = `classroom-public-${Date.now()}`;
     const classroom = await prisma.classroom.create({
       data: {
         name: "Public Classroom",
         description: "Open to all",
         ownerId: testUserId,
         accessType: "public",
+        getStreamChannel: channelId, // Store the channel ID
       },
     });
+
+    // Create Stream channel before attempting to join
+    await createStreamChannel(channelId, "Public Classroom", testUserId);
 
     const response = await request(app)
       .post(`/api/classroom/${classroom.id}/join`)
@@ -106,7 +113,7 @@ describe("Classroom Controller", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual(
+    expect(response.body.data).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           userId: testUserId,
@@ -114,6 +121,7 @@ describe("Classroom Controller", () => {
         }),
       ]),
     );
+    expect(response.body.message).toBe("Pending requests fetched successfully");
   });
 
   test("Approve Join Request", async () => {
@@ -172,8 +180,10 @@ describe("Classroom Controller", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("classrooms");
-    expect(response.body.pagination).toHaveProperty("totalItems");
+    expect(response.body.data).toHaveProperty("classrooms");
+    expect(response.body.data).toHaveProperty("pagination");
+    expect(response.body.data.classrooms.length).toBeGreaterThan(0);
+    expect(response.body.message).toBe("Classrooms fetched successfully");
   });
 
   test("Get Classrooms with Members Count", async () => {
@@ -221,13 +231,14 @@ describe("Classroom Controller", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(response.status).toBe(200);
-    expect(response.body.classrooms).toBeDefined();
-    expect(response.body.classrooms.length).toBeGreaterThan(0);
+    expect(response.body.data.classrooms).toBeDefined();
+    expect(response.body.data.classrooms.length).toBeGreaterThan(0);
 
-    response.body.classrooms.forEach((classroom: any) => {
-      expect(classroom).toHaveProperty("membersCount"); // Ensure members count is included
+    response.body.data.classrooms.forEach((classroom: any) => {
+      expect(classroom).toHaveProperty("membersCount");
       expect(typeof classroom.membersCount).toBe("number");
     });
+    expect(response.body.message).toBe("Classrooms fetched successfully");
   });
 
   test("Get Only Owned Classrooms (owner=true)", async () => {
@@ -254,13 +265,13 @@ describe("Classroom Controller", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(response.status).toBe(200);
-    expect(response.body.classrooms).toBeDefined();
-    expect(response.body.classrooms.length).toBeGreaterThan(0);
+    expect(response.body.data.classrooms).toBeDefined();
+    expect(response.body.data.classrooms.length).toBeGreaterThan(0);
 
-    // Verify each returned classroom is owned by the test user
-    response.body.classrooms.forEach((classroom: any) => {
+    response.body.data.classrooms.forEach((classroom: any) => {
       expect(classroom.ownerId).toBe(testUserId);
     });
+    expect(response.body.message).toBe("Classrooms fetched successfully");
   });
 
   test("Cancel Join Request", async () => {
@@ -295,14 +306,13 @@ describe("Classroom Controller", () => {
     });
 
     // Debug: Verify that the pending request exists in the database before cancellation
-    const pendingRequest = await prisma.classroomsMembers.findMany({
+    await prisma.classroomsMembers.findMany({
       where: {
         classroomId: classroom.id,
         userId: secondUser.id,
         memberShipStatus: "pending",
       },
     });
-    console.log("Pending Request Before Cancel:", pendingRequest);
 
     // Step 4: User 2 cancels the join request
     const response = await request(app)
@@ -312,59 +322,4 @@ describe("Classroom Controller", () => {
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Join request canceled successfully");
   });
-
-  // todo: fix
-  // test("Remove Member from Classroom", async () => {
-  //   // Step 1: Create a classroom with the test user as the owner
-  //   const classroom = await prisma.classroom.create({
-  //     data: { name: "Removal Classroom", ownerId: testUserId },
-  //   });
-  //
-  //   // Step 2: Create a second user to join the classroom
-  //   const secondUser = await prisma.user.create({
-  //     data: {
-  //       username: `removable_user_${Date.now()}`,
-  //       password: "hashedpassword",
-  //       role: "user",
-  //     },
-  //   });
-  //
-  //   // Step 3: Add the second user to the classroom with a pending status
-  //   await prisma.classroomsMembers.create({
-  //     data: {
-  //       classroomId: classroom.id,
-  //       userId: secondUser.id,
-  //       memberShipStatus: "pending",
-  //     },
-  //   });
-  //
-  //   // Step 4: Approve the join request for the second user (so they have approved status)
-  //   await prisma.classroomsMembers.update({
-  //     where: {
-  //       userId_classroomId: {
-  //         userId: secondUser.id,
-  //         classroomId: classroom.id,
-  //       },
-  //     },
-  //     data: { memberShipStatus: "approved" },
-  //   });
-  //
-  //   // Debug: Confirm the member has the 'approved' status
-  //   const approvedMember = await prisma.classroomsMembers.findFirst({
-  //     where: {
-  //       classroomId: classroom.id,
-  //       userId: secondUser.id,
-  //       memberShipStatus: "approved",
-  //     },
-  //   });
-  //   console.log("Approved member for deletion:", approvedMember);
-  //
-  //   // Step 5: Request to remove the second user as the owner
-  //   const response = await request(app)
-  //     .delete(`/api/classroom/${classroom.id}/members/${secondUser.id}`)
-  //     .set("Authorization", `Bearer ${testToken}`);
-  //
-  //   expect(response.status).toBe(200);
-  //   expect(response.body.message).toBe("Member removed successfully");
-  // });
 });

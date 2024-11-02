@@ -1,8 +1,5 @@
 import type { Request, Response } from "express";
-import {
-  addUserToStreamChannel,
-  createStreamChannel,
-} from "services/streamService";
+import { addUserToStreamChannel, createStreamChannel } from "services/Stream";
 import {
   createClassroomInDB,
   createMembership,
@@ -13,7 +10,7 @@ import {
   findPendingRequests,
   getClassroomsWithPagination,
   updateMembershipStatus,
-} from "services/classroomService";
+} from "services/Classroom";
 import { errorResponse } from "utils";
 import type { AuthenticatedRequest } from "types/types";
 

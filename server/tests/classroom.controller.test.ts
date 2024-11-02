@@ -2,7 +2,7 @@ import request from "supertest";
 import app from "app";
 import { PrismaClient } from "@prisma/client";
 import { generateToken } from "utils";
-import { createStreamChannel } from "services/streamService";
+import { createStreamChannel } from "services/Stream";
 
 const prisma = new PrismaClient();
 

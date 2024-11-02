@@ -6,6 +6,7 @@ import {
   cancelJoinRequest,
   createClassroom,
   deleteClassroom,
+  getClassroomDetails,
   getClassrooms,
   joinClassroom,
   rejectJoinRequest,
@@ -23,6 +24,8 @@ import {
 const router = Router();
 
 router.get("/", authenticateJWT, getClassrooms);
+router.get("/:id/details", authenticateJWT, getClassroomDetails);
+
 router.post("/", authenticateJWT, createClassroom);
 router.delete("/:id", authenticateJWT, deleteClassroom);
 
@@ -41,6 +44,7 @@ router.patch(
   checkOwner,
   rejectJoinRequest,
 );
+
 router.delete(
   "/:classroomId/members/:userId",
   authenticateJWT,
@@ -54,8 +58,8 @@ router.post(
   upload.single("file"),
   uploadResource,
 );
-router.get("/:id/resources", authenticateJWT, getResources); // GET /api/classroom/:id/resources
-router.delete("/resources/:id", authenticateJWT, deleteResource); // DELETE /api/classroom/resources/:id
-router.get("/resources/:id/download", authenticateJWT, downloadResource); // GET /api/classroom/resources/:id/download
+router.get("/:id/resources", authenticateJWT, getResources);
+router.delete("/resources/:id", authenticateJWT, deleteResource);
+router.get("/resources/:id/download", authenticateJWT, downloadResource);
 
 export default router;

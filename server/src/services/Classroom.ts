@@ -158,3 +158,18 @@ export const deleteClassroomMember = async (
 
   return deletedMember ? 1 : 0;
 };
+
+export const checkPendingRequest = async (
+  classroomId: number,
+  userId: number,
+): Promise<boolean> => {
+  const pendingRequest = await prisma.classroomsMembers.findFirst({
+    where: {
+      classroomId,
+      userId,
+      memberShipStatus: "pending",
+    },
+  });
+
+  return Boolean(pendingRequest);
+};

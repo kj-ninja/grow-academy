@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { addUserToStreamChannel, createStreamChannel } from "services/Stream";
 import {
+  checkPendingRequest,
   createClassroomInDB,
   createMembership,
   deleteClassroomInDB,
@@ -235,5 +236,33 @@ export const removeMember = async (
     res.status(200).json({ message: "Member removed successfully" });
   } catch (error) {
     return errorResponse(res, "Failed to remove member from classroom");
+  }
+};
+
+export const getClassroomDetails = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const userId = req.user!.id;
+  const classroomId = parseInt(req.params.id);
+
+  try {
+    const classroom = await findClassroomById(classroomId);
+
+    if (!classroom) {
+      return errorResponse(res, "Classroom not found", 404);
+    }
+
+    const isPendingRequest = await checkPendingRequest(classroomId, userId);
+
+    return res.status(200).json({
+      data: {
+        ...classroom,
+        isPendingRequest,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching classroom details:", error);
+    return errorResponse(res, "Failed to fetch classroom details");
   }
 };

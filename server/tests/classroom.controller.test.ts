@@ -319,4 +319,68 @@ describe("Classroom Controller", () => {
       expect(classroom.ownerId).toBe(testUserId);
     });
   });
+
+  test("User not a member should have isPendingRequest: false", async () => {
+    const classroom = await prisma.classroom.create({
+      data: {
+        name: "Non-member Classroom",
+        ownerId: testUserId,
+      },
+    });
+
+    const response = await request(app)
+      .get(`/api/classroom/${classroom.id}/details`)
+      .set("Authorization", `Bearer ${testToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data).toHaveProperty("isPendingRequest", false);
+  });
+
+  test("User with pending join request should have isPendingRequest: true", async () => {
+    const classroom = await prisma.classroom.create({
+      data: {
+        name: "Pending Request Classroom",
+        ownerId: testUserId,
+      },
+    });
+
+    await prisma.classroomsMembers.create({
+      data: {
+        classroomId: classroom.id,
+        userId: testUserId,
+        memberShipStatus: "pending",
+      },
+    });
+
+    const response = await request(app)
+      .get(`/api/classroom/${classroom.id}/details`)
+      .set("Authorization", `Bearer ${testToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data).toHaveProperty("isPendingRequest", true);
+  });
+
+  test("User already a member should have isPendingRequest: false", async () => {
+    const classroom = await prisma.classroom.create({
+      data: {
+        name: "Member Classroom",
+        ownerId: testUserId,
+      },
+    });
+
+    await prisma.classroomsMembers.create({
+      data: {
+        classroomId: classroom.id,
+        userId: testUserId,
+        memberShipStatus: "approved",
+      },
+    });
+
+    const response = await request(app)
+      .get(`/api/classroom/${classroom.id}/details`)
+      .set("Authorization", `Bearer ${testToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data).toHaveProperty("isPendingRequest", false);
+  });
 });

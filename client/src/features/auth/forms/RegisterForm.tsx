@@ -10,31 +10,50 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import {
-  AuthFormSchema,
-  AuthFormValues,
-} from "@/features/auth/forms/AuthForm.schema";
 import ErrorHandler from "@/services/ErrorHandler";
 import { useToast } from "@/hooks/useToast";
+import { queryClient } from "@/services/ReactQuery";
+import { UserQueries } from "@/features/user/api/queryKeys";
+import { useLoginMutation, useRegisterMutation } from "@/features/auth/api";
+import { useAuthState } from "@/features/auth/stores/authStore";
+import {
+  RegisterFormSchema,
+  RegisterFormValues,
+} from "@/features/auth/forms/RegisterForm.schema";
 
-interface AuthFormProps {
-  onSubmit: (values: AuthFormValues) => Promise<void>;
-}
+export function RegisterForm() {
+  const registerMutation = useRegisterMutation();
+  const loginMutation = useLoginMutation();
+  const { setAuthStatus } = useAuthState();
 
-export function AuthForm({ onSubmit }: AuthFormProps) {
-  const form = AuthFormSchema.useForm({
+  const { toast } = useToast();
+
+  const form = RegisterFormSchema.useForm({
     defaultValues: {
       username: "",
       password: "",
+      confirmPassword: "",
     },
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
-  const { toast } = useToast();
 
-  const handleSubmit = async (values: AuthFormValues) => {
+  const handleSubmit = async (values: RegisterFormValues) => {
+    const credentials = {
+      username: values.username,
+      password: values.password,
+    };
     try {
-      await onSubmit(values);
+      await registerMutation.mutateAsync(credentials);
+      const loginResponse = await loginMutation.mutateAsync({
+        username: values.username,
+        password: values.password,
+      });
+      queryClient.setQueryData(
+        UserQueries.getCurrentUser().queryKey,
+        loginResponse.user,
+      );
+      setAuthStatus("authenticated");
     } catch (error) {
       ErrorHandler.handle({
         error,
@@ -50,7 +69,6 @@ export function AuthForm({ onSubmit }: AuthFormProps) {
 
   return (
     <Form {...form}>
-      {/*todo: margins?*/}
       <form onSubmit={form.handleSubmit(handleSubmit)} className="p-6">
         <FormField
           control={form.control}
@@ -80,8 +98,25 @@ export function AuthForm({ onSubmit }: AuthFormProps) {
           )}
         />
         <FormRootError />
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Confirm Password"
+                  type="password"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormRootError />
 
-        {/*todo: think about margins*/}
         <Button type="submit" className="w-full mt-8">
           Submit
         </Button>

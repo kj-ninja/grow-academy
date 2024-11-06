@@ -19,14 +19,23 @@ import { Textarea } from "@/components/ui/Textarea";
 import { useNavigate } from "react-router-dom";
 import { useUpdateUserMutation } from "@/features/user/api";
 import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
+import { Controller } from "react-hook-form";
+import { BackgroundImage } from "@/components/ui/BackgroundImage";
+import { AvatarImage } from "@/components/ui/AvatarImage";
+import { appendImageToFormData } from "@/lib/utils";
+import { useToast } from "@/hooks/useToast";
 
 export function UpdateUserProfileForm() {
   const { currentUser, refetchUserProfile } = useCurrentUser();
-
-  const { image, setImage } = useBinaryImage(currentUser?.avatarImage);
+  const { image: avatarImage, setImage: setAvatarImage } = useBinaryImage(
+    currentUser?.avatarImage,
+  );
+  const { image: backgroundImage, setImage: setBackgroundImage } =
+    useBinaryImage(currentUser?.backgroundImage);
 
   const updateUserMutation = useUpdateUserMutation();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const form = UpdateUserFormSchema.useForm({
     defaultValues: {
@@ -51,16 +60,18 @@ export function UpdateUserProfileForm() {
       formData.append("lastName", values.lastName);
       formData.append("bio", values.bio || "");
 
-      if (values.avatarImage instanceof File) {
-        formData.append("avatarImage", values.avatarImage);
-      } else if (values.avatarImage === null) {
-        formData.append("avatarImage", "");
-      } else if (currentUser?.avatarImage) {
-        const blob = new Blob([new Uint8Array(currentUser.avatarImage.data)], {
-          type: "image/jpeg",
-        });
-        formData.append("avatarImage", blob, "avatar.jpg");
-      }
+      appendImageToFormData(
+        formData,
+        "avatarImage",
+        values.avatarImage,
+        currentUser?.avatarImage?.data,
+      );
+      appendImageToFormData(
+        formData,
+        "backgroundImage",
+        values.backgroundImage,
+        currentUser?.backgroundImage?.data,
+      );
 
       try {
         await updateUserMutation.mutateAsync({
@@ -70,122 +81,118 @@ export function UpdateUserProfileForm() {
 
         navigate(`/user/${currentUser.username}`);
       } catch (error) {
-        // todo: add toast
+        toast({
+          title: "Error updating user",
+          description: "An error occurred while updating your profile.",
+        });
         console.error("Error updating user:", error);
       }
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImage(URL.createObjectURL(file));
-      form.setValue("avatarImage", file);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setImage(undefined);
-    form.setValue("avatarImage", null);
-  };
-
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="Username" {...field} disabled />
-                </FormControl>
-                <FormDescription>Your public display name</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex gap-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <div className="relative">
+            <Controller
+              name="backgroundImage"
+              control={form.control}
+              render={({ field: { onChange } }) => (
+                <BackgroundImage
+                  onChange={onChange}
+                  image={backgroundImage}
+                  setImage={setBackgroundImage}
+                  onImageRemove={() => {
+                    setBackgroundImage(undefined);
+                    form.setValue("backgroundImage", null);
+                  }}
+                  className="h-48"
+                />
+              )}
+            />
+            <Controller
+              name="avatarImage"
+              control={form.control}
+              render={({ field: { onChange } }) => (
+                <AvatarImage
+                  onChange={onChange}
+                  image={avatarImage}
+                  setImage={setAvatarImage}
+                  onImageRemove={() => {
+                    setAvatarImage(undefined);
+                    form.setValue("avatarImage", null);
+                  }}
+                />
+              )}
+            />
+          </div>
+          <div className="p-6 mt-5">
             <FormField
               control={form.control}
-              name="firstName"
+              name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First Name</FormLabel>
+                  <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="First Name" {...field} />
+                    <Input placeholder="Username" {...field} disabled />
                   </FormControl>
+                  <FormDescription>Your unique identifier</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <div className="flex gap-4 justify-stretch">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="First Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Last Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
-              name="lastName"
+              name="bio"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Last Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Last Name" {...field} />
+                    <Textarea placeholder="Update your bio..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <FormRootError />
+
+            <Button
+              type="submit"
+              className="w-full mt-8"
+              disabled={!form.formState.isValid || form.formState.isSubmitting}
+            >
+              Submit
+            </Button>
           </div>
-          <FormField
-            control={form.control}
-            name="bio"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Last Name</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Update your bio..." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="avatarImage"
-            render={() => (
-              <FormItem>
-                <FormLabel htmlFor="picture">Avatar Image</FormLabel>
-                <FormControl>
-                  <Input
-                    id="picture"
-                    type="file"
-                    onChange={handleImageChange}
-                  />
-                </FormControl>
-                <FormDescription>Upload a profile picture</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {image && (
-            <div className="mt-4">
-              <img
-                src={image}
-                alt="Avatar Preview"
-                className="w-24 h-24 rounded-full"
-              />
-              <Button
-                type="button"
-                onClick={handleRemoveImage}
-                className="mt-2"
-              >
-                Remove Image
-              </Button>
-            </div>
-          )}
-          <FormRootError />
-          <Button type="submit" className="w-full">
-            Submit
-          </Button>
         </form>
       </Form>
     </>

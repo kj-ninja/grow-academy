@@ -19,6 +19,13 @@ const updateUserFormSchema = zod.object({
     zod.object({ data: zod.array(zod.number()) }).optional(),
     zod.null().optional(),
   ]),
+  backgroundImage: zod.union([
+    zod.instanceof(File).optional(),
+    zod.string().url().optional(),
+    zod.literal("").optional(),
+    zod.object({ data: zod.array(zod.number()) }).optional(),
+    zod.null().optional(),
+  ]),
 });
 
 export const UpdateUserFormSchema = createFormSchema(updateUserFormSchema);

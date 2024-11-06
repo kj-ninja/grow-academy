@@ -12,9 +12,13 @@ export default {
         accent: "#FBBF24",
         muted: "#f4f4f5",
         background: "var(--background)",
+        error: "#eb0000",
         typography: {
           primary: "#0f2738",
           secondary: "#374151",
+        },
+        borderColor: {
+          input: "",
         },
       },
       fontSize: {
@@ -34,27 +38,6 @@ export default {
         },
       },
     },
-    plugins: [
-      require("tailwindcss-animate"),
-      function ({ addUtilities }) {
-        addUtilities({
-          ".hover-overlay": {
-            position: "relative",
-            overflow: "hidden",
-          },
-          ".hover-overlay::before": {
-            content: '""',
-            position: "absolute",
-            inset: 0,
-            backgroundColor: "white",
-            opacity: 0,
-            transition: "opacity 0.3s ease-out",
-          },
-          ".hover-overlay:hover::before": {
-            opacity: 0.05,
-          },
-        });
-      },
-    ],
+    plugins: [require("tailwindcss-animate")],
   },
 };

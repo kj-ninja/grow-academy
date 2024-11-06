@@ -13,7 +13,10 @@ function OnboardingPage() {
   }
 
   return (
-    <AuthPage title="Onboarding" description="Please finish your registration">
+    <AuthPage
+      title="Create your profile"
+      description="Please finish your registration before we start"
+    >
       <UpdateUserProfileForm />
     </AuthPage>
   );

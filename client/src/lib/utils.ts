@@ -8,6 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 export function appendImageToFormData(
   formData: FormData,
   fieldName: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   image: any,
   currentImageData?: number[],
 ) {

@@ -185,7 +185,11 @@ export function UpdateUserProfileForm() {
             />
             <FormRootError />
 
-            <Button type="submit" className="w-full mt-8">
+            <Button
+              type="submit"
+              className="w-full mt-8"
+              disabled={!form.formState.isValid || form.formState.isSubmitting}
+            >
               Submit
             </Button>
           </div>

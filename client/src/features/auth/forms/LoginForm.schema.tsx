@@ -1,7 +1,7 @@
 import { createFormSchema } from "@/lib/forms";
 import * as zod from "zod";
 
-const authFormSchema = zod.object({
+const loginFormSchema = zod.object({
   username: zod.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
@@ -10,6 +10,6 @@ const authFormSchema = zod.object({
   }),
 });
 
-export const AuthFormSchema = createFormSchema(authFormSchema);
+export const LoginFormSchema = createFormSchema(loginFormSchema);
 
-export type AuthFormValues = zod.infer<typeof authFormSchema>;
+export type LoginFormValues = zod.infer<typeof loginFormSchema>;

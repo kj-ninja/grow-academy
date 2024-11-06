@@ -17,9 +17,8 @@ export default {
           primary: "#0f2738",
           secondary: "#374151",
         },
-        borderColor: {
-          input: "",
-        },
+        input: "#e5e7eb",
+        placeholder: "#9ca3af",
       },
       fontSize: {
         h1: ["24px", { lineHeight: "28px", letterSpacing: "-0.5px" }],

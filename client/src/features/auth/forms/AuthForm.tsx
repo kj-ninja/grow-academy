@@ -61,9 +61,7 @@ export function AuthForm({ onSubmit }: AuthFormProps) {
               <FormControl>
                 <Input placeholder="Username" {...field} />
               </FormControl>
-              <FormDescription>
-                This is your public display name
-              </FormDescription>
+              <FormDescription>Your unique identifier</FormDescription>
               <FormMessage />
             </FormItem>
           )}

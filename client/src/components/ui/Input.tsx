@@ -1,13 +1,17 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { useFormField } from "@/components/ui/Form";
+import { useFormContext } from "react-hook-form";
 
 const Input = React.forwardRef<
   HTMLInputElement,
   React.InputHTMLAttributes<HTMLInputElement>
->(({ className, type, ...props }, ref) => {
-  const { error } = useFormField();
+>(({ className, type, name, ...props }, ref) => {
+  const {
+    formState: { errors },
+  } = useFormContext();
+
+  const error = name && errors[name as keyof typeof errors];
 
   return (
     <input

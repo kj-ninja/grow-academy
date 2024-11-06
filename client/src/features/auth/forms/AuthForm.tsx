@@ -10,7 +10,10 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { AuthFormSchema, AuthFormValues } from "@/features/auth/forms/AuthForm.schema";
+import {
+  AuthFormSchema,
+  AuthFormValues,
+} from "@/features/auth/forms/AuthForm.schema";
 import ErrorHandler from "@/services/ErrorHandler";
 import { useToast } from "@/hooks/useToast";
 
@@ -47,7 +50,8 @@ export function AuthForm({ onSubmit }: AuthFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+      {/*todo: margins?*/}
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="p-6">
         <FormField
           control={form.control}
           name="username"
@@ -57,7 +61,9 @@ export function AuthForm({ onSubmit }: AuthFormProps) {
               <FormControl>
                 <Input placeholder="Username" {...field} />
               </FormControl>
-              <FormDescription>This is your public display name</FormDescription>
+              <FormDescription>
+                This is your public display name
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -77,7 +83,8 @@ export function AuthForm({ onSubmit }: AuthFormProps) {
         />
         <FormRootError />
 
-        <Button type="submit" className="w-full">
+        {/*todo: think about margins*/}
+        <Button type="submit" className="w-full mt-8">
           Submit
         </Button>
       </form>

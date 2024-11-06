@@ -72,7 +72,11 @@ export const BackgroundImage = ({
         </div>
       ) : (
         image && (
-          <img src={image} alt="" className="w-full h-full object-center" />
+          <img
+            src={image}
+            alt=""
+            className="w-full h-full object-cover object-center"
+          />
         )
       )}
     </div>

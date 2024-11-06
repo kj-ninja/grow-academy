@@ -6,19 +6,29 @@ import { errorResponse } from "utils";
 
 const prisma = new PrismaClient();
 
+interface UserUpdateFiles {
+  avatarImage?: Express.Multer.File[];
+  backgroundImage?: Express.Multer.File[];
+}
+
 export const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   const { id: userId } = req.user!;
   const { firstName, lastName, bio } = req.body;
-  const avatarImage = req.file;
+
+  const files = req.files as UserUpdateFiles;
+
+  const avatarImage = files?.avatarImage?.[0];
+  const backgroundImage = files?.backgroundImage?.[0];
 
   const updateData: Pick<
     User,
-    "firstName" | "lastName" | "bio" | "avatarImage"
+    "firstName" | "lastName" | "bio" | "avatarImage" | "backgroundImage"
   > & { isActive: boolean } = {
     firstName: firstName || null,
     lastName: lastName || null,
     bio: bio || null,
     avatarImage: avatarImage ? avatarImage.buffer : null,
+    backgroundImage: backgroundImage ? backgroundImage.buffer : null,
     isActive: true,
   };
 

@@ -22,6 +22,7 @@ model User {
   lastName          String?
   bio               String?
   avatarImage       Bytes?
+  backgroundImage   Bytes?
   isActive          Boolean             @default(false)
   classrooms        ClassroomsMembers[]
   ownedClassrooms   Classroom[]

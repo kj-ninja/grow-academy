@@ -4,6 +4,7 @@ type AuthStatus = "idle" | "initializing" | "authenticated" | "unauthenticated";
 
 type Role = "admin" | "user";
 
+// todo: align with db
 export type User = {
   id: number;
   username: string;
@@ -12,6 +13,7 @@ export type User = {
   bio?: string;
   role: Role;
   avatarImage?: { data: number[]; type: "Buffer" };
+  backgroundImage?: { data: number[]; type: "Buffer" };
   createdAt: Date;
   isActive: boolean;
 };

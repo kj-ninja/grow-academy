@@ -3,7 +3,7 @@ import { AuthPage } from "@/components/layout/pages/AuthPage";
 
 function UserSettingsPage() {
   return (
-    <AuthPage title="Onboarding" description="Please finish your registration">
+    <AuthPage title="Edit Profile">
       <UpdateUserProfileForm />
     </AuthPage>
   );

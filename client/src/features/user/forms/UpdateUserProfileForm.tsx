@@ -173,7 +173,7 @@ export function UpdateUserProfileForm() {
               name="bio"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel>Bio</FormLabel>
                   <FormControl>
                     <Textarea placeholder="Update your bio..." {...field} />
                   </FormControl>

@@ -4,7 +4,7 @@ import Text from "@/components/ui/Text/Text";
 import { Spinner } from "@/components/ui/Spinner";
 import { useInputError } from "@/hooks/useInputError";
 
-// todo: fix types
+// todo: extract input types
 interface InputWithAsyncValidationProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   isCheckError?: boolean;
@@ -59,9 +59,10 @@ export const InputWithAsyncValidation = React.forwardRef<
         iconRight={iconRight}
         className={successClass}
         ref={ref}
+        name={name}
       />
       {isValid && !error && (
-        <Text type="bodySmallBold" className="text-success">
+        <Text type="bodyXSmallBold" className="!text-success">
           {validMessage}
         </Text>
       )}

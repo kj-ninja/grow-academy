@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useInputError } from "@/hooks/useInputError";
 
+// todo: extract input types
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   iconRight?: React.ReactNode;
   isLoading?: boolean;

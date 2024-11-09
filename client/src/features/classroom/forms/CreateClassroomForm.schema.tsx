@@ -12,6 +12,7 @@ const createClassroomFormSchema = zod.object({
       message:
         "Classroom Handle must only contain letters, numbers and underscores",
     }),
+  description: zod.string().optional(),
   tags: zod.array(zod.string()).optional(),
   accessType: zod.enum(["Private", "Public"]),
   avatarImage: zod.union([

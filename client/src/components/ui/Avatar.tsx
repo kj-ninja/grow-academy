@@ -41,7 +41,6 @@ const AvatarFallback = React.forwardRef<
   <AvatarPrimitive.Fallback
     ref={ref}
     className={cn(
-      // todo: extract bg-typography-primary/10 to colors
       "flex h-full w-full items-center justify-center rounded-full bg-backgroundSecondary hover:opacity-80",
       className,
     )}

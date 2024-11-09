@@ -4,13 +4,13 @@ import { queryOptions } from "@tanstack/react-query";
 export const ClassroomQueries = {
   checkClassroomName: (name: string) =>
     queryOptions({
-      queryKey: [name],
+      queryKey: ["checkClassroomName", name],
       queryFn: () => classroomApi.checkClassroomName(name),
       retry: false,
     }),
   checkClassroomHandle: (handle: string) =>
     queryOptions({
-      queryKey: [handle],
+      queryKey: ["checkClassroomHandle", handle],
       queryFn: () => classroomApi.checkClassroomHandle(handle),
       retry: false,
     }),

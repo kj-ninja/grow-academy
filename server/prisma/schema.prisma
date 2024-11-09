@@ -41,27 +41,28 @@ model ClassroomsMembers {
 }
 
 model Classroom {
-  id                       Int                 @id @default(autoincrement())
-  name                     String              @unique
-  description              String?
-  accessType               String              @default("public")
-  createdAt                DateTime            @default(now())
-  updatedAt                DateTime            @updatedAt
-  owner                    User                @relation(fields: [ownerId], references: [id])
-  ownerId                  Int
-  members                  ClassroomsMembers[]
-  communityAvatarImage     Bytes?
-  communityBackgroundImage Bytes?
-  getStreamChannel         String?
-  isLive                   Boolean             @default(false)
-  resources                Resource[]
+  id                 Int                 @id @default(autoincrement())
+  classroomName      String
+  handle             String              @unique
+  description        String?
+  accessType         String              @default("public")
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  owner              User                @relation(fields: [ownerId], references: [id])
+  ownerId            Int
+  members            ClassroomsMembers[]
+  avatarImage        Bytes?
+  backgroundImage    Bytes?
+  getStreamChannelId String?
+  isLive             Boolean             @default(false)
+  resources          Resource[]
 }
 
 model Resource {
   id           Int       @id @default(autoincrement())
   fileName     String
-  fileType     String // MIME type of the file, e.g., 'application/pdf'
-  fileData     Bytes // Binary data of the file itself
+  fileType     String
+  fileData     Bytes
   uploadedAt   DateTime  @default(now())
   uploadedBy   User      @relation(fields: [uploadedById], references: [id])
   uploadedById Int

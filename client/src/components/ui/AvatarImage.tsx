@@ -33,7 +33,7 @@ export const AvatarImage = ({
   return (
     <div
       className={cn(
-        "absolute w-[64px] h-[64px] left-6 bottom-[-32px] rounded-full border-2 border-white bg-background group",
+        "absolute w-[64px] h-[64px] left-6 bottom-[-32px] rounded-full border-2 border-white bg-backgroundSecondary group",
         className,
       )}
     >

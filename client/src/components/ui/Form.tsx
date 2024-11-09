@@ -94,7 +94,7 @@ const FormLabel = React.forwardRef<
   return (
     <Label
       ref={ref}
-      className={cn(className)}
+      className={cn("cursor-pointer", className)}
       htmlFor={formItemId}
       {...props}
     />

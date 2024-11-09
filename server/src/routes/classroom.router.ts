@@ -4,6 +4,8 @@ import { checkOwner } from "utils";
 import {
   approveJoinRequest,
   cancelJoinRequest,
+  checkClassroomHandle,
+  checkClassroomName,
   createClassroom,
   deleteClassroom,
   getClassroomDetails,
@@ -13,7 +15,7 @@ import {
   removeMember,
   viewPendingRequests,
 } from "@controllers/classroom.controller";
-import { upload } from "@middleware/uploadMiddleware";
+import { upload, uploadMultiple } from "@middleware/uploadMiddleware";
 import {
   deleteResource,
   downloadResource,
@@ -26,7 +28,7 @@ const router = Router();
 router.get("/", authenticateJWT, getClassrooms);
 router.get("/:id/details", authenticateJWT, getClassroomDetails);
 
-router.post("/", authenticateJWT, createClassroom);
+router.post("/", authenticateJWT, uploadMultiple, createClassroom);
 router.delete("/:id", authenticateJWT, deleteClassroom);
 
 router.post("/:id/join", authenticateJWT, joinClassroom);
@@ -51,6 +53,9 @@ router.delete(
   checkOwner,
   removeMember,
 );
+
+router.get("/check-name/:classroomName", authenticateJWT, checkClassroomName);
+router.get("/check-handle/:handle", authenticateJWT, checkClassroomHandle);
 
 router.post(
   "/:id/resources",

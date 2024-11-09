@@ -5,6 +5,7 @@
 :root {
   --app-navbar-width: 68px;
   --background: #f3f4f6;
+  --background-secondary: #e5e7eb;
 }
 
 body {

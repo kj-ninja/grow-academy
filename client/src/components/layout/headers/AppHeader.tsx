@@ -12,27 +12,36 @@ import {
 } from "@/components/ui/DropdownMenu";
 import { useBinaryImage } from "@/hooks/useBinaryImage";
 import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
+import { useState } from "react";
+import { CreateClassroomModal } from "@/features/classroom/components/CreateClassroomModal";
+import Text from "@/components/ui/Text/Text";
 
 export const AppHeader = () => {
   const { currentUser } = useCurrentUser();
   const { logout } = useAuthState();
   const { image } = useBinaryImage(currentUser?.avatarImage);
 
+  const [isCreateClassroomModalOpen, setIsCreateClassroomModalOpen] =
+    useState(false);
+
   const navigate = useNavigate();
 
   return (
-    <header className="w-full border-b-2">
+    <header className="w-full border-b-2 bg-white">
       <div className="w-full max-w-5xl mx-auto flex justify-between p-4">
         <Link to="/" className="flex flex-row items-center">
-          <h1>Grow Academy</h1>
+          <Text type="h1" className="hover:opacity-80">
+            <span className="text-primary">Grow</span>{" "}
+            <span className="text-secondary">Academy</span>
+          </Text>
         </Link>
 
         <nav>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Avatar className="cursor-pointer">
-                <AvatarImage src={image} alt="@shadcn" />
-                <AvatarFallback>GA</AvatarFallback>
+              <Avatar className="cursor-pointer" tabIndex={0}>
+                <AvatarImage src={image} alt="user profile image" />
+                <AvatarFallback type="user" />
               </Avatar>
             </DropdownMenuTrigger>
 
@@ -57,8 +66,10 @@ export const AppHeader = () => {
 
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem onClick={() => console.log("create community")}>
-                Create Community
+              <DropdownMenuItem
+                onClick={() => setIsCreateClassroomModalOpen(true)}
+              >
+                Create Classroom
                 <DropdownMenuShortcut>⌘Q</DropdownMenuShortcut>
               </DropdownMenuItem>
 
@@ -72,6 +83,13 @@ export const AppHeader = () => {
           </DropdownMenu>
         </nav>
       </div>
+
+      {isCreateClassroomModalOpen && (
+        <CreateClassroomModal
+          isOpen={isCreateClassroomModalOpen}
+          setIsOpen={setIsCreateClassroomModalOpen}
+        />
+      )}
     </header>
   );
 };

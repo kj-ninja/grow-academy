@@ -4,4 +4,5 @@ export {
   verifyToken,
   checkOwner,
   errorResponse,
+  validateHandle,
 } from "./utils";

@@ -74,9 +74,7 @@ export function UpdateUserProfileForm() {
       );
 
       try {
-        await updateUserMutation.mutateAsync({
-          data: formData,
-        });
+        await updateUserMutation.mutateAsync(formData);
         await refetchUserProfile();
 
         navigate(`/user/${currentUser.username}`);
@@ -127,7 +125,7 @@ export function UpdateUserProfileForm() {
               )}
             />
           </div>
-          <div className="p-6 mt-5">
+          <div className="p-6 mt-8">
             <FormField
               control={form.control}
               name="username"

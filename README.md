@@ -22,10 +22,6 @@ Community / tutoring platform for sharing knowledge in different science topics.
 - **Prisma + SQLite**: ORM for database interactions, with SQLite for local development.
 - **Authentication**: Passport.js with JWT support.
 
-### Common
-
-- Shared types, validation schemas, and utilities for consistent logic across client and server.
-
 ## Main Features:
 
 - Video calls - **livekit sdk**
@@ -33,8 +29,9 @@ Community / tutoring platform for sharing knowledge in different science topics.
 - Board chat - **getStream sdk**
 - Authentication for users
 - Community creation flow
+- Resources sharing
 - User / Community settings
-- Roles mamagement
+- Members mamagement
 - Onboarding
 
 ## How to Run the Project

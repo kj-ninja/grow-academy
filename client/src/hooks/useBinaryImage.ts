@@ -17,6 +17,10 @@ export const useBinaryImage = (image?: BinaryImage) => {
       );
       setImagePreview(`data:image/jpeg;base64,${base64String}`);
     }
+
+    if (!image) {
+      setImagePreview(undefined);
+    }
   }, [image]);
 
   return {

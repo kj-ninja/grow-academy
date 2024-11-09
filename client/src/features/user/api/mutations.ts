@@ -3,7 +3,7 @@ import { userApi } from "@/features/user/api";
 
 export const useUpdateUserMutation = () => {
   return useMutation({
-    mutationFn: ({ data }: { data: FormData }) => {
+    mutationFn: (data: FormData) => {
       return userApi.updateUser(data);
     },
   });

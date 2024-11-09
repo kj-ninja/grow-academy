@@ -1,21 +1,16 @@
 import type { Request, Response } from "express";
 import { PrismaClient, type User } from "@prisma/client";
-import type { AuthenticatedRequest } from "types/types";
+import type { AuthenticatedRequest, Images } from "types/types";
 import { updateStreamUser } from "services/Stream";
 import { errorResponse } from "utils";
 
 const prisma = new PrismaClient();
 
-interface UserUpdateFiles {
-  avatarImage?: Express.Multer.File[];
-  backgroundImage?: Express.Multer.File[];
-}
-
 export const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   const { id: userId } = req.user!;
   const { firstName, lastName, bio } = req.body;
 
-  const files = req.files as UserUpdateFiles;
+  const files = req.files as Images;
 
   const avatarImage = files?.avatarImage?.[0];
   const backgroundImage = files?.backgroundImage?.[0];

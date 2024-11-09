@@ -12,12 +12,14 @@ export default {
         accent: "#FBBF24",
         muted: "#f4f4f5",
         background: "var(--background)",
+        backgroundSecondary: "var(--background-secondary)",
         error: "#eb0000",
+        success: "#00a600",
         typography: {
           primary: "#0f2738",
           secondary: "#374151",
         },
-        input: "#e5e7eb",
+        input: "#d1d5db",
         placeholder: "#9ca3af",
       },
       fontSize: {

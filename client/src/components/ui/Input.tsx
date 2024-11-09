@@ -1,31 +1,34 @@
 import * as React from "react";
-
 import { cn } from "@/lib/utils";
-import { useFormContext } from "react-hook-form";
+import { useInputError } from "@/hooks/useInputError";
 
-const Input = React.forwardRef<
-  HTMLInputElement,
-  React.InputHTMLAttributes<HTMLInputElement>
->(({ className, type, name, ...props }, ref) => {
-  const {
-    formState: { errors },
-  } = useFormContext();
+// todo: extract input types
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  iconRight?: React.ReactNode;
+  isLoading?: boolean;
+}
 
-  const error = name && errors[name as keyof typeof errors];
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, name, iconRight, ...props }, ref) => {
+    const error = useInputError(name);
 
-  return (
-    <input
-      type={type}
-      className={cn(
-        "mt-1 mb-1 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 placeholder:text-placeholder focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50",
-        className,
-        error && "border-red-500",
-      )}
-      ref={ref}
-      {...props}
-    />
-  );
-});
+    return (
+      <div className="relative flex items-center w-full">
+        <input
+          type={type}
+          className={cn(
+            "my-1 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 placeholder:text-placeholder focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50",
+            className,
+            error && "border-red-500",
+          )}
+          ref={ref}
+          {...props}
+        />
+        {iconRight && iconRight}
+      </div>
+    );
+  },
+);
 Input.displayName = "Input";
 
 export { Input };

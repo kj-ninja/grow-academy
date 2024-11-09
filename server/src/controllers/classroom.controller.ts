@@ -7,38 +7,45 @@ import {
   deleteClassroomInDB,
   deleteClassroomMember,
   deletePendingMembership,
+  findClassroomByName,
   findClassroomById,
   findPendingRequests,
   getClassroomsWithPagination,
   updateMembershipStatus,
+  findClassroomByHandle,
 } from "services/Classroom";
-import { errorResponse } from "utils";
-import type { AuthenticatedRequest } from "types/types";
+import { errorResponse, validateHandle } from "utils";
+import type { AuthenticatedRequest, Images } from "types/types";
 
 export const createClassroom = async (
   req: AuthenticatedRequest,
   res: Response,
 ) => {
   const { id: userId } = req.user!;
-  const {
-    name,
-    description,
-    accessType,
-    communityAvatarImage,
-    communityBackgroundImage,
-  } = req.body;
+  const { classroomName, handle, description, accessType } = req.body;
+
+  const files = req.files as Images;
+  const avatarImage = files?.avatarImage?.[0];
+  const backgroundImage = files?.backgroundImage?.[0];
+
+  if (!classroomName || !handle) {
+    return errorResponse(res, "Classroom Name and Handle are required", 400);
+  }
 
   try {
-    const channelId = `classroom-${name.replace(/[^a-zA-Z0-9-_]/g, "")}`;
-    await createStreamChannel(channelId, name, userId);
+    validateHandle(handle);
+
+    const channelId = handle;
+    await createStreamChannel(channelId, classroomName, userId);
 
     const newClassroom = await createClassroomInDB(userId, {
-      name,
+      classroomName,
+      handle,
       description,
       accessType: accessType || "public",
-      communityAvatarImage,
-      communityBackgroundImage,
-      getStreamChannel: channelId,
+      avatarImage: avatarImage ? avatarImage.buffer : null,
+      backgroundImage: backgroundImage ? backgroundImage.buffer : null,
+      getStreamChannelId: channelId,
     });
 
     return res.status(201).json(newClassroom);
@@ -53,7 +60,11 @@ export const deleteClassroom = async (
   res: Response,
 ) => {
   const { id: userId } = req.user!;
-  const classroomId = parseInt(req.params.id);
+  const classroomId = Number(req.params.id);
+
+  if (isNaN(classroomId)) {
+    return errorResponse(res, "Invalid classroom ID", 400);
+  }
 
   try {
     const classroom = await findClassroomById(classroomId);
@@ -79,22 +90,26 @@ export const joinClassroom = async (
   res: Response,
 ) => {
   const userId = req.user!.id;
-  const { id: classroomId } = req.params;
+  const classroomId = parseInt(req.params.id);
+
+  if (isNaN(classroomId)) {
+    return errorResponse(res, "Invalid classroom ID", 400);
+  }
 
   try {
-    const classroom = await findClassroomById(parseInt(classroomId));
+    const classroom = await findClassroomById(classroomId);
 
     if (!classroom) {
       return errorResponse(res, "Classroom not found", 404);
     }
 
-    if (!classroom.getStreamChannel) {
+    if (!classroom.getStreamChannelId) {
       return errorResponse(res, "Classroom chat channel not available", 500);
     }
 
     if (classroom.accessType === "public") {
       await createMembership(classroom.id, userId, "approved");
-      await addUserToStreamChannel(classroom.getStreamChannel, userId);
+      await addUserToStreamChannel(classroom.getStreamChannelId, userId);
 
       return res.status(201).json({ message: "Joined classroom successfully" });
     } else {
@@ -108,10 +123,14 @@ export const joinClassroom = async (
 };
 
 export const viewPendingRequests = async (req: Request, res: Response) => {
-  const { id: classroomId } = req.params;
+  const classroomId = parseInt(req.params.id);
+
+  if (isNaN(classroomId)) {
+    return errorResponse(res, "Invalid classroom ID", 400);
+  }
 
   try {
-    const pendingRequests = await findPendingRequests(parseInt(classroomId));
+    const pendingRequests = await findPendingRequests(classroomId);
     res.status(200).json(pendingRequests);
   } catch (error) {
     return errorResponse(res, "Failed to fetch pending requests");
@@ -119,12 +138,17 @@ export const viewPendingRequests = async (req: Request, res: Response) => {
 };
 
 export const approveJoinRequest = async (req: Request, res: Response) => {
-  const { id: classroomId, userId } = req.params;
+  const userId = parseInt(req.params.userId);
+  const classroomId = parseInt(req.params.id);
+
+  if (isNaN(classroomId) || isNaN(userId)) {
+    return errorResponse(res, "Invalid userId or classroomId", 400);
+  }
 
   try {
     const updatedCount = await updateMembershipStatus(
-      parseInt(classroomId),
-      parseInt(userId),
+      classroomId,
+      userId,
       "approved",
     );
 
@@ -139,13 +163,15 @@ export const approveJoinRequest = async (req: Request, res: Response) => {
 };
 
 export const rejectJoinRequest = async (req: Request, res: Response) => {
-  const { id: classroomId, userId } = req.params;
+  const userId = parseInt(req.params.userId);
+  const classroomId = parseInt(req.params.id);
+
+  if (isNaN(classroomId) || isNaN(userId)) {
+    return errorResponse(res, "Invalid userId or classroomId", 400);
+  }
 
   try {
-    const deletedCount = await deletePendingMembership(
-      parseInt(classroomId),
-      parseInt(userId),
-    );
+    const deletedCount = await deletePendingMembership(classroomId, userId);
 
     if (deletedCount === 0) {
       return errorResponse(res, "Request not found", 404);
@@ -163,6 +189,10 @@ export const cancelJoinRequest = async (
 ) => {
   const userId = req.user!.id;
   const classroomId = parseInt(req.params.id);
+
+  if (isNaN(classroomId)) {
+    return errorResponse(res, "Invalid classroom ID", 400);
+  }
 
   try {
     const deletedCount = await deletePendingMembership(classroomId, userId);
@@ -206,10 +236,15 @@ export const removeMember = async (
   res: Response,
 ) => {
   const userId = req.user!.id;
-  const { classroomId, userId: memberId } = req.params;
+  const memberId = parseInt(req.params.userId);
+  const classroomId = parseInt(req.params.id);
+
+  if (isNaN(classroomId) || isNaN(memberId)) {
+    return errorResponse(res, "Invalid userId or classroomId", 400);
+  }
 
   try {
-    const classroom = await findClassroomById(parseInt(classroomId));
+    const classroom = await findClassroomById(classroomId);
 
     if (!classroom) {
       return errorResponse(res, "Classroom not found", 404);
@@ -224,8 +259,8 @@ export const removeMember = async (
     }
 
     const deletedCount = await deleteClassroomMember(
-      parseInt(classroomId),
-      parseInt(memberId),
+      classroomId,
+      memberId,
       classroom.ownerId,
     );
 
@@ -246,6 +281,10 @@ export const getClassroomDetails = async (
   const userId = req.user!.id;
   const classroomId = parseInt(req.params.id);
 
+  if (isNaN(classroomId)) {
+    return errorResponse(res, "Invalid classroom ID", 400);
+  }
+
   try {
     const classroom = await findClassroomById(classroomId);
 
@@ -264,5 +303,69 @@ export const getClassroomDetails = async (
   } catch (error) {
     console.error("Error fetching classroom details:", error);
     return errorResponse(res, "Failed to fetch classroom details");
+  }
+};
+
+export const checkClassroomName = async (req: Request, res: Response) => {
+  const classroomName = req.params.classroomName as string | undefined;
+
+  if (!classroomName) {
+    return res.status(400).json({
+      success: false,
+      error: "Classroom name is required",
+    });
+  }
+
+  try {
+    const classroom = await findClassroomByName(classroomName);
+
+    if (classroom) {
+      return res.status(409).json({
+        success: false,
+        error: "The name already exists",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      data: { exists: false },
+    });
+  } catch (error) {
+    console.error("Error checking classroom name:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to check classroom name",
+    });
+  }
+};
+
+export const checkClassroomHandle = async (req: Request, res: Response) => {
+  const handle = req.params.handle as string | undefined;
+
+  if (!handle) {
+    return res.status(400).json({
+      success: false,
+      error: "Classroom Handle is required",
+    });
+  }
+
+  try {
+    const classroom = await findClassroomByHandle(handle);
+
+    if (classroom) {
+      return res.status(409).json({
+        success: false,
+        error: "The Community Handle already exists",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      data: { exists: false },
+    });
+  } catch (error) {
+    console.error("Error checking Classroom Handle:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to check Classroom Handle",
+    });
   }
 };

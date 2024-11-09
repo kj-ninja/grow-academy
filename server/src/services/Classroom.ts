@@ -100,13 +100,14 @@ export const getClassroomsWithPagination = async (
   const totalPages = Math.ceil(totalClassrooms / limit);
   const formattedClassrooms = classrooms.map((classroom) => ({
     id: classroom.id,
-    name: classroom.name,
+    classroomName: classroom.classroomName,
+    handle: classroom.handle,
     description: classroom.description,
     accessType: classroom.accessType,
     createdAt: classroom.createdAt,
     updatedAt: classroom.updatedAt,
-    communityAvatarImage: classroom.communityAvatarImage,
-    communityBackgroundImage: classroom.communityBackgroundImage,
+    classroomAvatarImage: classroom.avatarImage,
+    classroomBackgroundImage: classroom.backgroundImage,
     membersCount: classroom._count.members,
     ownerId: classroom.ownerId,
   }));
@@ -144,7 +145,7 @@ export const deleteClassroomMember = async (
   });
 
   if (!member || member.userId === ownerId) {
-    return 0; // No deletion if the member is the owner or doesn't exist
+    return 0;
   }
 
   const deletedMember = await prisma.classroomsMembers.delete({
@@ -172,4 +173,16 @@ export const checkPendingRequest = async (
   });
 
   return Boolean(pendingRequest);
+};
+
+export const findClassroomByName = async (classroomName: string) => {
+  return prisma.classroom.findFirst({
+    where: { classroomName },
+  });
+};
+
+export const findClassroomByHandle = async (handle: string) => {
+  return prisma.classroom.findUnique({
+    where: { handle },
+  });
 };

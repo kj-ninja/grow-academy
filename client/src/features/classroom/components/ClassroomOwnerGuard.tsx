@@ -17,9 +17,9 @@ export const ClassroomOwnerGuard = () => {
     enabled: !!handle && status === "authenticated",
   });
 
-  const classRoomPolicy = useClassroomPolicy(classroomQuery.data);
+  const { isOwner } = useClassroomPolicy(classroomQuery.data);
 
-  if (classRoomPolicy && !classRoomPolicy.isOwner) {
+  if (!isOwner) {
     return <Navigate to={`/community/${handle}`} />;
   }
 

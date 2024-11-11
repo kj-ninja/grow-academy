@@ -1,8 +1,8 @@
-import { ClassroomResponse } from "@/features/classroom/api/classroomApi";
+import { ClassroomWithDetailsResponse } from "@/features/classroom/api/classroomApi";
 import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 
 export function useClassroomPolicy(
-  classroom: ClassroomResponse | undefined | null,
+  classroom: ClassroomWithDetailsResponse | undefined | null,
 ) {
   const { currentUser } = useCurrentUser();
 

@@ -3,7 +3,7 @@ import { useClassroomPolicy } from "@/features/classroom/policies/useClassroomPo
 import { ClassroomGuestView } from "@/features/classroom/components/ClassroomGuestView";
 import { ClassroomMemberView } from "@/features/classroom/components/ClassroomMemberView";
 
-export function Classroom() {
+function ClassroomProfilePage() {
   const { classroom } = useClassroom();
   const { isConnected } = useClassroomPolicy(classroom);
 
@@ -13,3 +13,5 @@ export function Classroom() {
 
   return <ClassroomMemberView />;
 }
+
+export const Component = ClassroomProfilePage;

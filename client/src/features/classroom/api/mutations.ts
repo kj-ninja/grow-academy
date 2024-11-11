@@ -11,6 +11,7 @@ export const useCreateClassroomMutation = () => {
     onSuccess: () => {
       const pageSize = 10;
       queryClient.invalidateQueries({
+        // todo: think about new key like handle from response
         queryKey: ClassroomInfiniteQueries.classrooms({
           pageSize,
         }).queryKey,

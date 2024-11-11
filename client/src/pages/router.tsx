@@ -27,7 +27,10 @@ import { loader as classroomProfileLoader } from "@/pages/loaders/classroomProfi
 
 const OnboardingPage = () => import("./user/OnboardingPage");
 const ClassroomListPage = () => import("./classroom/ClassroomListPage");
+const UserProfilePage = () => import("./user/profile/UserProfilePage");
 const UserSettingsEditPage = () => import("./user/settings/UserSettingsPage");
+const ClassroomProfilePage = () =>
+  import("./classroom/profile/ClassroomProfilePage");
 
 export const RouterProvider = () => {
   const router = createBrowserRouter(
@@ -57,12 +60,7 @@ export const RouterProvider = () => {
               <Route errorElement={<UserProfileErrorElement />}>
                 <Route
                   path="user/:username"
-                  lazy={async () => {
-                    const { Component } = await import(
-                      "./user/profile/UserProfilePage"
-                    );
-                    return { Component };
-                  }}
+                  lazy={UserProfilePage}
                   loader={userProfileLoader}
                 />
                 <Route element={<CurrentUserGuard />}>
@@ -80,12 +78,7 @@ export const RouterProvider = () => {
                 <Route path="classroom/:handle" element={<ClassroomLayout />}>
                   <Route
                     index
-                    lazy={async () => {
-                      const { Classroom } = await import(
-                        "./classroom/profile/ClassroomProfilePage"
-                      );
-                      return { Component: Classroom };
-                    }}
+                    lazy={ClassroomProfilePage}
                     loader={classroomProfileLoader}
                   />
                 </Route>

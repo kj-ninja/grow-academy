@@ -14,8 +14,11 @@ export interface ClassroomResponse {
   updatedAt: string;
   membersCount: number;
   ownerId: number;
-  isMember: boolean;
   tags: string[];
+}
+
+export interface ClassroomWithDetailsResponse extends ClassroomResponse {
+  isMember: boolean;
   isPendingRequest: boolean;
 }
 
@@ -38,7 +41,7 @@ export const classroomApi = {
     return response.data;
   },
   getClassroomDetails: async (handle: string) => {
-    const response = await ApiClient.get<ClassroomResponse>(
+    const response = await ApiClient.get<ClassroomWithDetailsResponse>(
       `/classroom/${handle}`,
     );
     return response.data;

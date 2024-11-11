@@ -47,7 +47,7 @@ export const createClassroom = async (
       avatarImage: avatarImage ? avatarImage.buffer : null,
       backgroundImage: backgroundImage ? backgroundImage.buffer : null,
       getStreamChannelId: channelId,
-      tags,
+      tags: tags ? tags : [],
     });
 
     return res.status(201).json(newClassroom);

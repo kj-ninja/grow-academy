@@ -20,7 +20,7 @@ export const ClassroomOwnerGuard = () => {
   const { isOwner } = useClassroomPolicy(classroomQuery.data);
 
   if (!isOwner) {
-    return <Navigate to={`/community/${handle}`} />;
+    return <Navigate to={`/classroom/${handle}`} />;
   }
 
   return <Outlet />;

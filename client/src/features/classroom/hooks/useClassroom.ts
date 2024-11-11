@@ -8,7 +8,7 @@ export const useClassroom = () => {
 
   if (!classroom) {
     throw new Error(
-      "useClassroom must be used with a community data already in cache.",
+      "useClassroom must be used with a classroom data already in cache.",
     );
   }
 

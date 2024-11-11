@@ -22,10 +22,11 @@ import { RegisterPage } from "@/pages/auth/RegisterPage";
 import { ClassroomProfileErrorElement } from "@/features/classroom/components/ClassroomProfileErrorElement";
 import { ClassroomGuard } from "@/features/classroom/components/ClassroomGuard";
 import { ClassroomLayout } from "@/features/classroom/components/ClassroomLayout";
+import { loader as userProfileLoader } from "@/pages/loaders/userProfilePageLoader";
+import { loader as classroomProfileLoader } from "@/pages/loaders/classroomProfilePageLoader";
 
 const OnboardingPage = () => import("./user/OnboardingPage");
 const ClassroomListPage = () => import("./classroom/ClassroomListPage");
-const UserProfilePage = () => import("./user/profile/UserProfilePage");
 const UserSettingsEditPage = () => import("./user/settings/UserSettingsPage");
 
 export const RouterProvider = () => {
@@ -54,7 +55,16 @@ export const RouterProvider = () => {
               <Route index lazy={ClassroomListPage} />
               {/*User profile*/}
               <Route errorElement={<UserProfileErrorElement />}>
-                <Route path="user/:username" lazy={UserProfilePage} />
+                <Route
+                  path="user/:username"
+                  lazy={async () => {
+                    const { Component } = await import(
+                      "./user/profile/UserProfilePage"
+                    );
+                    return { Component };
+                  }}
+                  loader={userProfileLoader}
+                />
                 <Route element={<CurrentUserGuard />}>
                   <Route
                     path="user/:username/settings/edit"
@@ -76,6 +86,7 @@ export const RouterProvider = () => {
                       );
                       return { Component: Classroom };
                     }}
+                    loader={classroomProfileLoader}
                   />
                 </Route>
               </Route>

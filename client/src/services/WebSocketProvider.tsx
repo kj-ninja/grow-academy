@@ -57,6 +57,8 @@ export const WebSocketProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
+// todo: think about this rule
+// eslint-disable-next-line react-refresh/only-export-components
 export const useWebSocket = () => {
   const socket = useContext(WebSocketContext);
   if (!socket) {

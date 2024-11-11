@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
 import { addUserToStreamChannel, createStreamChannel } from "services/Stream";
 import {
-  checkPendingRequest,
   createClassroomInDB,
   createMembership,
   deleteClassroomInDB,
@@ -13,6 +12,7 @@ import {
   getClassroomsWithPagination,
   updateMembershipStatus,
   findClassroomByHandle,
+  getUserMembershipStatus,
 } from "services/Classroom";
 import { errorResponse, validateHandle } from "utils";
 import type { AuthenticatedRequest, Images } from "types/types";
@@ -22,7 +22,8 @@ export const createClassroom = async (
   res: Response,
 ) => {
   const { id: userId } = req.user!;
-  const { classroomName, handle, description, accessType } = req.body;
+  // todo: strong typing for body
+  const { classroomName, handle, description, accessType, tags } = req.body;
 
   const files = req.files as Images;
   const avatarImage = files?.avatarImage?.[0];
@@ -46,6 +47,7 @@ export const createClassroom = async (
       avatarImage: avatarImage ? avatarImage.buffer : null,
       backgroundImage: backgroundImage ? backgroundImage.buffer : null,
       getStreamChannelId: channelId,
+      tags: tags ? tags : [],
     });
 
     return res.status(201).json(newClassroom);
@@ -279,26 +281,25 @@ export const getClassroomDetails = async (
   res: Response,
 ) => {
   const userId = req.user!.id;
-  const classroomId = parseInt(req.params.id);
-
-  if (isNaN(classroomId)) {
-    return errorResponse(res, "Invalid classroom ID", 400);
-  }
+  const classroomHandle = req.params.handle;
 
   try {
-    const classroom = await findClassroomById(classroomId);
+    const classroom = await findClassroomByHandle(classroomHandle);
 
     if (!classroom) {
       return errorResponse(res, "Classroom not found", 404);
     }
 
-    const isPendingRequest = await checkPendingRequest(classroomId, userId);
+    const { isMember, isPendingRequest } = await getUserMembershipStatus(
+      userId,
+      classroom.id,
+    );
 
     return res.status(200).json({
-      data: {
-        ...classroom,
-        isPendingRequest,
-      },
+      ...classroom,
+      tags: classroom.tags ? JSON.parse(classroom.tags) : [],
+      isPendingRequest,
+      isMember,
     });
   } catch (error) {
     console.error("Error fetching classroom details:", error);

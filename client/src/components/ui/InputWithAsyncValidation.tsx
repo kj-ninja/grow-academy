@@ -1,6 +1,6 @@
 import React from "react";
 import { Input } from "@/components/ui/Input";
-import Text from "@/components/ui/Text/Text";
+import { Text } from "@/components/ui/Text/Text";
 import { Spinner } from "@/components/ui/Spinner";
 import { useInputError } from "@/hooks/useInputError";
 

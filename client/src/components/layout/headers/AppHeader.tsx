@@ -14,7 +14,7 @@ import { useBinaryImage } from "@/hooks/useBinaryImage";
 import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 import { useState } from "react";
 import { CreateClassroomModal } from "@/features/classroom/components/CreateClassroomModal";
-import Text from "@/components/ui/Text/Text";
+import { Text } from "@/components/ui/Text/Text";
 
 export const AppHeader = () => {
   const { currentUser } = useCurrentUser();

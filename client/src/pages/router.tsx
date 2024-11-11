@@ -13,17 +13,24 @@ import {
   UnAuthenticationGuard,
 } from "@/features/auth/components/AuthenticationGuard";
 import { ActiveUserGuard } from "@/features/user/components/ActiveUserGuard";
-import { UserProfileErrorBoundary } from "@/features/user/components/UserProfileErrorBoundary";
+import { UserProfileErrorElement } from "@/features/user/components/UserProfileErrorElement";
 import { AppHeader } from "@/components/layout/headers/AppHeader";
 import { CurrentUserGuard } from "@/features/user/components/CurrentUserGuard";
 import { WelcomePage } from "@/pages/auth/WelcomePage";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { RegisterPage } from "@/pages/auth/RegisterPage";
+import { ClassroomProfileErrorElement } from "@/features/classroom/components/ClassroomProfileErrorElement";
+import { ClassroomGuard } from "@/features/classroom/components/ClassroomGuard";
+import { ClassroomLayout } from "@/features/classroom/components/ClassroomLayout";
+import { loader as userProfileLoader } from "@/pages/loaders/userProfilePageLoader";
+import { loader as classroomProfileLoader } from "@/pages/loaders/classroomProfilePageLoader";
 
 const OnboardingPage = () => import("./user/OnboardingPage");
-const HomePage = () => import("./HomePage");
+const ClassroomListPage = () => import("./classroom/ClassroomListPage");
 const UserProfilePage = () => import("./user/profile/UserProfilePage");
 const UserSettingsEditPage = () => import("./user/settings/UserSettingsPage");
+const ClassroomProfilePage = () =>
+  import("./classroom/profile/ClassroomProfilePage");
 
 export const RouterProvider = () => {
   const router = createBrowserRouter(
@@ -47,19 +54,37 @@ export const RouterProvider = () => {
         {/*Private routes*/}
         <Route element={<AppFrame header={<AppHeader />} />}>
           <Route element={<AuthenticationGuard />}>
-            <Route
-              element={<ActiveUserGuard />}
-              errorElement={<UserProfileErrorBoundary />}
-            >
-              <Route path="*" element={<NotFoundPage />} />
-              <Route path="/" lazy={HomePage} />
-              <Route path="user/:username" lazy={UserProfilePage} />
-              <Route element={<CurrentUserGuard />}>
+            <Route element={<ActiveUserGuard />}>
+              <Route index lazy={ClassroomListPage} />
+              {/*User profile*/}
+              <Route errorElement={<UserProfileErrorElement />}>
                 <Route
-                  path="user/:username/settings/edit"
-                  lazy={UserSettingsEditPage}
+                  path="user/:username"
+                  lazy={UserProfilePage}
+                  loader={userProfileLoader}
                 />
+                <Route element={<CurrentUserGuard />}>
+                  <Route
+                    path="user/:username/settings/edit"
+                    lazy={UserSettingsEditPage}
+                  />
+                </Route>
               </Route>
+              {/*Classrooms*/}
+              <Route
+                element={<ClassroomGuard />}
+                errorElement={<ClassroomProfileErrorElement />}
+              >
+                <Route path="classroom/:handle" element={<ClassroomLayout />}>
+                  <Route
+                    index
+                    lazy={ClassroomProfilePage}
+                    loader={classroomProfileLoader}
+                  />
+                </Route>
+              </Route>
+
+              <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Route>
         </Route>

@@ -14,4 +14,9 @@ export const ClassroomQueries = {
       queryFn: () => classroomApi.checkClassroomHandle(handle),
       retry: false,
     }),
+  details: (handle: string) =>
+    queryOptions({
+      queryKey: ["classroomDetail", handle],
+      queryFn: () => classroomApi.getClassroomDetails(handle),
+    }),
 };

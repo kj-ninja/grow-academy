@@ -240,7 +240,7 @@ export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
 
                 <Button
                   type="button"
-                  className="w-full mt-4"
+                  className="w-full mt-8"
                   onClick={() => {
                     setFormStep(FormStep.PRIVACY);
                   }}

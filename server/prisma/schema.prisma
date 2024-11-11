@@ -1,4 +1,5 @@
 // This is your Prisma schema file,
+
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
@@ -38,6 +39,8 @@ model ClassroomsMembers {
   memberShipStatus String    @default("pending")
 
   @@id([userId, classroomId])
+  @@index([classroomId])
+  @@index([userId])
 }
 
 model Classroom {
@@ -56,6 +59,7 @@ model Classroom {
   getStreamChannelId String?
   isLive             Boolean             @default(false)
   resources          Resource[]
+  tags               String?
 }
 
 model Resource {

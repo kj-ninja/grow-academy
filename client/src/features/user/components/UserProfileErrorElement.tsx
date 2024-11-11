@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 
-export const UserProfileErrorBoundary = () => {
+export const UserProfileErrorElement = () => {
   const navigate = useNavigate();
 
   return (

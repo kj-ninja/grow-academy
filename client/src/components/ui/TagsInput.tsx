@@ -1,6 +1,6 @@
 import React, { KeyboardEventHandler, useState, ChangeEvent } from "react";
 import { Input } from "@/components/ui/Input";
-import Text from "@/components/ui/Text/Text";
+import { Text } from "@/components/ui/Text/Text";
 import { X } from "lucide-react";
 
 interface TagsInputProps {

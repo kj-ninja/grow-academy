@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import Text from "@/components/ui/Text/Text";
+import { Text } from "@/components/ui/Text/Text";
 
 const Card = React.forwardRef<
   HTMLDivElement,

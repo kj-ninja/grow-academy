@@ -26,7 +26,7 @@ import {
 const router = Router();
 
 router.get("/", authenticateJWT, getClassrooms);
-router.get("/:id/details", authenticateJWT, getClassroomDetails);
+router.get("/:handle/", authenticateJWT, getClassroomDetails);
 
 router.post("/", authenticateJWT, uploadMultiple, createClassroom);
 router.delete("/:id", authenticateJWT, deleteClassroom);

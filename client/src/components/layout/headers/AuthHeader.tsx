@@ -1,7 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import { useAuthState } from "@/features/auth/stores/authStore";
 import { Button } from "@/components/ui/Button";
-import Text from "@/components/ui/Text/Text";
+import { Text } from "@/components/ui/Text/Text";
 
 export const AuthHeader = () => {
   const { status, logout } = useAuthState();

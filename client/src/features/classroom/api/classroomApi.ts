@@ -1,5 +1,24 @@
 import { ApiClient } from "@/services/ApiClient";
 
+export interface ClassroomResponse {
+  id: number;
+  classroomName: string;
+  handle: string;
+  description?: string;
+  accessType: string;
+  avatarImage?: string;
+  backgroundImage?: string;
+  getStreamChannelId: string;
+  isLive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  membersCount: number;
+  ownerId: number;
+  isMember: boolean;
+  tags: string[];
+  isPendingRequest: boolean;
+}
+
 export const classroomApi = {
   createClassroom: async (data: FormData) => {
     const response = await ApiClient.post("/classroom", data, {
@@ -16,6 +35,26 @@ export const classroomApi = {
   },
   checkClassroomHandle: async (handle: string) => {
     const response = await ApiClient.get(`/classroom/check-handle/${handle}`);
+    return response.data;
+  },
+  getClassroomDetails: async (handle: string) => {
+    const response = await ApiClient.get<ClassroomResponse>(
+      `/classroom/${handle}`,
+    );
+    return response.data;
+  },
+  getClassroomList: async ({
+    page = 1,
+    limit = 10,
+    filterByOwner = false,
+  }: {
+    page?: number;
+    limit?: number;
+    filterByOwner?: boolean;
+  }) => {
+    const response = await ApiClient.get(
+      `/classroom?page=${page}&limit=${limit}&owner=${filterByOwner}`,
+    );
     return response.data;
   },
 };

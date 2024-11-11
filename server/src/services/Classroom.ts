@@ -98,6 +98,7 @@ export const getClassroomsWithPagination = async (
   ]);
 
   const totalPages = Math.ceil(totalClassrooms / limit);
+
   const formattedClassrooms = classrooms.map((classroom) => ({
     id: classroom.id,
     classroomName: classroom.classroomName,
@@ -106,10 +107,13 @@ export const getClassroomsWithPagination = async (
     accessType: classroom.accessType,
     createdAt: classroom.createdAt,
     updatedAt: classroom.updatedAt,
-    classroomAvatarImage: classroom.avatarImage,
-    classroomBackgroundImage: classroom.backgroundImage,
+    avatarImage: classroom.avatarImage,
+    backgroundImage: classroom.backgroundImage,
     membersCount: classroom._count.members,
     ownerId: classroom.ownerId,
+    getStreamChannelId: classroom.getStreamChannelId,
+    isLive: classroom.isLive,
+    tags: classroom.tags ? JSON.parse(classroom.tags) : [],
   }));
 
   return {
@@ -186,3 +190,17 @@ export const findClassroomByHandle = async (handle: string) => {
     where: { handle },
   });
 };
+
+export async function getUserMembershipStatus(
+  userId: number,
+  classroomId: number,
+) {
+  const membership = await prisma.classroomsMembers.findFirst({
+    where: { userId, classroomId },
+  });
+
+  const isMember = membership?.memberShipStatus === "approved";
+  const isPendingRequest = membership?.memberShipStatus === "pending";
+
+  return { isMember, isPendingRequest };
+}

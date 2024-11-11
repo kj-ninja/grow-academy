@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/Card";
 import { PropsWithChildren } from "react";
-import Text from "@/components/ui/Text/Text";
+import { Text } from "@/components/ui/Text/Text";
 
 interface AuthPageProps extends PropsWithChildren {
   title: string;

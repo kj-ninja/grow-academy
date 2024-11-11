@@ -6,21 +6,19 @@ import { useClassroomPolicy } from "@/features/classroom/policies/useClassroomPo
 
 export function ClassroomGuestView() {
   const { classroom } = useClassroom();
-  const { canJoin, isPendingRequest } = useClassroomPolicy(classroom);
+  const { isPendingRequest } = useClassroomPolicy(classroom);
 
   return (
     <ClassroomDetailsLayout>
       <div className="flex items-center">
         <Text type="body">Classroom: {classroom.classroomName}</Text>
-        {canJoin && (
-          <Button
-            className="ml-4"
-            onClick={() => console.log("join classroom")}
-            disabled={isPendingRequest}
-          >
-            {isPendingRequest ? "Pending Request" : "Join Classroom"}
-          </Button>
-        )}
+        <Button
+          className="ml-4"
+          onClick={() => console.log("join classroom")}
+          disabled={isPendingRequest}
+        >
+          {isPendingRequest ? "Pending Request" : "Join Classroom"}
+        </Button>
       </div>
     </ClassroomDetailsLayout>
   );

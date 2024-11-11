@@ -24,6 +24,7 @@ import { ClassroomGuard } from "@/features/classroom/components/ClassroomGuard";
 import { ClassroomLayout } from "@/features/classroom/components/ClassroomLayout";
 import { loader as userProfileLoader } from "@/pages/loaders/userProfilePageLoader";
 import { loader as classroomProfileLoader } from "@/pages/loaders/classroomProfilePageLoader";
+import { ClassroomOwnerGuard } from "@/features/classroom/components/ClassroomOwnerGuard";
 
 const OnboardingPage = () => import("./user/OnboardingPage");
 const ClassroomListPage = () => import("./classroom/ClassroomListPage");
@@ -31,12 +32,14 @@ const UserProfilePage = () => import("./user/profile/UserProfilePage");
 const UserSettingsEditPage = () => import("./user/settings/UserSettingsPage");
 const ClassroomProfilePage = () =>
   import("./classroom/profile/ClassroomProfilePage");
+const ClassroomSettingsEditPage = () =>
+  import("./classroom/settings/ClassroomSettingsPage");
 
 export const RouterProvider = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route errorElement={<RootErrorBoundary />}>
-        {/* Auth flow */}
+        {/*Public routes - Auth flow */}
         <Route element={<AppFrame header={<AuthHeader />} />}>
           <Route path="/auth" element={<UnAuthenticationGuard />}>
             <Route index element={<WelcomePage />} />
@@ -45,7 +48,7 @@ export const RouterProvider = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Route>
 
-          {/*Onboarding*/}
+          {/*Public route - Onboarding*/}
           <Route element={<AuthenticationGuard />}>
             <Route path="onboarding" lazy={OnboardingPage} />
           </Route>
@@ -55,6 +58,7 @@ export const RouterProvider = () => {
         <Route element={<AppFrame header={<AppHeader />} />}>
           <Route element={<AuthenticationGuard />}>
             <Route element={<ActiveUserGuard />}>
+              {/*Home page*/}
               <Route index lazy={ClassroomListPage} />
               {/*User profile*/}
               <Route errorElement={<UserProfileErrorElement />}>
@@ -80,6 +84,13 @@ export const RouterProvider = () => {
                     index
                     lazy={ClassroomProfilePage}
                     loader={classroomProfileLoader}
+                  />
+                </Route>
+                {/*Classrooms settings*/}
+                <Route element={<ClassroomOwnerGuard />}>
+                  <Route
+                    path="classroom/:handle/settings/edit"
+                    lazy={ClassroomSettingsEditPage}
                   />
                 </Route>
               </Route>

@@ -72,6 +72,10 @@ export const RouterProvider = () => {
                     path="user/:username/settings/edit"
                     lazy={UserSettingsEditPage}
                   />
+                  <Route
+                    path="user/:username/settings/classrooms"
+                    lazy={UserSettingsEditPage}
+                  />
                 </Route>
               </Route>
               {/*Classrooms*/}

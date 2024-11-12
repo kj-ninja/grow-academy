@@ -24,8 +24,13 @@ import { BackgroundImage } from "@/components/ui/BackgroundImage";
 import { AvatarImage } from "@/components/ui/AvatarImage";
 import { appendImageToFormData } from "@/lib/utils";
 import { useToast } from "@/hooks/useToast";
+import { BottomSheet } from "@/components/ui/BottomSheet";
 
-export function UpdateUserProfileForm() {
+export function UpdateUserProfileForm({
+  withBottomSheet,
+}: {
+  withBottomSheet?: boolean;
+}) {
   const { currentUser, refetchUserProfile } = useCurrentUser();
   const { image: avatarImage, setImage: setAvatarImage } = useBinaryImage(
     currentUser?.avatarImage,
@@ -183,13 +188,37 @@ export function UpdateUserProfileForm() {
             />
             <FormRootError />
 
-            <Button
-              type="submit"
-              className="w-full mt-8"
-              disabled={!form.formState.isValid || form.formState.isSubmitting}
-            >
-              Submit
-            </Button>
+            {withBottomSheet ? (
+              <BottomSheet>
+                <Button
+                  type="submit"
+                  className="w-[120px]"
+                  disabled={
+                    !form.formState.isValid || form.formState.isSubmitting
+                  }
+                >
+                  Submit
+                </Button>
+                <Button
+                  type="button"
+                  className="w-[120px]"
+                  variant="outline"
+                  onClick={() => navigate(`/user/${currentUser?.username}`)}
+                >
+                  Cancel
+                </Button>
+              </BottomSheet>
+            ) : (
+              <Button
+                type="submit"
+                className="w-full mt-8"
+                disabled={
+                  !form.formState.isValid || form.formState.isSubmitting
+                }
+              >
+                Submit
+              </Button>
+            )}
           </div>
         </form>
       </Form>

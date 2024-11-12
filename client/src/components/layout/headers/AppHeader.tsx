@@ -28,7 +28,7 @@ export const AppHeader = () => {
 
   return (
     <header className="w-full border-b-2 bg-white">
-      <div className="w-full max-w-5xl mx-auto flex justify-between p-4">
+      <div className="w-full max-w-6xl mx-auto flex justify-between p-4">
         <Link to="/" className="flex flex-row items-center">
           <Text type="h1" className="hover:opacity-80">
             <span className="text-primary">Grow</span>{" "}

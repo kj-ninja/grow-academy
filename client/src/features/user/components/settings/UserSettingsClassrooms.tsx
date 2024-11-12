@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { ClassroomInfiniteQueries } from "@/features/classroom/api/infiniteQueryKeys";
 import { useMemo } from "react";
-import { ClassroomSettingsTile } from "@/features/classroom/components/ClassroomSettingsTile";
+import { UserSettingsClassroomTile } from "@/features/user/components/settings/UserSettingsClassroomTile";
 
 export function UserSettingsClassrooms() {
   const { data } = useInfiniteQuery({
@@ -19,7 +19,7 @@ export function UserSettingsClassrooms() {
   return (
     <div className="flex flex-col gap-2 p-4">
       {pages.map((classroom) => (
-        <ClassroomSettingsTile key={classroom.id} classroom={classroom} />
+        <UserSettingsClassroomTile key={classroom.id} classroom={classroom} />
       ))}
     </div>
   );

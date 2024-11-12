@@ -5,7 +5,7 @@ import { useBinaryImage } from "@/hooks/useBinaryImage";
 import { Earth, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export function ClassroomSettingsTile({
+export function UserSettingsClassroomTile({
   classroom,
 }: {
   classroom: ClassroomResponse;
@@ -33,11 +33,11 @@ export function ClassroomSettingsTile({
       </div>
 
       <div className="flex gap-2 items-start">
-        <div className="flex gap-1 bg-backgroundSecondary rounded-full items-center px-1.5 py-1">
+        <div className="flex gap-1 bg-backgroundSecondary rounded-full items-center px-1.5 py-[2px]">
           <User size={14} fill="black" />
           <Text type="bodySmallBold">{classroom.membersCount}</Text>
         </div>
-        <div className="flex gap-1 bg-backgroundSecondary rounded-full items-center px-1.5 py-1">
+        <div className="flex gap-1 bg-backgroundSecondary rounded-full items-center px-1.5 py-[2px]">
           <Earth size={14} />
           <Text type="bodySmallBold">{classroom.accessType}</Text>
         </div>

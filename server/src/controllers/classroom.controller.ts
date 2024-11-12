@@ -116,7 +116,9 @@ export const joinClassroom = async (
       return res.status(201).json({ message: "Joined classroom successfully" });
     } else {
       await createMembership(classroom.id, userId, "pending");
-      return res.status(201).json({ message: "Join request submitted" });
+      return res
+        .status(201)
+        .json({ message: "Join request submitted", data: { classroomId } });
     }
   } catch (error) {
     console.error("Error joining classroom:", error);

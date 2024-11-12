@@ -28,7 +28,7 @@ export const useJoinClassroomMutation = () => {
   const { handle } = useClassroom();
 
   return useMutation({
-    mutationFn: (classroomId: string) => {
+    mutationFn: (classroomId: number) => {
       return classroomApi.joinClassroom(classroomId);
     },
     onSuccess: ({ message, data }) => {
@@ -45,7 +45,7 @@ export const useJoinClassroomMutation = () => {
             }
           },
         );
-        sendJoinRequest(Number(data.classroomId));
+        sendJoinRequest(data.classroomId);
       }
     },
   });

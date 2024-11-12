@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useWebSocket } from "@/services/WebSocketProvider";
+import { useWebSocket } from "@/services/WebSocket/WebSocketContext";
 import { Socket } from "socket.io-client";
 import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 
@@ -27,7 +27,6 @@ export function useClassroomWebSocket() {
     };
   }, [socket]);
 
-  // todo: move user id logic to server side
   const sendJoinRequest = (classroomId: number) => {
     if (currentUser) {
       socket.emit("join-request", { classroomId, userId: currentUser.id });

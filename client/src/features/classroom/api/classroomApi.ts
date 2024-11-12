@@ -60,7 +60,7 @@ export const classroomApi = {
     );
     return response.data;
   },
-  joinClassroom: async (classroomId: string) => {
+  joinClassroom: async (classroomId: number) => {
     const response = await ApiClient.post(`/classroom/${classroomId}/join`);
     return response.data;
   },

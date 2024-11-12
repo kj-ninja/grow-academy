@@ -1,17 +1,7 @@
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useRef,
-} from "react";
+import React, { PropsWithChildren, useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
-
-const WebSocketContext = createContext<Socket<
-  DefaultEventsMap,
-  DefaultEventsMap
-> | null>(null);
+import { WebSocketContext } from "./WebSocketContext";
 
 export const WebSocketProvider = ({ children }: PropsWithChildren) => {
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(
@@ -55,14 +45,4 @@ export const WebSocketProvider = ({ children }: PropsWithChildren) => {
       {children}
     </WebSocketContext.Provider>
   );
-};
-
-// todo: think about this rule
-// eslint-disable-next-line react-refresh/only-export-components
-export const useWebSocket = () => {
-  const socket = useContext(WebSocketContext);
-  if (!socket) {
-    throw new Error("useWebSocket must be used within a WebSocketProvider");
-  }
-  return socket;
 };

@@ -12,7 +12,7 @@ export function ClassroomGuestView() {
 
   const handleJoinRequest = async () => {
     try {
-      await mutateAsync(classroom.id.toString());
+      await mutateAsync(classroom.id);
     } catch (error) {
       // todo: add error handler
       console.log("Error", error);

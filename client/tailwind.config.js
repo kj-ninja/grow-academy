@@ -21,6 +21,7 @@ export default {
         },
         input: "#d1d5db",
         placeholder: "#9ca3af",
+        border: "#c3c4c6",
       },
       fontSize: {
         h1: ["24px", { lineHeight: "28px", letterSpacing: "-0.5px" }],

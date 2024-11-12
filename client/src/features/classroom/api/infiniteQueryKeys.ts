@@ -15,12 +15,13 @@ interface PaginatedResponse<T> {
 }
 
 export const ClassroomInfiniteQueries = {
-  classrooms: ({ pageSize = 10 }) => ({
-    queryKey: [{ type: "classrooms", pageSize }],
+  classrooms: ({ pageSize = 10, filterByOwner = false }) => ({
+    queryKey: [{ type: "classrooms", pageSize, filterByOwner }],
     queryFn: ({ pageParam = 1 }) => {
       return classroomApi.getClassroomList({
         page: pageParam,
         limit: pageSize,
+        filterByOwner,
       });
     },
     getNextPageParam: (lastPage: PaginatedResponse<ClassroomResponse>) => {

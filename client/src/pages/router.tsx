@@ -69,7 +69,7 @@ export const RouterProvider = () => {
                 />
                 <Route element={<CurrentUserGuard />}>
                   <Route
-                    path="user/:username/settings/edit"
+                    path="user/:username/settings/:edit"
                     lazy={UserSettingsEditPage}
                   />
                 </Route>

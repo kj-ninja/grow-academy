@@ -16,6 +16,7 @@ export type User = {
   backgroundImage?: { data: number[]; type: "Buffer" };
   createdAt: Date;
   isActive: boolean;
+  ownedClassroomCount: number;
 };
 
 interface AuthState {

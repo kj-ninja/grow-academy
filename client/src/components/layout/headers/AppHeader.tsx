@@ -40,7 +40,11 @@ export const AppHeader = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer" tabIndex={0}>
-                <AvatarImage src={image} alt="user profile image" />
+                <AvatarImage
+                  src={image}
+                  alt="User profile image"
+                  className="hover:opacity-80"
+                />
                 <AvatarFallback type="user" />
               </Avatar>
             </DropdownMenuTrigger>
@@ -56,7 +60,7 @@ export const AppHeader = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() =>
-                    navigate(`/user/${currentUser?.username}/settings/edit`)
+                    navigate(`/user/${currentUser?.username}/settings/profile`)
                   }
                 >
                   Settings

@@ -6,8 +6,8 @@ export interface ClassroomResponse {
   handle: string;
   description?: string;
   accessType: string;
-  avatarImage?: string;
-  backgroundImage?: string;
+  avatarImage?: { data: number[]; type: "Buffer" };
+  backgroundImage?: { data: number[]; type: "Buffer" };
   getStreamChannelId: string;
   isLive: boolean;
   createdAt: string;

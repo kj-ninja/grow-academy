@@ -35,8 +35,9 @@ export const BackgroundImage = ({
 
   const changeBackgroundImage = !!onChange;
 
+  // todo: extract bg-primary/20 to var
   return (
-    <div className={cn("w-full relative bg-primary/10", className)}>
+    <div className={cn("w-full relative bg-primary/20", className)}>
       {changeBackgroundImage && (
         <>
           {image ? (

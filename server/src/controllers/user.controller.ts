@@ -52,7 +52,15 @@ export const getUser = async (req: Request, res: Response) => {
 
     if (!user) return errorResponse(res, "User not found", 404);
 
-    return res.status(200).json(user);
+    const ownedClassroomCount = await prisma.classroom.count({
+      where: { ownerId: user.id },
+    });
+    const response = {
+      ...user,
+      ownedClassroomCount,
+    };
+
+    return res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch user profile" });
   }

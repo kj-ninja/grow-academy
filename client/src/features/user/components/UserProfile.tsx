@@ -62,7 +62,7 @@ export function UserProfile() {
             </div>
 
             <div className="flex justify-between">
-              <div className="flex gap-2">
+              <div className="flex items-center gap-2">
                 <Badge
                   icon={<span className="font-bold text-sm">0</span>}
                   text={<Text type="bodySmall">Followers</Text>}

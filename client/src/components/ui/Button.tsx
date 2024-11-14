@@ -23,7 +23,7 @@ const buttonVariants = cva(
         default: "rounded-md text-sm px-3 py-2",
         xs: "rounded-md px-3 py-2 text-xs",
         lg: "rounded-md px-4 py-2.5 text-base",
-        icon: "p-0",
+        icon: "rounded-md px-3 py-2 flex items-center justify-between gap-2 text-sm",
       },
     },
     defaultVariants: {

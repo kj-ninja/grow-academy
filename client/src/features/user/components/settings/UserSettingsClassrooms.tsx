@@ -35,7 +35,6 @@ export function UserSettingsClassrooms() {
             You have no Classrooms yet. Feel free to create one
           </Text>
           <Button
-            size="sm"
             variant="outline"
             onClick={() => setIsCreateClassroomModalOpen(true)}
           >

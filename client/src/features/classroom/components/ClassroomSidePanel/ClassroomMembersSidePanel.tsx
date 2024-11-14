@@ -75,7 +75,7 @@ export const ClassroomMembersSidePanel = () => {
                 </Text>
               </div>
               <div className="flex gap-3 w-full px-4 pb-2 justify-center">
-                <Button onClick={() => {}} size="sm" className="flex-1">
+                <Button onClick={() => {}} className="flex-1">
                   <User size={16} />
                   <Text type="bodySmallBold">See Profile</Text>
                 </Button>

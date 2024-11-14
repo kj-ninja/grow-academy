@@ -86,7 +86,6 @@ export const RouterProvider = () => {
                     loader={classroomProfileLoader}
                   />
                 </Route>
-                {/*Classrooms settings*/}
                 <Route element={<ClassroomOwnerGuard />}>
                   <Route
                     path="classroom/:handle/settings/edit"
@@ -94,7 +93,7 @@ export const RouterProvider = () => {
                   />
                 </Route>
               </Route>
-
+              {/*Fallback*/}
               <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Route>

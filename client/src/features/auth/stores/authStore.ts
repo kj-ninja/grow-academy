@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { queryClient } from "@/services/ReactQuery";
 
 type AuthStatus = "idle" | "initializing" | "authenticated" | "unauthenticated";
 
@@ -38,5 +39,6 @@ export const useAuthState = create<AuthState & AuthActions>((set) => ({
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
     set({ status: "unauthenticated" });
+    queryClient.clear();
   },
 }));

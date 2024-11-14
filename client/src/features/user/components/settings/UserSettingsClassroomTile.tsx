@@ -4,6 +4,7 @@ import { ClassroomResponse } from "@/features/classroom/api/classroomApi";
 import { useBinaryImage } from "@/hooks/useBinaryImage";
 import { Earth, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/Badge";
 
 export function UserSettingsClassroomTile({
   classroom,
@@ -33,14 +34,14 @@ export function UserSettingsClassroomTile({
       </div>
 
       <div className="flex gap-2 items-start">
-        <div className="flex gap-1 bg-backgroundSecondary rounded-full items-center px-1.5 py-[2px]">
-          <User size={14} fill="black" />
-          <Text type="bodySmallBold">{classroom.membersCount}</Text>
-        </div>
-        <div className="flex gap-1 bg-backgroundSecondary rounded-full items-center px-1.5 py-[2px]">
-          <Earth size={14} />
-          <Text type="bodySmallBold">{classroom.accessType}</Text>
-        </div>
+        <Badge
+          icon={<User size={14} fill="black" />}
+          text={<Text type="bodySmallBold">{classroom.membersCount || 0}</Text>}
+        />
+        <Badge
+          icon={<Earth size={14} />}
+          text={<Text type="bodySmallBold">{classroom.accessType}</Text>}
+        />
       </div>
     </div>
   );

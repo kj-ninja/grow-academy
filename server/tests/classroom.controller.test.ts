@@ -103,7 +103,7 @@ describe("Classroom Controller", () => {
         classroomName: "Private Classroom",
         handle: "Private_Classroom",
         ownerId: testUserId,
-        accessType: "private",
+        accessType: "Private",
       },
     });
 
@@ -187,7 +187,7 @@ describe("Classroom Controller", () => {
         classroomName: "Cancel Request Classroom",
         handle: "Cancel_Request_Classroom",
         ownerId: testUserId,
-        accessType: "private",
+        accessType: "Private",
       },
     });
 

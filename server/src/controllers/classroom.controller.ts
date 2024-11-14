@@ -13,6 +13,7 @@ import {
   updateMembershipStatus,
   findClassroomByHandle,
   getUserMembershipStatus,
+  leaveClassroom,
 } from "services/Classroom";
 import { errorResponse, validateHandle } from "utils";
 import type { AuthenticatedRequest, Images } from "types/types";
@@ -43,7 +44,7 @@ export const createClassroom = async (
       classroomName,
       handle,
       description,
-      accessType: accessType || "public",
+      accessType: accessType || "Public",
       avatarImage: avatarImage ? avatarImage.buffer : null,
       backgroundImage: backgroundImage ? backgroundImage.buffer : null,
       getStreamChannelId: channelId,
@@ -87,10 +88,66 @@ export const deleteClassroom = async (
   }
 };
 
-export const joinClassroom = async (
+export const getClassrooms = async (
   req: AuthenticatedRequest,
   res: Response,
 ) => {
+  const userId = req.user!.id;
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 10;
+  const filterByOwner = req.query.owner === "true";
+
+  try {
+    const classroomsData = await getClassroomsWithPagination(
+      userId,
+      page,
+      limit,
+      filterByOwner,
+    );
+
+    return res.status(200).json(classroomsData);
+  } catch (error) {
+    console.error("Error fetching classrooms:", error);
+    return errorResponse(res, "Failed to fetch classrooms");
+  }
+};
+
+// todo: remove owner id from response and members list?
+export const getClassroomDetails = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const userId = req.user!.id;
+  const classroomHandle = req.params.handle;
+
+  try {
+    // Fetch classroom with owner details
+    const classroom = await findClassroomByHandle(classroomHandle);
+
+    if (!classroom) {
+      return errorResponse(res, "Classroom not found", 404);
+    }
+
+    // Fetch user membership status
+    const { isMember, isPendingRequest } = await getUserMembershipStatus(
+      userId,
+      classroom.id,
+    );
+
+    // Prepare and return the response payload
+    return res.status(200).json({
+      ...classroom,
+      tags: classroom.tags ? JSON.parse(classroom.tags) : [],
+      isPendingRequest,
+      isMember,
+    });
+  } catch (error) {
+    console.error("Error fetching classroom details:", error);
+    return errorResponse(res, "Failed to fetch classroom details");
+  }
+};
+
+export const joinRequest = async (req: AuthenticatedRequest, res: Response) => {
   const userId = req.user!.id;
   const classroomId = parseInt(req.params.id);
 
@@ -100,6 +157,7 @@ export const joinClassroom = async (
 
   try {
     const classroom = await findClassroomById(classroomId);
+    console.log("classroom:", classroom);
 
     if (!classroom) {
       return errorResponse(res, "Classroom not found", 404);
@@ -109,7 +167,7 @@ export const joinClassroom = async (
       return errorResponse(res, "Classroom chat channel not available", 500);
     }
 
-    if (classroom.accessType === "public") {
+    if (classroom.accessType === "Public") {
       await createMembership(classroom.id, userId, "approved");
       await addUserToStreamChannel(classroom.getStreamChannelId, userId);
 
@@ -126,7 +184,11 @@ export const joinClassroom = async (
   }
 };
 
-export const viewPendingRequests = async (req: Request, res: Response) => {
+export const cancelJoinRequest = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const userId = req.user!.id;
   const classroomId = parseInt(req.params.id);
 
   if (isNaN(classroomId)) {
@@ -134,10 +196,37 @@ export const viewPendingRequests = async (req: Request, res: Response) => {
   }
 
   try {
-    const pendingRequests = await findPendingRequests(classroomId);
-    res.status(200).json(pendingRequests);
+    const deletedCount = await deletePendingMembership(classroomId, userId);
+
+    if (deletedCount === 0) {
+      return errorResponse(res, "No pending join request found", 404);
+    }
+
+    res.status(200).json({ message: "Join request canceled successfully" });
   } catch (error) {
-    return errorResponse(res, "Failed to fetch pending requests");
+    return errorResponse(res, "Failed to cancel join request");
+  }
+};
+
+export const leaveClassroomController = async (req: Request, res: Response) => {
+  const userId = req.user!.id; // Assumes you have user authentication middleware
+  const classroomId = parseInt(req.params.id);
+
+  if (isNaN(classroomId)) {
+    return errorResponse(res, "Invalid classroom ID", 400);
+  }
+
+  try {
+    const result = await leaveClassroom(classroomId, userId);
+
+    if (!result.success) {
+      return res.status(400).json({ message: result.message });
+    }
+
+    return res.status(200).json({ message: result.message });
+  } catch (error) {
+    console.error("Error leaving classroom:", error);
+    return errorResponse(res, "Failed to leave the classroom");
   }
 };
 
@@ -187,11 +276,7 @@ export const rejectJoinRequest = async (req: Request, res: Response) => {
   }
 };
 
-export const cancelJoinRequest = async (
-  req: AuthenticatedRequest,
-  res: Response,
-) => {
-  const userId = req.user!.id;
+export const viewPendingRequests = async (req: Request, res: Response) => {
   const classroomId = parseInt(req.params.id);
 
   if (isNaN(classroomId)) {
@@ -199,39 +284,10 @@ export const cancelJoinRequest = async (
   }
 
   try {
-    const deletedCount = await deletePendingMembership(classroomId, userId);
-
-    if (deletedCount === 0) {
-      return errorResponse(res, "No pending join request found", 404);
-    }
-
-    res.status(200).json({ message: "Join request canceled successfully" });
+    const pendingRequests = await findPendingRequests(classroomId);
+    res.status(200).json(pendingRequests);
   } catch (error) {
-    return errorResponse(res, "Failed to cancel join request");
-  }
-};
-
-export const getClassrooms = async (
-  req: AuthenticatedRequest,
-  res: Response,
-) => {
-  const userId = req.user!.id;
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 10;
-  const filterByOwner = req.query.owner === "true";
-
-  try {
-    const classroomsData = await getClassroomsWithPagination(
-      userId,
-      page,
-      limit,
-      filterByOwner,
-    );
-
-    return res.status(200).json(classroomsData);
-  } catch (error) {
-    console.error("Error fetching classrooms:", error);
-    return errorResponse(res, "Failed to fetch classrooms");
+    return errorResponse(res, "Failed to fetch pending requests");
   }
 };
 
@@ -275,37 +331,6 @@ export const removeMember = async (
     res.status(200).json({ message: "Member removed successfully" });
   } catch (error) {
     return errorResponse(res, "Failed to remove member from classroom");
-  }
-};
-
-export const getClassroomDetails = async (
-  req: AuthenticatedRequest,
-  res: Response,
-) => {
-  const userId = req.user!.id;
-  const classroomHandle = req.params.handle;
-
-  try {
-    const classroom = await findClassroomByHandle(classroomHandle);
-
-    if (!classroom) {
-      return errorResponse(res, "Classroom not found", 404);
-    }
-
-    const { isMember, isPendingRequest } = await getUserMembershipStatus(
-      userId,
-      classroom.id,
-    );
-
-    return res.status(200).json({
-      ...classroom,
-      tags: classroom.tags ? JSON.parse(classroom.tags) : [],
-      isPendingRequest,
-      isMember,
-    });
-  } catch (error) {
-    console.error("Error fetching classroom details:", error);
-    return errorResponse(res, "Failed to fetch classroom details");
   }
 };
 

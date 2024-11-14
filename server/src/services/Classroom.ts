@@ -90,6 +90,15 @@ export const getClassroomsWithPagination = async (
         _count: {
           select: { members: true },
         },
+        owner: {
+          select: {
+            id: true,
+            username: true,
+            firstName: true,
+            lastName: true,
+            avatarImage: true,
+          },
+        },
       },
     }),
     prisma.classroom.count({
@@ -110,7 +119,7 @@ export const getClassroomsWithPagination = async (
     avatarImage: classroom.avatarImage,
     backgroundImage: classroom.backgroundImage,
     membersCount: classroom._count.members,
-    ownerId: classroom.ownerId,
+    owner: classroom.owner,
     getStreamChannelId: classroom.getStreamChannelId,
     isLive: classroom.isLive,
     tags: classroom.tags ? JSON.parse(classroom.tags) : [],
@@ -164,21 +173,6 @@ export const deleteClassroomMember = async (
   return deletedMember ? 1 : 0;
 };
 
-export const checkPendingRequest = async (
-  classroomId: number,
-  userId: number,
-): Promise<boolean> => {
-  const pendingRequest = await prisma.classroomsMembers.findFirst({
-    where: {
-      classroomId,
-      userId,
-      memberShipStatus: "pending",
-    },
-  });
-
-  return Boolean(pendingRequest);
-};
-
 export const findClassroomByName = async (classroomName: string) => {
   return prisma.classroom.findFirst({
     where: { classroomName },
@@ -188,6 +182,23 @@ export const findClassroomByName = async (classroomName: string) => {
 export const findClassroomByHandle = async (handle: string) => {
   return prisma.classroom.findUnique({
     where: { handle },
+    include: {
+      owner: {
+        select: {
+          id: true,
+          username: true,
+          firstName: true,
+          lastName: true,
+          avatarImage: true,
+        },
+      },
+      members: {
+        select: {
+          userId: true,
+          role: true,
+        },
+      },
+    },
   });
 };
 
@@ -204,3 +215,39 @@ export async function getUserMembershipStatus(
 
   return { isMember, isPendingRequest };
 }
+
+export const leaveClassroom = async (classroomId: number, userId: number) => {
+  // Check if the user is a member of the classroom
+  const membership = await prisma.classroomsMembers.findUnique({
+    where: {
+      userId_classroomId: {
+        userId,
+        classroomId,
+      },
+    },
+  });
+
+  if (!membership) {
+    return { success: false, message: "Membership not found" };
+  }
+
+  // Only proceed if the user is not the owner
+  if (membership.role === "owner") {
+    return {
+      success: false,
+      message: "Owners cannot leave their own classroom",
+    };
+  }
+
+  // Delete the membership entry
+  await prisma.classroomsMembers.delete({
+    where: {
+      userId_classroomId: {
+        userId,
+        classroomId,
+      },
+    },
+  });
+
+  return { success: true, message: "Successfully left the classroom" };
+};

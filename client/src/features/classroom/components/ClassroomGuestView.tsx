@@ -1,36 +1,62 @@
 import { ClassroomDetailsLayout } from "@/features/classroom/components/ClassroomDetailsLayout";
-import { Text } from "@/components/ui/Text/Text";
-import { Button } from "@/components/ui/Button";
 import { useClassroom } from "@/features/classroom/hooks/useClassroom";
 import { useClassroomPolicy } from "@/features/classroom/policies/useClassroomPolicy";
-import { useJoinClassroomMutation } from "@/features/classroom/api/mutations";
+import {
+  useCancelJoinRequestMutation,
+  useJoinClassroomMutation,
+} from "@/features/classroom/api/mutations";
+import { Button } from "@/components/ui/Button";
 
 export function ClassroomGuestView() {
   const { classroom } = useClassroom();
-  const { isPendingRequest } = useClassroomPolicy(classroom);
-  const { mutateAsync } = useJoinClassroomMutation();
+  const { mustRequestToJoin, isPendingRequest } = useClassroomPolicy(classroom);
+  const joinClassroom = useJoinClassroomMutation();
+  const cancelJoinRequest = useCancelJoinRequestMutation();
 
-  const handleJoinRequest = async () => {
+  const handleJoinClassroom = async () => {
     try {
-      await mutateAsync(classroom.id);
+      await joinClassroom.mutateAsync(classroom.id);
     } catch (error) {
       // todo: add error handler
       console.log("Error", error);
     }
   };
 
+  const handleCancelJoinRequest = async () => {
+    try {
+      await cancelJoinRequest.mutateAsync(classroom.id);
+    } catch (error) {
+      // todo: add error handler
+      console.log("Error", error);
+    }
+  };
+
+  const joinButton = (
+    <Button
+      onClick={handleJoinClassroom}
+      disabled={isPendingRequest || joinClassroom.isPending}
+    >
+      {mustRequestToJoin
+        ? "Request to Join"
+        : isPendingRequest
+          ? "Request Pending"
+          : "Join Classroom"}
+    </Button>
+  );
+
+  const cancelJoinButton = (
+    <Button
+      variant="outline"
+      onClick={handleCancelJoinRequest}
+      disabled={cancelJoinRequest.isPending}
+    >
+      Cancel Join Request
+    </Button>
+  );
+
   return (
-    <ClassroomDetailsLayout>
-      <div className="flex items-center">
-        <Text type="body">Classroom: {classroom.classroomName}</Text>
-        <Button
-          className="ml-4"
-          onClick={handleJoinRequest}
-          disabled={isPendingRequest}
-        >
-          {isPendingRequest ? "Pending Request" : "Join Classroom"}
-        </Button>
-      </div>
-    </ClassroomDetailsLayout>
+    <ClassroomDetailsLayout
+      button={isPendingRequest ? cancelJoinButton : joinButton}
+    />
   );
 }

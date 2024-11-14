@@ -6,8 +6,11 @@ import { queryClient } from "@/services/ReactQuery";
 import { UserQueries } from "@/features/user/api/queryKeys";
 
 export const useAuthInitializer = () => {
-  const { setAuthStatus, logout } = useAuthState();
-  const { data, isError, isLoading } = useQuery(AuthQueries.validateToken());
+  const { setAuthStatus, logout, status } = useAuthState();
+  const { data, isError, isLoading } = useQuery({
+    ...AuthQueries.validateToken(),
+    enabled: status !== "unauthenticated",
+  });
 
   useEffect(() => {
     if (isLoading && !data) {

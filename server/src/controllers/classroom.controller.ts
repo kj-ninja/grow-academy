@@ -157,7 +157,6 @@ export const joinRequest = async (req: AuthenticatedRequest, res: Response) => {
 
   try {
     const classroom = await findClassroomById(classroomId);
-    console.log("classroom:", classroom);
 
     if (!classroom) {
       return errorResponse(res, "Classroom not found", 404);

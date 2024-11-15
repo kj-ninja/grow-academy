@@ -7,6 +7,7 @@ import { useBinaryImage } from "@/hooks/useBinaryImage";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { useClassroom } from "@/features/classroom/hooks/useClassroom";
+import { ClassroomWebSocketListener } from "@/features/classroom/websockets/ClassroomWebSocketListener";
 
 interface ClassroomDetailsLayoutProps {
   button?: React.ReactNode;
@@ -123,7 +124,9 @@ export function ClassroomDetailsLayout({
           </div>
         </div>
       </ProfilePageWrapper>
-      ;
+
+      {/*todo: think about using it more globally*/}
+      <ClassroomWebSocketListener />
     </>
   );
 }

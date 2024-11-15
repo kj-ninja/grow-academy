@@ -4,6 +4,7 @@ import { queryClient } from "@/services/ReactQuery";
 import { ClassroomInfiniteQueries } from "@/features/classroom/api/infiniteQueryKeys";
 import { ClassroomQueries } from "@/features/classroom/api/queryKeys";
 import { useClassroom } from "@/features/classroom/hooks/useClassroom";
+import useClassroomWebSocketActions from "@/features/classroom/websockets/useClassroomWebSocketActions";
 
 export const useCreateClassroomMutation = () => {
   return useMutation({
@@ -24,14 +25,19 @@ export const useCreateClassroomMutation = () => {
 
 export const useJoinClassroomMutation = () => {
   const { handle } = useClassroom();
+  const { sendJoinRequest } = useClassroomWebSocketActions();
 
   return useMutation({
     mutationFn: (classroomId: number) => {
       return classroomApi.joinClassroom(classroomId);
     },
-    onSuccess: ({ message }) => {
-      console.log("message", message);
-
+    onSuccess: ({
+      message,
+      data,
+    }: {
+      message: string;
+      data: { classroomId: number };
+    }) => {
       if (message === "Join request submitted") {
         queryClient.setQueryData(
           ClassroomQueries.details(handle).queryKey,
@@ -44,6 +50,7 @@ export const useJoinClassroomMutation = () => {
             }
           },
         );
+        sendJoinRequest(data.classroomId);
       } else {
         queryClient.invalidateQueries({
           queryKey: ClassroomQueries.details(handle).queryKey,

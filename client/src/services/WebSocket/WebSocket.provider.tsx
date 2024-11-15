@@ -1,43 +1,53 @@
 import React, { PropsWithChildren, useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { WebSocketContext } from "./WebSocket.context";
+import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
 
 export const WebSocketProvider = ({ children }: PropsWithChildren) => {
-  const [socketClient] = useState(() => io("http://localhost:4000"));
+  const { currentUser } = useCurrentUser();
+  const [socketClient, setSocketClient] = useState<Socket<
+    DefaultEventsMap,
+    DefaultEventsMap
+  > | null>(null);
 
   useEffect(() => {
-    if (socketClient.connected) {
+    if (socketClient?.connected) {
       return;
     }
 
-    socketClient.on("connect", () => {
-      console.log(`Connected to WebSocket server with ID: ${socketClient.id}`);
-    });
+    if (currentUser?.id) {
+      const socket = io("http://localhost:4000", {
+        query: { userId: currentUser.id },
+      });
 
-    socketClient.on("disconnect", (reason) => {
-      console.log(`Disconnected from WebSocket server. Reason: ${reason}`);
-    });
+      socket.on("connect", () => {
+        console.log(`Connected to WebSocket server with ID: ${socket.id}`);
+      });
 
-    socketClient.on("reconnect_attempt", (attempt) => {
-      console.log(`Reconnection attempt #${attempt}`);
-    });
+      socket.on("disconnect", (reason) => {
+        console.log(`Disconnected from WebSocket server. Reason: ${reason}`);
+      });
 
-    socketClient.on("reconnect", (attempt) => {
-      console.log(`Reconnected after ${attempt} attempt(s)`);
-    });
+      socket.on("reconnect_attempt", (attempt) => {
+        console.log(`Reconnection attempt #${attempt}`);
+      });
 
-    socketClient.on("connect_error", (error) => {
-      console.error("Connection error:", error);
-    });
+      socket.on("reconnect", (attempt) => {
+        console.log(`Reconnected after ${attempt} attempt(s)`);
+      });
 
-    socketClient.connect();
+      socket.on("connect_error", (error) => {
+        console.error("Connection error:", error);
+      });
 
-    return () => {
-      if (socketClient) {
-        socketClient.disconnect();
-      }
-    };
-  }, [socketClient]);
+      setSocketClient(socket);
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, [currentUser]);
 
   return (
     <WebSocketContext.Provider value={socketClient}>

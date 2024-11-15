@@ -88,7 +88,7 @@ export const RouterProvider = () => {
                 </Route>
                 <Route element={<ClassroomOwnerGuard />}>
                   <Route
-                    path="classroom/:handle/settings/edit"
+                    path="classroom/:handle/settings/:edit"
                     lazy={ClassroomSettingsEditPage}
                   />
                 </Route>

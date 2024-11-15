@@ -17,7 +17,9 @@ export function UserSettingsClassroomTile({
   return (
     <div
       className="flex gap-4 my-2 p-2 rounded-lg cursor-pointer hover:bg-background"
-      onClick={() => navigate(`/classroom/${classroom.handle}/settings/edit`)}
+      onClick={() =>
+        navigate(`/classroom/${classroom.handle}/settings/profile`)
+      }
     >
       <Avatar size="xl">
         <AvatarImage src={image} alt="Classroom profile image" />

@@ -38,6 +38,15 @@ export const classroomApi = {
     });
     return response.data;
   },
+  updateClassroom: async (id: number, data: FormData) => {
+    const response = await ApiClient.patch(`/classroom/${id}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.data;
+  },
   checkClassroomName: async (name: string) => {
     const response = await ApiClient.get(`/classroom/check-name/${name}`);
     return response.data;

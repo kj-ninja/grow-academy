@@ -14,6 +14,7 @@ import {
   findClassroomByHandle,
   getUserMembershipStatus,
   leaveClassroom,
+  updateClassroomInDB,
 } from "services/Classroom";
 import { errorResponse, validateHandle } from "utils";
 import type { AuthenticatedRequest, Images } from "types/types";
@@ -55,6 +56,62 @@ export const createClassroom = async (
   } catch (error) {
     console.error("Error creating classroom:", error);
     return errorResponse(res, "Failed to create classroom");
+  }
+};
+
+export const updateClassroom = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const userId = req.user!.id;
+  const classroomId = Number(req.params.id);
+
+  if (isNaN(classroomId)) {
+    return errorResponse(res, "Invalid classroom ID", 400);
+  }
+
+  const { classroomName, handle, description, accessType, tags } = req.body;
+  const files = req.files as Images;
+  const avatarImage = files?.avatarImage?.[0];
+  const backgroundImage = files?.backgroundImage?.[0];
+
+  try {
+    const classroom = await findClassroomById(classroomId);
+
+    if (!classroom) {
+      return errorResponse(res, "Classroom not found", 404);
+    }
+
+    if (classroom.ownerId !== userId) {
+      return errorResponse(res, "Only the owner can update the classroom", 403);
+    }
+
+    // Check if classroomName is being updated and if it already exists
+    if (classroomName && classroomName !== classroom.classroomName) {
+      const existingClassroom = await findClassroomByName(classroomName);
+      if (existingClassroom) {
+        return errorResponse(
+          res,
+          "A classroom with this name already exists",
+          409,
+        );
+      }
+    }
+
+    const updatedClassroom = await updateClassroomInDB(classroomId, {
+      classroomName: classroomName || classroom.classroomName,
+      handle: handle || classroom.handle,
+      description: description || classroom.description,
+      accessType: accessType || classroom.accessType,
+      avatarImage: avatarImage ? avatarImage.buffer : null,
+      backgroundImage: backgroundImage ? backgroundImage.buffer : null,
+      tags: tags ? tags : classroom.tags,
+    });
+
+    res.status(200).json(updatedClassroom);
+  } catch (error) {
+    console.error("Error updating classroom:", error);
+    return errorResponse(res, "Failed to update classroom");
   }
 };
 
@@ -121,20 +178,17 @@ export const getClassroomDetails = async (
   const classroomHandle = req.params.handle;
 
   try {
-    // Fetch classroom with owner details
     const classroom = await findClassroomByHandle(classroomHandle);
 
     if (!classroom) {
       return errorResponse(res, "Classroom not found", 404);
     }
 
-    // Fetch user membership status
     const { isMember, isPendingRequest } = await getUserMembershipStatus(
       userId,
       classroom.id,
     );
 
-    // Prepare and return the response payload
     return res.status(200).json({
       ...classroom,
       tags: classroom.tags ? JSON.parse(classroom.tags) : [],

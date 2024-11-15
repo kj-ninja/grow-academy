@@ -18,6 +18,7 @@ interface NotificationData {
   classroomName: string;
 }
 
+// todo: move it?
 export const ClassroomWebSocketListener = () => {
   const socket = useWebSocket();
   const { toast } = useToast();

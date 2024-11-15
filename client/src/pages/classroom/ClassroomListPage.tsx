@@ -2,6 +2,7 @@ import { ClassroomInfiniteQueries } from "@/features/classroom/api/infiniteQuery
 import { useMemo } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { ClassroomCard } from "@/features/classroom/components/ClassroomCard";
 
 const ClassroomListPage = () => {
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
@@ -17,14 +18,13 @@ const ClassroomListPage = () => {
 
   return (
     <div className="flex justify-center mt-20">
-      <div className="flex flex-col">
+      <div className="flex flex-col max-w-3xl w-full gap-4">
         {pages.map((classroom) => (
-          <div
+          <ClassroomCard
             key={classroom.id}
-            onClick={() => navigate(`classroom/${classroom.handle}`)}
-          >
-            {classroom.classroomName}
-          </div>
+            classroom={classroom}
+            onClassroomClick={() => navigate(`/classroom/${classroom.handle}`)}
+          />
         ))}
         {hasNextPage && (
           <button onClick={() => fetchNextPage()} disabled={!hasNextPage}>

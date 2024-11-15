@@ -15,6 +15,7 @@ import {
   removeMember,
   viewPendingRequests,
   leaveClassroomController,
+  updateClassroom,
 } from "@controllers/classroom.controller";
 import { upload, uploadMultiple } from "@middleware/uploadMiddleware";
 import {
@@ -33,6 +34,13 @@ router.get("/", authenticateJWT, getClassrooms);
 router.get("/:handle/", authenticateJWT, getClassroomDetails);
 
 router.post("/", authenticateJWT, uploadMultiple, createClassroom);
+router.patch(
+  "/:id",
+  authenticateJWT,
+  checkOwner,
+  uploadMultiple,
+  updateClassroom,
+);
 router.delete("/:id", authenticateJWT, deleteClassroom);
 
 router.post("/:id/join", authenticateJWT, joinRequest);

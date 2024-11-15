@@ -69,13 +69,13 @@ export function UpdateUserProfileForm({
         formData,
         "avatarImage",
         values.avatarImage,
-        currentUser?.avatarImage?.data,
+        currentUser.avatarImage?.data,
       );
       appendImageToFormData(
         formData,
         "backgroundImage",
         values.backgroundImage,
-        currentUser?.backgroundImage?.data,
+        currentUser.backgroundImage?.data,
       );
 
       try {

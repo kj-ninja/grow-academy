@@ -23,6 +23,27 @@ export const useCreateClassroomMutation = () => {
   });
 };
 
+export const useUpdateClassroomMutation = () => {
+  const { handle } = useClassroom();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: FormData }) => {
+      return classroomApi.updateClassroom(id, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ClassroomQueries.details(handle).queryKey,
+      });
+
+      // Optionally, you may also want to invalidate any paginated classroom lists or other related data
+      // const pageSize = 10;
+      // queryClient.invalidateQueries({
+      //   queryKey: ClassroomInfiniteQueries.classrooms({ pageSize }).queryKey,
+      // });
+    },
+  });
+};
+
 export const useJoinClassroomMutation = () => {
   const { handle } = useClassroom();
   const { sendJoinRequest } = useClassroomWebSocketActions();

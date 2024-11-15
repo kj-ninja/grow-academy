@@ -11,6 +11,24 @@ export const createClassroomInDB = async (userId: number, data: any) => {
   });
 };
 
+export const updateClassroomInDB = async (
+  classroomId: number,
+  data: {
+    classroomName?: string;
+    handle?: string;
+    description?: string;
+    accessType?: string;
+    avatarImage?: Buffer | null;
+    backgroundImage?: Buffer | null;
+    tags?: string | null;
+  },
+) => {
+  return prisma.classroom.update({
+    where: { id: classroomId },
+    data,
+  });
+};
+
 export const deleteClassroomInDB = async (classroomId: number) => {
   return prisma.classroom.delete({
     where: { id: classroomId },

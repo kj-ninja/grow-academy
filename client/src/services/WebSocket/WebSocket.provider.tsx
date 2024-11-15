@@ -12,10 +12,6 @@ export const WebSocketProvider = ({ children }: PropsWithChildren) => {
   > | null>(null);
 
   useEffect(() => {
-    if (socketClient?.connected) {
-      return;
-    }
-
     if (currentUser?.id) {
       const socket = io("http://localhost:4000", {
         query: { userId: currentUser.id },

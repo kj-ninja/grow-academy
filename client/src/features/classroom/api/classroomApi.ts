@@ -1,11 +1,14 @@
 import { ApiClient } from "@/services/ApiClient";
+import { User } from "@/features/auth/stores/authStore";
 
+// todo: investigate about members array and remove it from the response
+// todo: remove ownerId
 export interface ClassroomResponse {
   id: number;
   classroomName: string;
   handle: string;
   description?: string;
-  accessType: string;
+  accessType: "Public" | "Private";
   avatarImage?: { data: number[]; type: "Buffer" };
   backgroundImage?: { data: number[]; type: "Buffer" };
   getStreamChannelId: string;
@@ -13,7 +16,10 @@ export interface ClassroomResponse {
   createdAt: string;
   updatedAt: string;
   membersCount: number;
-  ownerId: number;
+  owner: Pick<
+    User,
+    "id" | "username" | "firstName" | "lastName" | "avatarImage"
+  >;
   tags: string[];
 }
 
@@ -62,6 +68,16 @@ export const classroomApi = {
   },
   joinClassroom: async (classroomId: number) => {
     const response = await ApiClient.post(`/classroom/${classroomId}/join`);
+    return response.data;
+  },
+  cancelJoinClassroom: async (classroomId: number) => {
+    const response = await ApiClient.delete(
+      `/classroom/${classroomId}/join-cancel`,
+    );
+    return response.data;
+  },
+  leaveClassroom: async (classroomId: number) => {
+    const response = await ApiClient.post(`/classroom/${classroomId}/leave`);
     return response.data;
   },
 };

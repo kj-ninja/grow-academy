@@ -11,6 +11,7 @@ import { Text } from "@/components/ui/Text/Text";
 import { Button } from "@/components/ui/Button";
 import { Settings } from "lucide-react";
 import dayjs from "dayjs";
+import { Badge } from "@/components/ui/Badge";
 
 export function UserProfile() {
   const { username } = useValidateRouteParams({
@@ -61,25 +62,23 @@ export function UserProfile() {
             </div>
 
             <div className="flex justify-between">
-              <div className="flex gap-2">
-                <div className="flex gap-1 bg-backgroundSecondary rounded-full items-center px-1.5 py-1">
-                  <Text type="bodySmall">
-                    <span className="font-bold">0</span> Followers
-                  </Text>
-                </div>
-                <div className="flex gap-1 bg-backgroundSecondary rounded-full items-center px-1.5 py-1">
-                  <Text type="bodySmall">
-                    <span className="font-bold">0</span> Following
-                  </Text>
-                </div>
-                <div className="flex gap-1 bg-backgroundSecondary rounded-full items-center px-1.5 py-1">
-                  <Text type="bodySmall">
-                    <span className="font-bold">
+              <div className="flex items-center gap-2">
+                <Badge
+                  icon={<span className="font-bold text-sm">0</span>}
+                  text={<Text type="bodySmall">Followers</Text>}
+                />
+                <Badge
+                  icon={<span className="font-bold text-sm">0</span>}
+                  text={<Text type="bodySmall">Following</Text>}
+                />
+                <Badge
+                  icon={
+                    <span className="font-bold text-sm">
                       {user?.ownedClassroomCount || 0}
-                    </span>{" "}
-                    Classrooms
-                  </Text>
-                </div>
+                    </span>
+                  }
+                  text={<Text type="bodySmall">Classrooms</Text>}
+                />
               </div>
               {currentUser?.username === user?.username && (
                 // todo: think about buttons styles and variants
@@ -104,7 +103,7 @@ export function UserProfile() {
           <div className="flex flex-col gap-1">
             <Text type="bodyBold">Bio</Text>
             <Text type="bodySmall">
-              {user?.bio || "Add some information about your interests"}
+              {user?.bio || "There is no bio about that user yet."}
             </Text>
           </div>
           <div className="flex flex-col">

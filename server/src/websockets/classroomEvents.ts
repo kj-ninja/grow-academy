@@ -1,13 +1,16 @@
 import { Socket } from "socket.io";
+import { handleJoinRequest } from "services/WebSocket";
 
 export function classroomEvents(socket: Socket) {
-  socket.on("join-request", (data: { classroomId: number; userId: number }) => {
-    console.log(
-      `Received join request for classroom ${data.classroomId} from user ${data.userId}`,
-    );
-
-    socket.emit("join-request-pending", {
-      message: "Your request is pending.",
-    });
-  });
+  socket.on(
+    "join-request",
+    async (data: { classroomId: number; userId: number }) => {
+      try {
+        await handleJoinRequest(socket, data);
+      } catch (error) {
+        console.error("Error handling join request:", error);
+        socket.emit("error", { message: "Failed to handle join request" });
+      }
+    },
+  );
 }

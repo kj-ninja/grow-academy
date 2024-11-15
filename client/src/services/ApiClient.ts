@@ -8,7 +8,6 @@ export const ApiClient = axios.create({
   },
 });
 
-// Request Interceptor: Attach token
 ApiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("authToken");
   if (token) {

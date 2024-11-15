@@ -10,7 +10,7 @@ export function useClassroomPolicy(
     throw new Error("useClassroomPolicy: currentUser is not defined.");
   }
 
-  const isOwner = classroom?.ownerId === currentUser.id;
+  const isOwner = classroom?.owner.id === currentUser.id;
   const isMember = classroom?.isMember;
 
   const canJoin = () => {
@@ -22,7 +22,11 @@ export function useClassroomPolicy(
   };
 
   const mustRequestToJoin = () => {
-    return !isMember && classroom?.accessType === "Private";
+    return (
+      !isMember &&
+      classroom?.accessType === "Private" &&
+      !classroom.isPendingRequest
+    );
   };
 
   const isConnected = () => {

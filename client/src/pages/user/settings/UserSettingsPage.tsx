@@ -29,7 +29,7 @@ function UserSettingsPage() {
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="classrooms">Classrooms</TabsTrigger>
         </TabsList>
-        <TabsContent value="profile">
+        <TabsContent value="profile" className="mb-[120px]">
           <UpdateUserProfileForm withBottomSheet />
         </TabsContent>
 

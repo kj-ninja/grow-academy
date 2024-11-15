@@ -8,9 +8,7 @@ export function RootErrorBoundary() {
     <div className="flex flex-col gap-4 items-center justify-center h-screen">
       <p>Oops! Something went wrong 😞</p>
       <p>{error.message || JSON.stringify(error)}</p>
-      <Button size="sm" onClick={() => window.location.reload()}>
-        Reload
-      </Button>
+      <Button onClick={() => window.location.reload()}>Reload</Button>
     </div>
   );
 }

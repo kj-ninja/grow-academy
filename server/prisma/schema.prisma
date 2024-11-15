@@ -48,7 +48,7 @@ model Classroom {
   classroomName      String
   handle             String              @unique
   description        String?
-  accessType         String              @default("public")
+  accessType         String              @default("Public")
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   owner              User                @relation(fields: [ownerId], references: [id])

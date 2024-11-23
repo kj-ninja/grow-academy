@@ -4,8 +4,11 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ClassroomCard } from "@/features/classroom/components/ClassroomCard";
 import { InfiniteScrollList } from "@/components/ui/InfiniteScrollList";
+import { useClassroomWebSocketListener } from "@/features/classroom/websockets/useClassroomWebSocketListener";
 
 const ClassroomListPage = () => {
+  const navigate = useNavigate();
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       ...ClassroomInfiniteQueries.classrooms({
@@ -17,7 +20,7 @@ const ClassroomListPage = () => {
     return data?.pages.flatMap((page) => page.classrooms) || [];
   }, [data]);
 
-  const navigate = useNavigate();
+  useClassroomWebSocketListener();
 
   return (
     <InfiniteScrollList

@@ -9,8 +9,8 @@ import { useLeaveClassroomMutation } from "@/features/classroom/api/mutations";
 export function ClassroomMemberView() {
   const { classroom } = useClassroom();
   const { isOwner } = useClassroomPolicy(classroom);
-  const leaveClassroom = useLeaveClassroomMutation();
 
+  const leaveClassroom = useLeaveClassroomMutation();
   const navigate = useNavigate();
 
   const handleLeaveClassroom = async () => {
@@ -25,9 +25,7 @@ export function ClassroomMemberView() {
     <Button
       variant="outline"
       size="icon"
-      onClick={() =>
-        navigate(`/classroom/${classroom.handle}/settings/profile`)
-      }
+      onClick={() => navigate(`/classroom/${classroom.id}/settings/profile`)}
     >
       <Settings size={18} />
       Edit Profile

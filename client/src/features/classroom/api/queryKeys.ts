@@ -14,9 +14,14 @@ export const ClassroomQueries = {
       queryFn: () => classroomApi.checkClassroomHandle(handle),
       retry: false,
     }),
-  details: (handle: string) =>
+  details: (id: number) =>
     queryOptions({
-      queryKey: ["classroomDetail", handle],
-      queryFn: () => classroomApi.getClassroomDetails(handle),
+      queryKey: ["classroom", "details", id],
+      queryFn: () => classroomApi.getClassroomDetails(id),
+    }),
+  pendingRequests: (classroomId: number) =>
+    queryOptions({
+      queryKey: ["classroom", "requests", classroomId, "pending"],
+      queryFn: () => classroomApi.getPendingRequests(classroomId),
     }),
 };

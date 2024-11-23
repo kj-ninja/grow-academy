@@ -21,8 +21,6 @@ export function UserSettingsClassrooms() {
   const [isCreateClassroomModalOpen, setIsCreateClassroomModalOpen] =
     useState(false);
 
-  // todo: add data after success creation and remove previous user data
-
   return (
     <div className="flex flex-col gap-2 p-4">
       {pages.length > 0 ? (

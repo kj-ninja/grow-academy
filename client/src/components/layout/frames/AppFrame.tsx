@@ -1,24 +1,20 @@
-import { Outlet, ScrollRestoration, useNavigation } from "react-router-dom";
-import { FullPageLoader } from "@/components/ui/FullPageLoader";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 
 interface AppFrameProps {
   header: React.ReactNode;
   children?: React.ReactNode;
+  navbar?: React.ReactNode;
 }
 
-export const AppFrame = ({ header, children }: AppFrameProps) => {
-  const navigation = useNavigation();
-
+export const AppFrame = ({ header, children, navbar }: AppFrameProps) => {
   return (
     <>
       <ScrollRestoration getKey={(location) => location.pathname} />
-      <div className="min-h-[100vh]">
-        {header}
-        <main>
-          {navigation.state === "loading" && <FullPageLoader />}
-          {children ?? <Outlet />}
-        </main>
-      </div>
+      {header}
+      <main className="min-h-[100vh] flex flex-row">
+        {navbar}
+        {children ?? <Outlet />}
+      </main>
     </>
   );
 };

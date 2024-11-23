@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export const uploadResource = async (req: Request, res: Response) => {
   const { id: classroomId } = req.params; // Classroom ID from route
-  const userId = req.user?.id; // Authenticated user ID from JWT middleware
+  const userId = req.user?.id; // Authenticated user ID from JWT middlewares
 
   if (!userId || !req.file) {
     return res.status(400).json({ message: "Invalid request" });

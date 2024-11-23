@@ -1,4 +1,4 @@
-import { authenticateJWT } from "@middleware/authenticateJWT";
+import { authenticateJWT } from "middlewares/authenticateJWT";
 import { Router } from "express";
 import { checkOwner } from "utils";
 import {
@@ -8,15 +8,16 @@ import {
   checkClassroomName,
   createClassroom,
   deleteClassroom,
-  getClassroomDetails,
+  getClassroomDetailsController,
   getClassrooms,
   joinRequest,
   rejectJoinRequest,
   removeMember,
   viewPendingRequests,
   leaveClassroomController,
+  updateClassroom,
 } from "@controllers/classroom.controller";
-import { upload, uploadMultiple } from "@middleware/uploadMiddleware";
+import { upload, uploadMultiple } from "middlewares/uploadMiddleware";
 import {
   deleteResource,
   downloadResource,
@@ -30,9 +31,17 @@ router.get("/check-name/:classroomName", authenticateJWT, checkClassroomName);
 router.get("/check-handle/:handle", authenticateJWT, checkClassroomHandle);
 
 router.get("/", authenticateJWT, getClassrooms);
-router.get("/:handle/", authenticateJWT, getClassroomDetails);
+router.get("/:id/", authenticateJWT, getClassroomDetailsController);
 
 router.post("/", authenticateJWT, uploadMultiple, createClassroom);
+router.patch(
+  "/:id",
+  authenticateJWT,
+  checkOwner,
+  uploadMultiple,
+  updateClassroom,
+);
+
 router.delete("/:id", authenticateJWT, deleteClassroom);
 
 router.post("/:id/join", authenticateJWT, joinRequest);

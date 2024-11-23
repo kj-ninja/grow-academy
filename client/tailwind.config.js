@@ -23,6 +23,9 @@ export default {
         placeholder: "#9ca3af",
         border: "#c3c4c6",
       },
+      spacing: {
+        appNavbar: "var(--app-navbar-width)",
+      },
       fontSize: {
         h1: ["24px", { lineHeight: "28px", letterSpacing: "-0.5px" }],
         h2: ["20px", { lineHeight: "26px", letterSpacing: "-0.25px" }],

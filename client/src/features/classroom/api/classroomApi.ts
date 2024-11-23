@@ -1,8 +1,6 @@
 import { ApiClient } from "@/services/ApiClient";
-import { User } from "@/features/auth/stores/authStore";
+import { SimpleUser } from "@/features/auth/stores/authStore";
 
-// todo: investigate about members array and remove it from the response
-// todo: remove ownerId
 export interface ClassroomResponse {
   id: number;
   classroomName: string;
@@ -16,21 +14,36 @@ export interface ClassroomResponse {
   createdAt: string;
   updatedAt: string;
   membersCount: number;
-  owner: Pick<
-    User,
-    "id" | "username" | "firstName" | "lastName" | "avatarImage"
-  >;
+  owner: SimpleUser;
   tags: string[];
 }
 
 export interface ClassroomWithDetailsResponse extends ClassroomResponse {
   isMember: boolean;
+  ownerId: number;
   isPendingRequest: boolean;
+  members: SimpleUser[];
+}
+
+interface PendingRequestsResponse {
+  classroomId: number;
+  memberShipStatus: "pending" | "approved";
+  role: "member" | "owner";
+  user: SimpleUser;
 }
 
 export const classroomApi = {
   createClassroom: async (data: FormData) => {
     const response = await ApiClient.post("/classroom", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.data;
+  },
+  updateClassroom: async (id: number, data: FormData) => {
+    const response = await ApiClient.patch(`/classroom/${id}`, data, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -46,9 +59,9 @@ export const classroomApi = {
     const response = await ApiClient.get(`/classroom/check-handle/${handle}`);
     return response.data;
   },
-  getClassroomDetails: async (handle: string) => {
+  getClassroomDetails: async (id: number) => {
     const response = await ApiClient.get<ClassroomWithDetailsResponse>(
-      `/classroom/${handle}`,
+      `/classroom/${id}`,
     );
     return response.data;
   },
@@ -78,6 +91,24 @@ export const classroomApi = {
   },
   leaveClassroom: async (classroomId: number) => {
     const response = await ApiClient.post(`/classroom/${classroomId}/leave`);
+    return response.data;
+  },
+  getPendingRequests: async (classroomId: number) => {
+    const response = await ApiClient.get<PendingRequestsResponse[]>(
+      `/classroom/${classroomId}/requests`,
+    );
+    return response.data;
+  },
+  approvePendingRequest: async (classroomId: number, userId: number) => {
+    const response = await ApiClient.patch(
+      `/classroom/${classroomId}/requests/${userId}/approve`,
+    );
+    return response.data;
+  },
+  rejectPendingRequest: async (classroomId: number, userId: number) => {
+    const response = await ApiClient.patch(
+      `/classroom/${classroomId}/requests/${userId}/reject`,
+    );
     return response.data;
   },
 };

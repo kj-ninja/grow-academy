@@ -6,12 +6,12 @@ import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 
 export const ClassroomGuard = () => {
-  const { handle } = useValidateRouteParams({
-    handle: z.string(),
+  const { id } = useValidateRouteParams({
+    id: z.string(),
   });
 
   const classroomQuery = useQuery({
-    ...ClassroomQueries.details(handle),
+    ...ClassroomQueries.details(Number(id)),
     throwOnError: true,
     retry: false,
   });

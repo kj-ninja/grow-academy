@@ -30,6 +30,7 @@ function UserSettingsPage() {
           <TabsTrigger value="classrooms">Classrooms</TabsTrigger>
         </TabsList>
         <TabsContent value="profile" className="mb-[120px]">
+          {/*todo: remove that props */}
           <UpdateUserProfileForm withBottomSheet />
         </TabsContent>
 

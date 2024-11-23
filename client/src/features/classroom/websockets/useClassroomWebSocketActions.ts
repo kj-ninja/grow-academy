@@ -15,7 +15,27 @@ const useClassroomWebSocketActions = () => {
     }
   };
 
-  return { sendJoinRequest };
+  const approveJoinRequest = (classroomId: number, userId: number) => {
+    if (currentUser && socket) {
+      socket.emit("approve-join-request", { classroomId, userId });
+    } else {
+      console.warn(
+        "Cannot approve join request: User or socket is not available.",
+      );
+    }
+  };
+
+  const rejectJoinRequest = (classroomId: number, userId: number) => {
+    if (currentUser && socket) {
+      socket.emit("reject-join-request", { classroomId, userId });
+    } else {
+      console.warn(
+        "Cannot reject join request: User or socket is not available.",
+      );
+    }
+  };
+
+  return { sendJoinRequest, approveJoinRequest, rejectJoinRequest };
 };
 
 export default useClassroomWebSocketActions;

@@ -7,20 +7,20 @@ import { useValidateRouteParams } from "@/hooks/useValidateRouteParams";
 import { z } from "zod";
 
 export const ClassroomOwnerGuard = () => {
-  const { handle } = useValidateRouteParams({
-    handle: z.string(),
+  const { id } = useValidateRouteParams({
+    id: z.string(),
   });
   const { status } = useAuthState();
 
   const classroomQuery = useQuery({
-    ...ClassroomQueries.details(handle),
-    enabled: !!handle && status === "authenticated",
+    ...ClassroomQueries.details(Number(id)),
+    enabled: !!id && status === "authenticated",
   });
 
   const { isOwner } = useClassroomPolicy(classroomQuery.data);
 
   if (!isOwner) {
-    return <Navigate to={`/classroom/${handle}`} />;
+    return <Navigate to={`/classroom/${id}`} />;
   }
 
   return <Outlet />;

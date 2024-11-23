@@ -118,8 +118,9 @@ export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
     appendImageToFormData(formData, "backgroundImage", values.backgroundImage);
 
     try {
-      await createClassroomMutation.mutateAsync(formData);
-      navigate(`/classroom/${values.handle}`);
+      // TODO: add it in controller response
+      const classroomId = await createClassroomMutation.mutateAsync(formData);
+      navigate(`/classroom/${classroomId}`);
       onSuccess();
     } catch (error) {
       // todo: add errors to forms

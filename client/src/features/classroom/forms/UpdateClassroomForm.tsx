@@ -80,11 +80,11 @@ export function UpdateClassroomForm() {
     );
 
     try {
-      await updateClassroomMutation.mutateAsync({
+      const response = await updateClassroomMutation.mutateAsync({
         id: classroom.id,
         data: formData,
       });
-      navigate(`/classroom/${values.handle}`);
+      navigate(`/classroom/${response.id}`);
     } catch (error) {
       // todo: add generic error handler under the field
       toast({
@@ -247,7 +247,7 @@ export function UpdateClassroomForm() {
               type="button"
               className="w-[120px]"
               variant="outline"
-              onClick={() => navigate(`/classroom/${classroom.handle}`)}
+              onClick={() => navigate(`/classroom/${classroom.id}`)}
             >
               Cancel
             </Button>

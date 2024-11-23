@@ -25,6 +25,7 @@ import { ClassroomLayout } from "@/features/classroom/components/ClassroomLayout
 import { loader as userProfileLoader } from "@/pages/loaders/userProfilePageLoader";
 import { loader as classroomProfileLoader } from "@/pages/loaders/classroomProfilePageLoader";
 import { ClassroomOwnerGuard } from "@/features/classroom/components/ClassroomOwnerGuard";
+import { AppNavbar } from "@/components/layout/navbars/AppNavbar";
 
 const OnboardingPage = () => import("./user/OnboardingPage");
 const ClassroomListPage = () => import("./classroom/ClassroomListPage");
@@ -55,7 +56,9 @@ export const RouterProvider = () => {
         </Route>
 
         {/*Private routes*/}
-        <Route element={<AppFrame header={<AppHeader />} />}>
+        <Route
+          element={<AppFrame header={<AppHeader />} navbar={<AppNavbar />} />}
+        >
           <Route element={<AuthenticationGuard />}>
             <Route element={<ActiveUserGuard />}>
               {/*Home page*/}
@@ -79,7 +82,7 @@ export const RouterProvider = () => {
                 element={<ClassroomGuard />}
                 errorElement={<ClassroomProfileErrorElement />}
               >
-                <Route path="classroom/:handle" element={<ClassroomLayout />}>
+                <Route path="classroom/:id" element={<ClassroomLayout />}>
                   <Route
                     index
                     lazy={ClassroomProfilePage}
@@ -88,7 +91,7 @@ export const RouterProvider = () => {
                 </Route>
                 <Route element={<ClassroomOwnerGuard />}>
                   <Route
-                    path="classroom/:handle/settings/:edit"
+                    path="classroom/:id/settings/:edit"
                     lazy={ClassroomSettingsEditPage}
                   />
                 </Route>

@@ -34,28 +34,28 @@ export function ClassroomCard({
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-4 pt-6">
         <div className="flex gap-3">
-          <Avatar size="2xl">
+          <Avatar size="xl">
             <AvatarImage src={avatarImage} />
-            <AvatarFallback type="classroom" size={32} />
+            <AvatarFallback type="classroom" size={24} />
           </Avatar>
 
           <div className="flex flex-col gap-1">
             <div className="flex gap-2 items-start">
               <Badge
-                icon={<User size={14} fill="black" />}
+                icon={<User size={12} fill="black" />}
                 text={
-                  <Text type="bodySmallBold">
+                  <Text type="bodyXSmallBold">
                     {classroom.membersCount || 0}
                   </Text>
                 }
               />
               <Badge
-                icon={<Earth size={14} />}
-                text={<Text type="bodySmallBold">{classroom.accessType}</Text>}
+                icon={<Earth size={12} />}
+                text={<Text type="bodyXSmallBold">{classroom.accessType}</Text>}
               />
             </div>
 
-            <Text type="body" className="!text-secondary">
+            <Text type="bodyXSmallBold" className="!text-secondary">
               @{classroom.handle}
             </Text>
           </div>
@@ -65,7 +65,7 @@ export function ClassroomCard({
           <div className="flex gap-1.5 items-center">
             <Avatar size="2xs">
               <AvatarImage src={ownerImage} />
-              <AvatarFallback type="user" size={16} className="bg-background" />
+              <AvatarFallback type="user" size={14} className="bg-background" />
             </Avatar>
             <Text type="bodySmallBold">
               {classroom.owner?.firstName} {classroom.owner?.lastName}

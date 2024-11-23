@@ -28,7 +28,7 @@ export async function handleJoinRequest(
 
     if (ownerSocketId) {
       socket.to(ownerSocketId).emit("join-request-notification", {
-        message: `Hey user ${user.username} sent a request to join your classroom '${classroom.classroomName}'`,
+        message: `User '${user.username}' sent a request to join '${classroom.classroomName}'`,
         classroomId: data.classroomId,
         userId: data.userId,
         userName: user.username,
@@ -42,4 +42,46 @@ export async function handleJoinRequest(
   socket.emit("join-request-pending", {
     message: "Your request is pending.",
   });
+}
+
+export async function handleApproveJoinRequest(
+  socket: Socket,
+  data: { classroomId: number; userId: number },
+) {
+  const user = await getUserById(data.userId);
+  const classroom = await findClassroomById(data.classroomId);
+
+  if (classroom && user) {
+    const userSocketId = getUserSocketId(data.userId);
+
+    if (userSocketId) {
+      socket.to(userSocketId).emit("join-request-approved", {
+        message: `Your request to join '${classroom.classroomName}' has been approved.`,
+        classroomId: data.classroomId,
+      });
+    } else {
+      console.log(`User (userId=${data.userId}) is not connected.`);
+    }
+  }
+}
+
+export async function rejectJoinRequest(
+  socket: Socket,
+  data: { classroomId: number; userId: number },
+) {
+  const user = await getUserById(data.userId);
+  const classroom = await findClassroomById(data.classroomId);
+
+  if (classroom && user) {
+    const userSocketId = getUserSocketId(data.userId);
+
+    if (userSocketId) {
+      socket.to(userSocketId).emit("join-request-rejected", {
+        message: `Your request to join '${classroom.classroomName}' has been rejected.`,
+        classroomId: data.classroomId,
+      });
+    } else {
+      console.log(`User (userId=${data.userId}) is not connected.`);
+    }
+  }
 }

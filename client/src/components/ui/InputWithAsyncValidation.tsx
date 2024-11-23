@@ -18,7 +18,7 @@ export const InputWithAsyncValidation = React.forwardRef<
   HTMLInputElement,
   InputWithAsyncValidationProps
 >(({ isLoading, isValid, validMessage, isCheckError, name, ...props }, ref) => {
-  let iconRight = null;
+  let iconRight: React.ReactNode | null = null;
   let successClass = "";
 
   const error = useInputError(name);

@@ -55,7 +55,17 @@ export const findPendingRequests = async (classroomId: number) => {
       classroomId,
       memberShipStatus: "pending",
     },
-    include: { user: true },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          firstName: true,
+          lastName: true,
+          avatarImage: true,
+        },
+      },
+    },
   });
 };
 
@@ -87,6 +97,8 @@ export const deletePendingMembership = async (
       memberShipStatus: "pending",
     },
   });
+
+  console.log("membership", membership);
 
   return membership.count;
 };
@@ -200,6 +212,12 @@ export const findClassroomByName = async (classroomName: string) => {
 export const findClassroomByHandle = async (handle: string) => {
   return prisma.classroom.findUnique({
     where: { handle },
+  });
+};
+
+export const getClassroomDetails = async (id: number) => {
+  return prisma.classroom.findUnique({
+    where: { id },
     include: {
       owner: {
         select: {
@@ -211,10 +229,23 @@ export const findClassroomByHandle = async (handle: string) => {
         },
       },
       members: {
-        select: {
-          userId: true,
-          role: true,
+        where: {
+          memberShipStatus: "approved",
         },
+        select: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+              firstName: true,
+              lastName: true,
+              avatarImage: true,
+            },
+          },
+        },
+      },
+      _count: {
+        select: { members: true },
       },
     },
   });

@@ -18,7 +18,7 @@ interface PaginatedResponse<T> {
 export const ClassroomInfiniteQueries = {
   classrooms: ({ pageSize = 10, filterByOwner = false }) =>
     infiniteQueryOptions({
-      queryKey: [{ type: "classrooms", pageSize, filterByOwner }],
+      queryKey: ["classroom", "list", { pageSize, filterByOwner }],
       queryFn: ({ pageParam = 1 }) => {
         return classroomApi.getClassroomList({
           page: pageParam,

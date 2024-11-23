@@ -29,7 +29,7 @@ export function UserProfile() {
   const navigate = useNavigate();
 
   return (
-    <>
+    <div className="flex flex-col w-full">
       <div className="border-b-2 bg-white pb-6">
         <ProfilePageWrapper>
           <div className="relative h-[300px]">
@@ -112,6 +112,6 @@ export function UserProfile() {
           </div>
         </div>
       </ProfilePageWrapper>
-    </>
+    </div>
   );
 }

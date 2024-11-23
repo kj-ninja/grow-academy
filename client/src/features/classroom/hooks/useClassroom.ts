@@ -2,9 +2,10 @@ import { ClassroomQueries } from "@/features/classroom/api/queryKeys";
 import { useValidateRouteParams } from "@/hooks/useValidateRouteParams";
 import { useQuery } from "@tanstack/react-query";
 import zod from "zod";
+import { DateTime } from "@/lib/time/time";
 
 export const useClassroom = () => {
-  const { classroom, handle, classroomQuery } = useMaybeClassroom();
+  const { classroom, classroomQuery, classroomId } = useMaybeClassroom();
 
   if (!classroom) {
     throw new Error(
@@ -15,19 +16,19 @@ export const useClassroom = () => {
   return {
     classroom,
     classroomQuery,
-    handle,
+    classroomId,
   };
 };
 
 export const useMaybeClassroom = () => {
-  const { handle } = useValidateRouteParams({
-    handle: zod.string().min(1),
+  const { id } = useValidateRouteParams({
+    id: zod.string().min(1),
   });
 
   const classroomQuery = useQuery({
-    ...ClassroomQueries.details(handle),
+    ...ClassroomQueries.details(Number(id)),
     refetchOnWindowFocus: true,
-    staleTime: 60 * 1000,
+    staleTime: DateTime.duration({ seconds: 30 }).as("milliseconds"),
   });
 
   const { data: classroom } = classroomQuery;
@@ -35,6 +36,6 @@ export const useMaybeClassroom = () => {
   return {
     classroom: classroom ?? null,
     classroomQuery,
-    handle,
+    classroomId: Number(id),
   };
 };

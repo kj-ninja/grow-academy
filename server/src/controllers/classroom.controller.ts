@@ -11,10 +11,11 @@ import {
   findPendingRequests,
   getClassroomsWithPagination,
   updateMembershipStatus,
-  findClassroomByHandle,
   getUserMembershipStatus,
   leaveClassroom,
   updateClassroomInDB,
+  getClassroomDetails,
+  findClassroomByHandle,
 } from "services/Classroom";
 import { errorResponse, validateHandle } from "utils";
 import type { AuthenticatedRequest, Images } from "types/types";
@@ -86,7 +87,6 @@ export const updateClassroom = async (
       return errorResponse(res, "Only the owner can update the classroom", 403);
     }
 
-    // Check if classroomName is being updated and if it already exists
     if (classroomName && classroomName !== classroom.classroomName) {
       const existingClassroom = await findClassroomByName(classroomName);
       if (existingClassroom) {
@@ -169,16 +169,15 @@ export const getClassrooms = async (
   }
 };
 
-// todo: remove owner id from response and members list?
-export const getClassroomDetails = async (
+export const getClassroomDetailsController = async (
   req: AuthenticatedRequest,
   res: Response,
 ) => {
   const userId = req.user!.id;
-  const classroomHandle = req.params.handle;
+  const classroomId = req.params.id;
 
   try {
-    const classroom = await findClassroomByHandle(classroomHandle);
+    const classroom = await getClassroomDetails(Number(classroomId));
 
     if (!classroom) {
       return errorResponse(res, "Classroom not found", 404);
@@ -189,8 +188,16 @@ export const getClassroomDetails = async (
       classroom.id,
     );
 
+    // Transform the response
+    const { _count, members, ...classroomData } = classroom;
+
+    // Extract members as an array of user objects
+    const formattedMembers = members.map(({ user }) => user);
+
     return res.status(200).json({
-      ...classroom,
+      ...classroomData,
+      members: formattedMembers, // Use the transformed array
+      membersCount: _count?.members || 0, // Convert _count to membersCount
       tags: classroom.tags ? JSON.parse(classroom.tags) : [],
       isPendingRequest,
       isMember,
@@ -262,7 +269,7 @@ export const cancelJoinRequest = async (
 };
 
 export const leaveClassroomController = async (req: Request, res: Response) => {
-  const userId = req.user!.id; // Assumes you have user authentication middleware
+  const userId = req.user!.id;
   const classroomId = parseInt(req.params.id);
 
   if (isNaN(classroomId)) {
@@ -302,7 +309,10 @@ export const approveJoinRequest = async (req: Request, res: Response) => {
       return errorResponse(res, "Request not found", 404);
     }
 
-    res.status(200).json({ message: "Join request approved" });
+    res.status(200).json({
+      message: "Join request approved",
+      data: { classroomId, userId },
+    });
   } catch (error) {
     return errorResponse(res, "Failed to approve request");
   }
@@ -318,12 +328,16 @@ export const rejectJoinRequest = async (req: Request, res: Response) => {
 
   try {
     const deletedCount = await deletePendingMembership(classroomId, userId);
+    console.log("deletedCount", deletedCount);
 
     if (deletedCount === 0) {
       return errorResponse(res, "Request not found", 404);
     }
 
-    res.status(200).json({ message: "Join request rejected" });
+    res.status(200).json({
+      message: "Join request rejected",
+      data: { classroomId, userId },
+    });
   } catch (error) {
     return errorResponse(res, "Failed to reject request");
   }

@@ -4,7 +4,6 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ClassroomCard } from "@/features/classroom/components/ClassroomCard";
 import { InfiniteScrollList } from "@/components/ui/InfiniteScrollList";
-import { Spinner } from "@/components/ui/Spinner";
 
 const ClassroomListPage = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -27,7 +26,7 @@ const ClassroomListPage = () => {
         <ClassroomCard
           key={classroom.id}
           classroom={classroom}
-          onClassroomClick={() => navigate(`/classroom/${classroom.handle}`)}
+          onClassroomClick={() => navigate(`/classroom/${classroom.id}`)}
         />
       )}
       onFetchMore={() => fetchNextPage()}

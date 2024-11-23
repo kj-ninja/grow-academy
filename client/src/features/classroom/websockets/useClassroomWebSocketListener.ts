@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useWebSocket } from "@/services/WebSocket/WebSocket.context";
 import { useToast } from "@/hooks/useToast";
+import { queryClient } from "@/services/ReactQuery";
+import { ClassroomQueries } from "@/features/classroom/api/queryKeys";
 
 interface JoinRequestPayload {
   message: string;
@@ -18,7 +20,6 @@ interface NotificationData {
   classroomName: string;
 }
 
-// todo: remove?
 export const useClassroomWebSocketListener = () => {
   const socket = useWebSocket();
   const { toast } = useToast();
@@ -33,17 +34,29 @@ export const useClassroomWebSocketListener = () => {
       });
     };
 
-    const handleJoinRequestApproved = (data: { message: string }) => {
+    const handleJoinRequestApproved = (data: {
+      message: string;
+      classroomId: number;
+    }) => {
       toast({
         title: "Join Request Approved",
         description: data.message,
       });
+      queryClient.invalidateQueries({
+        queryKey: ClassroomQueries.details(data.classroomId).queryKey,
+      });
     };
 
-    const handleJoinRequestRejected = (data: { message: string }) => {
+    const handleJoinRequestRejected = (data: {
+      message: string;
+      classroomId: number;
+    }) => {
       toast({
         title: "Join Request Rejected",
         description: data.message,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ClassroomQueries.details(data.classroomId).queryKey,
       });
     };
 
@@ -51,6 +64,9 @@ export const useClassroomWebSocketListener = () => {
       toast({
         title: data.message,
         description: `Go to classroom ${data.classroomName} settings to approve or reject the request from ${data.userName}.`,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ClassroomQueries.pendingRequests(data.classroomId).queryKey,
       });
     };
 

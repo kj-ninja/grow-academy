@@ -27,7 +27,7 @@ import { Input } from "@/components/ui/Input";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
-import isEqual from "lodash/isEqual";
+import { isEqual } from "lodash";
 
 export function UpdateClassroomForm() {
   const { classroom } = useClassroom();

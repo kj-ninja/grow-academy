@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-type BinaryImage = { data: number[]; type: "Buffer" };
+export type BinaryImage = { data: number[]; type: "Buffer" };
 
 function isBinaryAvatarImage(image?: BinaryImage): image is BinaryImage {
   return typeof image === "object" && !!image && "data" in image;

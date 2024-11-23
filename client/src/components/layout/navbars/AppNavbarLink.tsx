@@ -1,10 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Image } from "lucide-react";
-import { useBinaryImage } from "@/hooks/useBinaryImage";
-
-// todo: move it to global types?
-type BinaryImage = { data: number[]; type: "Buffer" };
+import { useBinaryImage, BinaryImage } from "@/hooks/useBinaryImage";
 
 interface AppNavbarLinkProps {
   path: string;

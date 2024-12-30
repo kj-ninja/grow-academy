@@ -9,7 +9,7 @@ interface AuthPageProps extends PropsWithChildren {
 
 export function AuthPage({ title, description, children }: AuthPageProps) {
   return (
-    <div className="flex flex-col max-w-md w-full justify-center mx-auto mt-6 gap-6">
+    <div className="flex flex-col max-w-md w-full mx-auto mt-6 gap-6">
       <div className="flex flex-col">
         <Text type="h1" className="text-center">
           {title}

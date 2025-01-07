@@ -28,6 +28,7 @@ model User {
   classrooms        ClassroomsMembers[]
   ownedClassrooms   Classroom[]
   uploadedResources Resource[]
+  streamToken       String              @default("streamTokenDefault")
 }
 
 model ClassroomsMembers {

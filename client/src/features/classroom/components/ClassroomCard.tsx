@@ -78,6 +78,7 @@ export function ClassroomCard({
         <div className="flex flex-wrap gap-2 mt-4">
           {classroom.tags.map((tag) => (
             <Badge
+              key={tag}
               icon={<Tag size={12} />}
               text={<Text type="bodyXSmallBold">{tag}</Text>}
             />

@@ -44,10 +44,6 @@ export function LoginForm() {
         username: values.username,
         password: values.password,
       });
-      queryClient.setQueryData(
-        UserQueries.getCurrentUser().queryKey,
-        loginResponse.user,
-      );
       setAuthStatus("authenticated");
 
       if (loginResponse.user.isActive) {

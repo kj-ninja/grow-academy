@@ -10,6 +10,7 @@ export const registerUser = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
+
     await prisma.user.create({
       data: { username, password: hashedPassword },
     });
@@ -59,7 +60,6 @@ export const loginUser = async (req: Request, res: Response) => {
       user: userWithoutPassword,
       token: generateToken(user.id),
       refreshToken: generateRefreshToken(user.id),
-      streamToken,
     });
   } catch {
     res.status(500).json({ message: "Failed to login" });

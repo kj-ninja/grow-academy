@@ -18,6 +18,7 @@ export type User = {
   updatedAt: Date;
   isActive: boolean;
   ownedClassroomCount: number;
+  streamToken: string;
 };
 
 export type SimpleUser = Pick<

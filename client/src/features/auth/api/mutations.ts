@@ -18,12 +18,10 @@ export const useLoginMutation = () => {
     },
     onSuccess: (data) => {
       console.log("streamToken: ", data.streamToken);
+      console.log("user: ", data.user);
+
       localStorage.setItem("token", data.token);
       localStorage.setItem("refreshToken", data.refreshToken);
-      queryClient.setQueryData(
-        UserQueries.getCurrentUser().queryKey,
-        data.user,
-      );
     },
   });
 };

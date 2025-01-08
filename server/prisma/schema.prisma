@@ -28,7 +28,7 @@ model User {
   classrooms        ClassroomsMembers[]
   ownedClassrooms   Classroom[]
   uploadedResources Resource[]
-  streamToken       String              @default("streamTokenDefault")
+  streamToken       String              @unique
 }
 
 model ClassroomsMembers {

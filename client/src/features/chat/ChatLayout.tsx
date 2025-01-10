@@ -32,7 +32,7 @@ export function ChatLayout() {
     if (!client) return;
     const channel = client.channel("messaging", classroom.handle);
     setChannel(channel);
-  }, [client]);
+  }, [client, classroom.handle]);
 
   if (!client) return <div>Setting up client & connection...</div>;
 

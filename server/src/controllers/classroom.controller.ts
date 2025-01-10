@@ -309,6 +309,7 @@ export const approveJoinRequest = async (req: Request, res: Response) => {
       return errorResponse(res, "Request not found", 404);
     }
 
+    // await addUserToStreamChannel(classroom.getStreamChannelId, userId);
     res.status(200).json({
       message: "Join request approved",
       data: { classroomId, userId },

@@ -8,14 +8,15 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { useClassroom } from "@/features/classroom/hooks/useClassroom";
 import React from "react";
-import { ChatLayout } from "@/features/chat/ChatLayout";
 
 interface ClassroomDetailsLayoutProps {
   button?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export function ClassroomDetailsLayout({
   button,
+  children,
 }: ClassroomDetailsLayoutProps) {
   const { classroom } = useClassroom();
 
@@ -138,9 +139,7 @@ export function ClassroomDetailsLayout({
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <ChatLayout />
-          </div>
+          <div className="flex flex-col gap-1.5">{children}</div>
         </div>
       </ProfilePageWrapper>
     </>

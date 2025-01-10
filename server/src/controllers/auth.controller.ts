@@ -11,11 +11,17 @@ export const registerUser = async (req: Request, res: Response) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const streamToken = generateStreamToken(username);
     const user = await prisma.user.create({
-      data: { username, password: hashedPassword, streamToken },
+      data: { username, password: hashedPassword },
     });
-    await updateStreamUser(user);
+
+    const streamToken = generateStreamToken(user.id);
+
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: { streamToken },
+    });
+    await updateStreamUser(updatedUser);
 
     res.status(201).json({ message: "User registered successfully!" });
   } catch (error) {

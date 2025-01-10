@@ -12,8 +12,13 @@ export const createStreamChannel = async (
     created_by_id: userId.toString(),
   });
 
-  await channel.create();
-  return channel;
+  try {
+    await channel.create();
+    return channel;
+  } catch (error) {
+    console.error("Error creating channel:", error);
+    throw error;
+  }
 };
 
 export const addUserToStreamChannel = async (
@@ -32,11 +37,17 @@ export const updateStreamUser = async (updatedUser: Omit<User, "password">) => {
   const name =
     `${updatedUser.firstName ?? ""} ${updatedUser.lastName ?? ""}`.trim() ||
     "User";
-  await streamClient.upsertUsers([
-    {
-      id: updatedUser.id.toString(),
-      username: updatedUser.username,
-      name,
-    },
-  ]);
+
+  console.log("Updating Stream user:", updatedUser);
+  try {
+    await streamClient.upsertUsers([
+      {
+        id: updatedUser.id.toString(),
+        username: updatedUser.username,
+        name,
+      },
+    ]);
+  } catch (e) {
+    console.log("Error updating Stream user:", e);
+  }
 };

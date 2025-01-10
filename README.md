@@ -2,7 +2,8 @@
 
 ## Overview
 
-Community / tutoring platform for sharing knowledge in different science topics. This project is a full-stack application built using Vite for the frontend and TypeScript-powered Express server with Prisma ORM and JWT-based authentication. It leverages a modular structure with shared logic between the client and server.
+Classroom / tutoring platform for sharing knowledge in different science topics. This project is a full-stack application built using Vite for the frontend and TypeScript-powered Express server with Prisma ORM and JWT-based authentication.
+Real-time communication handled by socket.io and getStream SDK.
 
 ## Tech Stack
 
@@ -24,14 +25,13 @@ Community / tutoring platform for sharing knowledge in different science topics.
 
 ## Main Features:
 
-- Video calls - **livekit sdk**
-- Live streams - **livekit sdk**
-- Board chat - **getStream sdk**
+- Classroom chat - **getStream sdk**
+- Classroom members management
+- Realtime connection - **socket.io**
 - Authentication for users
-- Community creation flow
+- Classroom creation flow
 - Resources sharing
 - User / Community settings
-- Members mamagement
 - Onboarding
 
 ## How to Run the Project
@@ -45,7 +45,7 @@ Community / tutoring platform for sharing knowledge in different science topics.
 1. Clone the repository:
 
    ```bash
-   git clone <repository_url>
+   git clone git@github.com:kj-ninja/grow-academy.git
    ```
 
 2. Navigate to the project directory:

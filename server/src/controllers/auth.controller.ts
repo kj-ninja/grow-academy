@@ -10,9 +10,18 @@ export const registerUser = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    await prisma.user.create({
+
+    const user = await prisma.user.create({
       data: { username, password: hashedPassword },
     });
+
+    const streamToken = generateStreamToken(user.id);
+
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: { streamToken },
+    });
+    await updateStreamUser(updatedUser);
 
     res.status(201).json({ message: "User registered successfully!" });
   } catch (error) {
@@ -49,17 +58,14 @@ export const loginUser = async (req: Request, res: Response) => {
       });
     }
 
-    const streamToken = generateStreamToken(user.id);
-    await updateStreamUser(user);
-
     // Remove the password field before sending the response
     const { password: _, ...userWithoutPassword } = user;
 
     res.json({
       user: userWithoutPassword,
+      streamToken: user.streamToken,
       token: generateToken(user.id),
       refreshToken: generateRefreshToken(user.id),
-      streamToken,
     });
   } catch {
     res.status(500).json({ message: "Failed to login" });

@@ -5,6 +5,7 @@ export interface LoginResponse {
   token: string;
   refreshToken: string;
   user: User;
+  streamToken: string;
 }
 
 export interface AuthCredentials {

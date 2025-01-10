@@ -1,6 +1,7 @@
 import { Socket } from "socket.io";
 import { getUserById } from "services/User";
 import { findClassroomById } from "services/Classroom";
+import { addUserToStreamChannel } from "services/Stream";
 
 interface ActiveUsers {
   [userId: number]: string;
@@ -54,7 +55,8 @@ export async function handleApproveJoinRequest(
   if (classroom && user) {
     const userSocketId = getUserSocketId(data.userId);
 
-    if (userSocketId) {
+    if (userSocketId && classroom.getStreamChannelId) {
+      await addUserToStreamChannel(classroom.getStreamChannelId, user.id);
       socket.to(userSocketId).emit("join-request-approved", {
         message: `Your request to join '${classroom.classroomName}' has been approved.`,
         classroomId: data.classroomId,

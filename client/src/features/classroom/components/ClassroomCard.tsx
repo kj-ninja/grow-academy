@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/Card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { useBinaryImage } from "@/hooks/useBinaryImage";
 import { Badge } from "@/components/ui/Badge";
-import { Earth, User } from "lucide-react";
+import { Earth, Tag, User } from "lucide-react";
 
 interface ClassroomCardProps {
   classroom: ClassroomResponse;
@@ -73,6 +73,16 @@ export function ClassroomCard({
             <Text type="bodyXSmall">Owner</Text>
           </div>
           <div className="flex gap-1.5 items-center"></div>
+        </div>
+
+        <div className="flex flex-wrap gap-2 mt-4">
+          {classroom.tags.map((tag) => (
+            <Badge
+              key={tag}
+              icon={<Tag size={12} />}
+              text={<Text type="bodyXSmallBold">{tag}</Text>}
+            />
+          ))}
         </div>
       </CardFooter>
     </Card>

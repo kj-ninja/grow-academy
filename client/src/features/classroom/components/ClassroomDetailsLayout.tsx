@@ -2,18 +2,21 @@ import { ProfilePageWrapper } from "@/components/layout/pages/ProfilePageWrapper
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Text } from "@/components/ui/Text/Text";
 import { Badge } from "@/components/ui/Badge";
-import { Earth } from "lucide-react";
+import { Earth, Tag } from "lucide-react";
 import { useBinaryImage } from "@/hooks/useBinaryImage";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { useClassroom } from "@/features/classroom/hooks/useClassroom";
+import React from "react";
 
 interface ClassroomDetailsLayoutProps {
   button?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export function ClassroomDetailsLayout({
   button,
+  children,
 }: ClassroomDetailsLayoutProps) {
   const { classroom } = useClassroom();
 
@@ -117,10 +120,26 @@ export function ClassroomDetailsLayout({
                 "There is no description about that classroom yet."}
             </Text>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-1">
             <Text type="bodyBold">More info</Text>
             <Text type="bodySmall">Created on: {formattedDate}</Text>
           </div>
+
+          {/* todo: extract tags to separate component and use it also in classroom list page */}
+          <div className="flex flex-col gap-1.5">
+            <Text type="bodyBold">Tags</Text>
+            <div className="flex flex-wrap gap-2">
+              {classroom.tags.map((tag) => (
+                <Badge
+                  key={tag}
+                  icon={<Tag size={12} />}
+                  text={<Text type="bodyXSmallBold">{tag}</Text>}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">{children}</div>
         </div>
       </ProfilePageWrapper>
     </>

@@ -20,6 +20,7 @@ function ClassroomSettingsPage() {
   useClassroomWebSocketListener();
 
   // todo: make owner as a member of the classroom
+  // todo: refresh sidebar after classroom creation
   // todo: remove user from classroom with modal confirmation + revalidation
   // todo: investigate why membersCount is broken after accessType change
   // todo: add members sheet to the classroom

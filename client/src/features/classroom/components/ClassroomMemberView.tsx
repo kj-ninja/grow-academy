@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Settings } from "lucide-react";
 import { useClassroomPolicy } from "@/features/classroom/policies/useClassroomPolicy";
 import { useLeaveClassroomMutation } from "@/features/classroom/api/mutations";
+import { ChatLayout } from "@/features/chat/ChatLayout";
 
 export function ClassroomMemberView() {
   const { classroom } = useClassroom();
@@ -36,5 +37,9 @@ export function ClassroomMemberView() {
     </Button>
   );
 
-  return <ClassroomDetailsLayout button={button} />;
+  return (
+    <ClassroomDetailsLayout button={button}>
+      <ChatLayout />
+    </ClassroomDetailsLayout>
+  );
 }

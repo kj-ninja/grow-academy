@@ -6,7 +6,11 @@ export type ProtectedRouteProps = { children?: ReactElement } & {
   redirectPath?: string;
 };
 
-export const ProtectedRoute: FC<ProtectedRouteProps> = ({ isAllowed, children, redirectPath = "/" }) => {
+export const ProtectedRoute: FC<ProtectedRouteProps> = ({
+  isAllowed,
+  children,
+  redirectPath = "/",
+}) => {
   const location = useLocation();
 
   if (!isAllowed) {

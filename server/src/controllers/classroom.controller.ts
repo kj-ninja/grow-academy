@@ -20,6 +20,9 @@ import {
 import { errorResponse, validateHandle } from "utils";
 import type { AuthenticatedRequest, Images } from "types/types";
 
+// todo: classroom service, method name = create
+// osobna metoda na walidacje - plik validators
+// nazwy controllerow - najkrocej jak sie da
 export const createClassroom = async (
   req: AuthenticatedRequest,
   res: Response,
@@ -40,6 +43,7 @@ export const createClassroom = async (
     validateHandle(handle);
 
     const channelId = handle;
+    // todo: add transaction?
     await createStreamChannel(channelId, classroomName, userId);
 
     const newClassroom = await createClassroomInDB(userId, {
@@ -145,6 +149,7 @@ export const deleteClassroom = async (
   }
 };
 
+// getList
 export const getClassrooms = async (
   req: AuthenticatedRequest,
   res: Response,
@@ -169,6 +174,7 @@ export const getClassrooms = async (
   }
 };
 
+// getDetails
 export const getClassroomDetailsController = async (
   req: AuthenticatedRequest,
   res: Response,
@@ -208,6 +214,7 @@ export const getClassroomDetailsController = async (
   }
 };
 
+// todo: app service - joinRequestToClassroom
 export const joinRequest = async (req: AuthenticatedRequest, res: Response) => {
   const userId = req.user!.id;
   const classroomId = parseInt(req.params.id);
@@ -244,6 +251,7 @@ export const joinRequest = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
+// the same...
 export const cancelJoinRequest = async (
   req: AuthenticatedRequest,
   res: Response,
@@ -268,6 +276,7 @@ export const cancelJoinRequest = async (
   }
 };
 
+// leave
 export const leaveClassroomController = async (req: Request, res: Response) => {
   const userId = req.user!.id;
   const classroomId = parseInt(req.params.id);
@@ -290,6 +299,7 @@ export const leaveClassroomController = async (req: Request, res: Response) => {
   }
 };
 
+// app service = approveJoinRequestToClassroom
 export const approveJoinRequest = async (req: Request, res: Response) => {
   const userId = parseInt(req.params.userId);
   const classroomId = parseInt(req.params.id);
@@ -318,6 +328,7 @@ export const approveJoinRequest = async (req: Request, res: Response) => {
   }
 };
 
+// app service = rejectJoinRequestToClassroom
 export const rejectJoinRequest = async (req: Request, res: Response) => {
   const userId = parseInt(req.params.userId);
   const classroomId = parseInt(req.params.id);
@@ -401,6 +412,8 @@ export const removeMember = async (
   }
 };
 
+// controller isNameAvailable
+// app service = isClassroomNameAvailable
 export const checkClassroomName = async (req: Request, res: Response) => {
   const classroomName = req.params.classroomName as string | undefined;
 
@@ -433,6 +446,8 @@ export const checkClassroomName = async (req: Request, res: Response) => {
   }
 };
 
+// controller isHandleAvailable
+// app service = isClassroomHandleAvailable
 export const checkClassroomHandle = async (req: Request, res: Response) => {
   const handle = req.params.handle as string | undefined;
 

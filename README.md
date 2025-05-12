@@ -77,15 +77,62 @@ Real-time communication handled by socket.io and getStream SDK.
    ```
 
 2. **Open Prisma Studio** (for managing database visually):
+
    ```bash
    npx prisma studio
    ```
 
+3. **Generate Prisma Client** (updates TypeScript types after schema changes):
+
+   ```bash
+   npx prisma generate
+   ```
+
+4. **Apply Schema Changes** (quickly push changes during development):
+
+   ```bash
+   npx prisma db push
+   ```
+
+5. **Reset Database** (clears data, applies migrations, and runs seeds):
+
+   ```bash
+   npx prisma migrate reset
+   ```
+
+6. **Validate Schema** (checks if your schema file is valid):
+
+   ```bash
+   npx prisma validate
+   ```
+
+7. **Format Schema** File (maintains consistent styling):
+
+   ```bash
+   npx prisma format
+   ```
+
+8. **Pull Database Schema** (creates schema file from existing database):
+
+   ```bash
+   npx prisma db pull
+   ```
+
+9. **Show Migrations History** (displays applied and pending migrations):
+
+   ```bash
+   npx prisma migrate status
+   ```
+
+10. **Deploy Migrations** (applies migrations in production):
+
+    ```bash
+    npx prisma migrate deploy
+    ```
+
 ## Additional Commands
 
 ### Formatting with Prettier
-
-Run the Prettier formatter to maintain consistent code style:
 
 ```bash
 bun run prettier --write .

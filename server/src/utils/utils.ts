@@ -52,12 +52,3 @@ export const errorResponse = (
 ) => {
   res.status(status).json({ message });
 };
-
-export const validateHandle = (handle: string) => {
-  const isValid = /^[A-Za-z0-9_]+$/.test(handle);
-  if (!isValid || handle.length < 2) {
-    throw new Error(
-      "Handle must be at least 2 characters and only contain letters, numbers, and underscores.",
-    );
-  }
-};

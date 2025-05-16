@@ -2,22 +2,28 @@ import { authenticateJWT } from "middlewares/authenticateJWT";
 import { Router } from "express";
 import { checkOwner } from "utils";
 import {
-  approveJoinRequest,
-  cancelJoinRequest,
-  checkClassroomHandle,
-  checkClassroomName,
+  // Core classroom controllers
   createClassroom,
-  deleteClassroom,
-  getClassroomDetailsController,
-  getClassrooms,
-  joinRequest,
-  rejectJoinRequest,
-  removeMember,
-  viewPendingRequests,
-  leaveClassroomController,
   updateClassroom,
+  deleteClassroom,
+  getClassroom,
+  getClassrooms,
+  validateClassroomName,
+  validateClassroomHandle,
 } from "@controllers/classroom.controller";
-import { upload, uploadMultiple } from "middlewares/uploadMiddleware";
+
+import {
+  // Membership management controllers
+  createClassroomMembership,
+  cancelClassroomMembershipRequest,
+  deleteClassroomMembership,
+  approveClassroomMembershipRequest,
+  rejectClassroomMembershipRequest,
+  getClassroomPendingRequests,
+  removeClassroomMember,
+} from "@controllers/classroom-membership.controller";
+
+import { uploadMultiple, upload } from "middlewares/uploadMiddleware";
 import {
   deleteResource,
   downloadResource,
@@ -27,12 +33,17 @@ import {
 
 const router = Router();
 
-router.get("/check-name/:classroomName", authenticateJWT, checkClassroomName);
-router.get("/check-handle/:handle", authenticateJWT, checkClassroomHandle);
+// Validation endpoints
+router.get(
+  "/check-name/:classroomName",
+  authenticateJWT,
+  validateClassroomName,
+);
+router.get("/check-handle/:handle", authenticateJWT, validateClassroomHandle);
 
+// Core classroom CRUD
 router.get("/", authenticateJWT, getClassrooms);
-router.get("/:id/", authenticateJWT, getClassroomDetailsController);
-
+router.get("/:id", authenticateJWT, getClassroom);
 router.post("/", authenticateJWT, uploadMultiple, createClassroom);
 router.patch(
   "/:id",
@@ -41,34 +52,44 @@ router.patch(
   uploadMultiple,
   updateClassroom,
 );
-
 router.delete("/:id", authenticateJWT, deleteClassroom);
 
-router.post("/:id/join", authenticateJWT, joinRequest);
-router.delete("/:id/join-cancel", authenticateJWT, cancelJoinRequest);
-router.post("/:id/leave", authenticateJWT, leaveClassroomController);
-router.patch(
-  "/:id/requests/:userId/approve",
-  authenticateJWT,
-  checkOwner,
-  approveJoinRequest,
-);
-router.patch(
-  "/:id/requests/:userId/reject",
-  authenticateJWT,
-  checkOwner,
-  rejectJoinRequest,
-);
-
-router.get("/:id/requests", authenticateJWT, checkOwner, viewPendingRequests);
-
+// Membership management
+router.post("/:id/memberships", authenticateJWT, createClassroomMembership);
 router.delete(
-  "/:classroomId/members/:userId",
+  "/:id/memberships/requests",
+  authenticateJWT,
+  cancelClassroomMembershipRequest,
+);
+router.delete("/:id/memberships", authenticateJWT, deleteClassroomMembership);
+
+// Membership request management (admin)
+router.get(
+  "/:id/memberships/requests",
   authenticateJWT,
   checkOwner,
-  removeMember,
+  getClassroomPendingRequests,
+);
+router.patch(
+  "/:id/memberships/requests/:userId/approve",
+  authenticateJWT,
+  checkOwner,
+  approveClassroomMembershipRequest,
+);
+router.patch(
+  "/:id/memberships/requests/:userId/reject",
+  authenticateJWT,
+  checkOwner,
+  rejectClassroomMembershipRequest,
+);
+router.delete(
+  "/:id/memberships/:userId",
+  authenticateJWT,
+  checkOwner,
+  removeClassroomMember,
 );
 
+// Resources
 router.get("/:id/resources", authenticateJWT, getResources);
 router.post(
   "/:id/resources",

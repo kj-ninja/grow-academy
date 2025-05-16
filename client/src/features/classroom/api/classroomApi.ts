@@ -80,34 +80,38 @@ export const classroomApi = {
     return response.data;
   },
   joinClassroom: async (classroomId: number) => {
-    const response = await ApiClient.post(`/classroom/${classroomId}/join`);
+    const response = await ApiClient.post(
+      `/classroom/${classroomId}/memberships`,
+    );
     return response.data;
   },
   cancelJoinClassroom: async (classroomId: number) => {
     const response = await ApiClient.delete(
-      `/classroom/${classroomId}/join-cancel`,
+      `/classroom/${classroomId}/memberships/requests`,
     );
     return response.data;
   },
   leaveClassroom: async (classroomId: number) => {
-    const response = await ApiClient.post(`/classroom/${classroomId}/leave`);
+    const response = await ApiClient.delete(
+      `/classroom/${classroomId}/memberships`,
+    );
     return response.data;
   },
   getPendingRequests: async (classroomId: number) => {
     const response = await ApiClient.get<PendingRequestsResponse[]>(
-      `/classroom/${classroomId}/requests`,
+      `/classroom/${classroomId}/memberships/requests`,
     );
     return response.data;
   },
   approvePendingRequest: async (classroomId: number, userId: number) => {
     const response = await ApiClient.patch(
-      `/classroom/${classroomId}/requests/${userId}/approve`,
+      `/classroom/${classroomId}/memberships/requests/${userId}/approve`,
     );
     return response.data;
   },
   rejectPendingRequest: async (classroomId: number, userId: number) => {
     const response = await ApiClient.patch(
-      `/classroom/${classroomId}/requests/${userId}/reject`,
+      `/classroom/${classroomId}/memberships/requests/${userId}/reject`,
     );
     return response.data;
   },

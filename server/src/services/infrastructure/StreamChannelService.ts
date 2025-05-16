@@ -1,5 +1,6 @@
 import streamClient from "@config/streamChat";
 import type { User } from "@prisma/client";
+import { ApplicationError } from "utils";
 
 /**
  * Add a user to a stream channel
@@ -19,7 +20,9 @@ export const addUserToStreamChannel = async (
       error,
     );
     const errorMessage = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to add user to channel: ${errorMessage}`);
+    throw new ApplicationError(
+      `Failed to add user to channel: ${errorMessage}`,
+    );
   }
 };
 
@@ -41,7 +44,9 @@ export const removeUserFromStreamChannel = async (
       error,
     );
     const errorMessage = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to remove user from channel: ${errorMessage}`);
+    throw new ApplicationError(
+      `Failed to remove user from channel: ${errorMessage}`,
+    );
   }
 };
 
@@ -68,7 +73,7 @@ export const createStreamChannel = async (
   } catch (error: unknown) {
     console.error("Error creating channel:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to create channel: ${errorMessage}`);
+    throw new ApplicationError(`Failed to create channel: ${errorMessage}`);
   }
 };
 
@@ -98,6 +103,6 @@ export const updateStreamUser = async (updatedUser: Omit<User, "password">) => {
   } catch (error: unknown) {
     console.error("Error updating Stream user:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to update Stream user: ${errorMessage}`);
+    throw new ApplicationError(`Failed to update Stream user: ${errorMessage}`);
   }
 };

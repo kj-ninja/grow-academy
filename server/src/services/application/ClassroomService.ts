@@ -83,8 +83,8 @@ export class ClassroomService {
       handle,
       description,
       accessType: accessType || "Public",
-      avatarImage: avatarImage ? avatarImage.buffer : null,
-      backgroundImage: backgroundImage ? backgroundImage.buffer : null,
+      avatarImage: avatarImage,
+      backgroundImage: backgroundImage,
       getStreamChannelId: channelId,
       tags: tags || [],
     });

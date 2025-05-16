@@ -4,5 +4,7 @@ export {
   verifyToken,
   checkOwner,
   errorResponse,
-  validateHandle,
 } from "./utils";
+
+export { validateHandle } from "./validators";
+export { ApplicationError } from "./errors";

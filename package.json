@@ -12,8 +12,9 @@
     "client": "cd client && bun run dev",
     "dev": "bun run server & bun run client",
     "deploy": "cd client && bun run build && cd ../server && bun run start",
-    "prepare": "husky",
-    "format": "prettier --config ./common/.prettierrc --write \"./client/src/**/*.{js,jsx,ts,tsx}\" \"./server/src/**/*.{ts,js}\""
+    "format": "prettier --write \"./client/src/**/*.{js,jsx,ts,tsx}\" \"./server/src/**/*.{ts,js}\"",
+    "lint": "cd client && bun run lint && cd ../server && bun run lint",
+    "type-check": "cd client && bun run check-types && cd ../server && bun run check-types"
   },
   "devDependencies": {
     "@types/bun": "latest",

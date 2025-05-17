@@ -11,10 +11,7 @@ import {
 } from "validations/schemas/classroom.schema";
 import { uploadMultiple } from "middlewares/upload/uploadMiddleware";
 import { checkOwner } from "utils/middleware/authorization";
-import {
-  createClassroom,
-  updateClassroom,
-} from "controllers/classroom.controller";
+import { createClassroom, updateClassroom } from "controllers/classroom.controller";
 
 /**
  * Authentication middleware for routes requiring enhanced authentication
@@ -31,7 +28,7 @@ export const withAuth = compose(enhancedAuth);
 export const createClassroomMiddleware = compose(
   enhancedAuth,
   uploadMultiple,
-  validateRequest(createClassroomSchema),
+  validateRequest(createClassroomSchema)
 );
 
 /**
@@ -45,7 +42,7 @@ export const updateClassroomMiddleware = compose(
   enhancedAuth,
   withEnhancedAuthMiddleware(checkOwner),
   uploadMultiple,
-  validateRequest(updateClassroomSchema),
+  validateRequest(updateClassroomSchema)
 );
 
 /**
@@ -53,7 +50,7 @@ export const updateClassroomMiddleware = compose(
  */
 export const handleCreateClassroom = compose(
   createClassroomMiddleware,
-  withEnhancedAuth(createClassroom),
+  withEnhancedAuth(createClassroom)
 );
 
 /**
@@ -61,5 +58,5 @@ export const handleCreateClassroom = compose(
  */
 export const handleUpdateClassroom = compose(
   updateClassroomMiddleware,
-  withEnhancedAuth(updateClassroom),
+  withEnhancedAuth(updateClassroom)
 );

@@ -5,10 +5,7 @@ import type { EnhancedAuthRequest } from "types/auth.types";
 const prisma = new PrismaClient();
 
 // controller todo:
-export const uploadResource = async (
-  req: EnhancedAuthRequest,
-  res: Response,
-) => {
+export const uploadResource = async (req: EnhancedAuthRequest, res: Response) => {
   const { id: classroomId } = req.params;
   const userId = req.authenticatedUser.id;
 
@@ -29,7 +26,7 @@ export const uploadResource = async (
     });
 
     res.status(201).json({ message: "File uploaded successfully", resource });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ message: "Failed to upload file" });
   }
 };
@@ -52,13 +49,13 @@ export const getResources = async (req: Request, res: Response) => {
     });
 
     res.status(200).json(resources);
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ message: "Failed to retrieve resources" });
   }
 };
 
-export const deleteResource = async (req: Request, res: Response) => {
-  const userId = req.user?.id;
+export const deleteResource = async (req: EnhancedAuthRequest, res: Response) => {
+  const userId = req.authenticatedUser.id;
   const { id: resourceId } = req.params;
 
   if (!userId) {
@@ -77,10 +74,7 @@ export const deleteResource = async (req: Request, res: Response) => {
     }
 
     // Check if the user is the owner of the classroom or the uploader
-    if (
-      resource.uploadedById !== userId &&
-      resource.classroom.ownerId !== userId
-    ) {
+    if (resource.uploadedById !== userId && resource.classroom.ownerId !== userId) {
       return res.status(403).json({
         message: "You do not have permission to delete this resource",
       });
@@ -92,7 +86,7 @@ export const deleteResource = async (req: Request, res: Response) => {
     });
 
     res.status(200).json({ message: "Resource deleted successfully" });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ message: "Failed to delete resource" });
   }
 };
@@ -112,15 +106,12 @@ export const downloadResource = async (req: Request, res: Response) => {
     }
 
     // Set headers for file download
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${resource.fileName}"`,
-    );
+    res.setHeader("Content-Disposition", `attachment; filename="${resource.fileName}"`);
     res.setHeader("Content-Type", resource.fileType);
 
     // Send the binary data
     res.send(resource.fileData);
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ message: "Failed to download resource" });
   }
 };

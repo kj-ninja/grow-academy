@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 export const checkOwner = async (
   req: EnhancedAuthRequest,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   const { id: classroomId } = req.params;
   const userId = req.authenticatedUser.id;
@@ -24,7 +24,7 @@ export const checkOwner = async (
     }
 
     return errorResponse(res, "Access denied", 403);
-  } catch (error) {
+  } catch (_error) {
     return errorResponse(res, "Failed to verify permissions", 500);
   }
 };

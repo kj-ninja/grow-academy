@@ -1,7 +1,4 @@
-import {
-  classroomApi,
-  ClassroomResponse,
-} from "@/features/classroom/api/classroomApi";
+import { classroomApi, ClassroomResponse } from "@/features/classroom/api/classroomApi";
 import { infiniteQueryOptions } from "@tanstack/react-query";
 
 interface PaginatedResponse<T> {

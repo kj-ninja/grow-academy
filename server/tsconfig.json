@@ -26,11 +26,5 @@
     "noPropertyAccessFromIndexSignature": false,
 
     "baseUrl": "./src"
-    // "paths": {
-    //   "@controllers/*": ["controllers/*"],
-    //   "@middleware/*": ["middleware/*"],
-    //   "@routes/*": ["routes/*"],
-    //   "@config/*": ["config/*"]
-    // }
   }
 }

@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // Type checking
+    {
+      "type": "shell",
+      "command": "cd client && bun run check-types && cd ../server && bun run check-types",
+      "problemMatcher": ["$tsc"],
+      "label": "[Grow Academy] Type check",
+      "detail": "Run TypeScript type checking on client and server"
+    },
+
+    // Linting
+    {
+      "type": "shell",
+      "command": "cd client && bun run lint && cd ../server && bun run lint",
+      "problemMatcher": ["$eslint-stylish"],
+      "label": "[Grow Academy] Lint",
+      "detail": "Run ESLint on client and server"
+    },
+
+    // Formatting
+    {
+      "type": "shell",
+      "command": "bun run format",
+      "problemMatcher": [],
+      "label": "[Grow Academy] Format",
+      "detail": "Run Prettier formatting across the project"
+    }
+  ]
+}

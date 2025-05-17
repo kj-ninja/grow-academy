@@ -1,9 +1,5 @@
 import express from "express";
-import {
-  getCurrentUser,
-  getUser,
-  updateUser,
-} from "controllers/user.controller";
+import { getCurrentUser, getUser, updateUser } from "controllers/user.controller";
 import { uploadMultiple } from "middlewares/upload/uploadMiddleware";
 import { withAuth } from "./middleware/classroom.middleware";
 import { withEnhancedAuth } from "middlewares/auth/enhancedAuth";

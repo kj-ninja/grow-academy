@@ -6,7 +6,7 @@ export const errorHandler = (
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction
 ) => {
   // Log error for debugging
   console.error(`[ERROR] ${err.name}: ${err.message}`, err.stack);

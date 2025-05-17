@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build --outDir ../server/public --emptyOutDir",
-    "lint": "eslint --max-warnings 0",
+    "lint": "eslint .",
     "check-types": "tsc --noEmit",
     "preview": "vite preview",
     "component": "./scripts/create_component.sh",

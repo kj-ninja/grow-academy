@@ -61,7 +61,7 @@ export const classroomApi = {
   },
   getClassroomDetails: async (id: number) => {
     const response = await ApiClient.get<ClassroomWithDetailsResponse>(
-      `/classroom/${id}`,
+      `/classroom/${id}`
     );
     return response.data;
   },
@@ -75,43 +75,39 @@ export const classroomApi = {
     filterByOwner?: boolean;
   }) => {
     const response = await ApiClient.get(
-      `/classroom?page=${page}&limit=${limit}&owner=${filterByOwner}`,
+      `/classroom?page=${page}&limit=${limit}&owner=${filterByOwner}`
     );
     return response.data;
   },
   joinClassroom: async (classroomId: number) => {
-    const response = await ApiClient.post(
-      `/classroom/${classroomId}/memberships`,
-    );
+    const response = await ApiClient.post(`/classroom/${classroomId}/memberships`);
     return response.data;
   },
   cancelJoinClassroom: async (classroomId: number) => {
     const response = await ApiClient.delete(
-      `/classroom/${classroomId}/memberships/requests`,
+      `/classroom/${classroomId}/memberships/requests`
     );
     return response.data;
   },
   leaveClassroom: async (classroomId: number) => {
-    const response = await ApiClient.delete(
-      `/classroom/${classroomId}/memberships`,
-    );
+    const response = await ApiClient.delete(`/classroom/${classroomId}/memberships`);
     return response.data;
   },
   getPendingRequests: async (classroomId: number) => {
     const response = await ApiClient.get<PendingRequestsResponse[]>(
-      `/classroom/${classroomId}/memberships/requests`,
+      `/classroom/${classroomId}/memberships/requests`
     );
     return response.data;
   },
   approvePendingRequest: async (classroomId: number, userId: number) => {
     const response = await ApiClient.patch(
-      `/classroom/${classroomId}/memberships/requests/${userId}/approve`,
+      `/classroom/${classroomId}/memberships/requests/${userId}/approve`
     );
     return response.data;
   },
   rejectPendingRequest: async (classroomId: number, userId: number) => {
     const response = await ApiClient.patch(
-      `/classroom/${classroomId}/memberships/requests/${userId}/reject`,
+      `/classroom/${classroomId}/memberships/requests/${userId}/reject`
     );
     return response.data;
   },

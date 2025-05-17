@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { errorResponse } from "../responses";
 
 export function controllerHandler<T extends Request>(
-  controller: (req: T, res: Response) => Promise<any>,
+  controller: (req: T, res: Response) => Promise<any>
 ) {
   return async (req: T, res: Response) => {
     try {
@@ -12,7 +12,7 @@ export function controllerHandler<T extends Request>(
       return errorResponse(
         res,
         error.message || "An unexpected error occurred",
-        error.statusCode || 500,
+        error.statusCode || 500
       );
     }
   };

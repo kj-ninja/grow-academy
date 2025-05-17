@@ -7,22 +7,14 @@ import { ApplicationError } from "utils";
  * @param channelId The ID of the channel to add the user to
  * @param userId The ID of the user to add
  */
-export const addUserToStreamChannel = async (
-  channelId: string,
-  userId: number,
-) => {
+export const addUserToStreamChannel = async (channelId: string, userId: number) => {
   try {
     const channel = streamClient.channel("messaging", channelId);
     await channel.addMembers([userId.toString()]);
   } catch (error: unknown) {
-    console.error(
-      `Error adding user ${userId} to channel ${channelId}:`,
-      error,
-    );
+    console.error(`Error adding user ${userId} to channel ${channelId}:`, error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    throw new ApplicationError(
-      `Failed to add user to channel: ${errorMessage}`,
-    );
+    throw new ApplicationError(`Failed to add user to channel: ${errorMessage}`);
   }
 };
 
@@ -31,22 +23,14 @@ export const addUserToStreamChannel = async (
  * @param channelId The ID of the channel to remove the user from
  * @param userId The ID of the user to remove
  */
-export const removeUserFromStreamChannel = async (
-  channelId: string,
-  userId: number,
-) => {
+export const removeUserFromStreamChannel = async (channelId: string, userId: number) => {
   try {
     const channel = streamClient.channel("messaging", channelId);
     await channel.removeMembers([userId.toString()]);
   } catch (error: unknown) {
-    console.error(
-      `Error removing user ${userId} from channel ${channelId}:`,
-      error,
-    );
+    console.error(`Error removing user ${userId} from channel ${channelId}:`, error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    throw new ApplicationError(
-      `Failed to remove user from channel: ${errorMessage}`,
-    );
+    throw new ApplicationError(`Failed to remove user from channel: ${errorMessage}`);
   }
 };
 
@@ -59,7 +43,7 @@ export const removeUserFromStreamChannel = async (
 export const createStreamChannel = async (
   channelId: string,
   name: string,
-  userId: number,
+  userId: number
 ) => {
   try {
     const channel = streamClient.channel("messaging", channelId, {
@@ -89,8 +73,7 @@ export const generateStreamToken = (userId: number) => {
  */
 export const updateStreamUser = async (updatedUser: Omit<User, "password">) => {
   const name =
-    `${updatedUser.firstName ?? ""} ${updatedUser.lastName ?? ""}`.trim() ||
-    "User";
+    `${updatedUser.firstName ?? ""} ${updatedUser.lastName ?? ""}`.trim() || "User";
 
   try {
     await streamClient.upsertUsers([

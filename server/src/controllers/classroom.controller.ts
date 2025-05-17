@@ -23,7 +23,7 @@ export const createClassroom = controllerHandler(
     });
 
     return res.status(201).json(classroom);
-  },
+  }
 );
 
 /**
@@ -39,27 +39,20 @@ export const updateClassroom = controllerHandler(
       return errorResponse(res, "Invalid classroom ID", 400);
     }
 
-    const updatedClassroom = await classroomService.updateClassroom(
-      classroomId,
-      userId,
-      {
-        ...req.body,
-        avatarImage: files?.avatarImage?.[0]?.buffer || null,
-        backgroundImage: files?.backgroundImage?.[0]?.buffer || null,
-      },
-    );
+    const updatedClassroom = await classroomService.updateClassroom(classroomId, userId, {
+      ...req.body,
+      avatarImage: files?.avatarImage?.[0]?.buffer || null,
+      backgroundImage: files?.backgroundImage?.[0]?.buffer || null,
+    });
 
     return res.status(200).json(updatedClassroom);
-  },
+  }
 );
 
 /**
  * Delete a classroom
  */
-export const deleteClassroom = async (
-  req: EnhancedAuthRequest,
-  res: Response,
-) => {
+export const deleteClassroom = async (req: EnhancedAuthRequest, res: Response) => {
   const userId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
 
@@ -75,7 +68,7 @@ export const deleteClassroom = async (
     return errorResponse(
       res,
       error.message || "Failed to delete classroom",
-      error.statusCode || 500,
+      error.statusCode || 500
     );
   }
 };
@@ -83,10 +76,7 @@ export const deleteClassroom = async (
 /**
  * Get all classrooms with pagination
  */
-export const getClassrooms = async (
-  req: EnhancedAuthRequest,
-  res: Response,
-) => {
+export const getClassrooms = async (req: EnhancedAuthRequest, res: Response) => {
   const userId = req.authenticatedUser.id;
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
@@ -97,7 +87,7 @@ export const getClassrooms = async (
       userId,
       page,
       limit,
-      filterByOwner,
+      filterByOwner
     );
 
     return res.status(200).json(classroomsData);
@@ -106,7 +96,7 @@ export const getClassrooms = async (
     return errorResponse(
       res,
       error.message || "Failed to fetch classrooms",
-      error.statusCode || 500,
+      error.statusCode || 500
     );
   }
 };
@@ -119,17 +109,14 @@ export const getClassroom = async (req: EnhancedAuthRequest, res: Response) => {
   const classroomId = Number(req.params.id);
 
   try {
-    const classroom = await classroomService.getClassroomDetails(
-      classroomId,
-      userId,
-    );
+    const classroom = await classroomService.getClassroomDetails(classroomId, userId);
     return res.status(200).json(classroom);
   } catch (error: any) {
     console.error("Error fetching classroom details:", error);
     return errorResponse(
       res,
       error.message || "Failed to fetch classroom details",
-      error.statusCode || 500,
+      error.statusCode || 500
     );
   }
 };
@@ -137,10 +124,7 @@ export const getClassroom = async (req: EnhancedAuthRequest, res: Response) => {
 /**
  * Validate if classroom name is available
  */
-export const validateClassroomName = async (
-  req: EnhancedAuthRequest,
-  res: Response,
-) => {
+export const validateClassroomName = async (req: EnhancedAuthRequest, res: Response) => {
   const classroomName = req.params.classroomName as string | undefined;
 
   if (!classroomName) {
@@ -151,8 +135,7 @@ export const validateClassroomName = async (
   }
 
   try {
-    const isAvailable =
-      await classroomService.isClassroomNameAvailable(classroomName);
+    const isAvailable = await classroomService.isClassroomNameAvailable(classroomName);
 
     if (!isAvailable) {
       return res.status(409).json({
@@ -179,7 +162,7 @@ export const validateClassroomName = async (
  */
 export const validateClassroomHandle = async (
   req: EnhancedAuthRequest,
-  res: Response,
+  res: Response
 ) => {
   const handle = req.params.handle as string | undefined;
 
@@ -191,8 +174,7 @@ export const validateClassroomHandle = async (
   }
 
   try {
-    const isAvailable =
-      await classroomService.isClassroomHandleAvailable(handle);
+    const isAvailable = await classroomService.isClassroomHandleAvailable(handle);
 
     if (!isAvailable) {
       return res.status(409).json({

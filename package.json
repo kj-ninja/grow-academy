@@ -13,12 +13,13 @@
     "dev": "bun run server & bun run client",
     "deploy": "cd client && bun run build && cd ../server && bun run start",
     "prepare": "husky",
-    "format": "prettier --config ./common/.prettierrc --write \"./**/*.{js,jsx,ts,tsx}\""
+    "format": "prettier --config ./common/.prettierrc --write \"./client/src/**/*.{js,jsx,ts,tsx}\" \"./server/src/**/*.{ts,js}\""
   },
   "devDependencies": {
     "@types/bun": "latest",
     "husky": "^9.1.6",
     "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "pretty-quick": "^4.0.0"
   },
   "peerDependencies": {

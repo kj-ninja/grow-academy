@@ -41,16 +41,8 @@ import {
 const router = Router();
 
 // Validation endpoints
-router.get(
-  "/validate/:classroomName",
-  withAuth,
-  withEnhancedAuth(validateClassroomName),
-);
-router.get(
-  "/validate/:handle",
-  withAuth,
-  withEnhancedAuth(validateClassroomHandle),
-);
+router.get("/validate/:classroomName", withAuth, withEnhancedAuth(validateClassroomName));
+router.get("/validate/:handle", withAuth, withEnhancedAuth(validateClassroomHandle));
 
 // Core classroom CRUD
 router.get("/", withAuth, withEnhancedAuth(getClassrooms));
@@ -61,46 +53,38 @@ router.delete("/:id", withAuth, withEnhancedAuth(deleteClassroom));
 
 // todo: add compose middleware for classroom memberships
 // Membership management
-router.post(
-  "/:id/memberships",
-  withAuth,
-  withEnhancedAuth(createClassroomMembership),
-);
+router.post("/:id/memberships", withAuth, withEnhancedAuth(createClassroomMembership));
 router.delete(
   "/:id/memberships/requests",
   withAuth,
-  withEnhancedAuth(cancelClassroomMembershipRequest),
+  withEnhancedAuth(cancelClassroomMembershipRequest)
 );
-router.delete(
-  "/:id/memberships",
-  withAuth,
-  withEnhancedAuth(deleteClassroomMembership),
-);
+router.delete("/:id/memberships", withAuth, withEnhancedAuth(deleteClassroomMembership));
 
 // Membership request management (admin)
 router.get(
   "/:id/memberships/requests",
   withAuth,
   withEnhancedAuthMiddleware(checkOwner),
-  withEnhancedAuth(getClassroomPendingRequests),
+  withEnhancedAuth(getClassroomPendingRequests)
 );
 router.patch(
   "/:id/memberships/requests/:userId/approve",
   withAuth,
   withEnhancedAuthMiddleware(checkOwner),
-  withEnhancedAuth(approveClassroomMembershipRequest),
+  withEnhancedAuth(approveClassroomMembershipRequest)
 );
 router.patch(
   "/:id/memberships/requests/:userId/reject",
   withAuth,
   withEnhancedAuthMiddleware(checkOwner),
-  withEnhancedAuth(rejectClassroomMembershipRequest),
+  withEnhancedAuth(rejectClassroomMembershipRequest)
 );
 router.delete(
   "/:id/memberships/:userId",
   enhancedAuth,
   withEnhancedAuthMiddleware(checkOwner),
-  withEnhancedAuth(removeClassroomMember),
+  withEnhancedAuth(removeClassroomMember)
 );
 
 // Resources todo...
@@ -109,9 +93,9 @@ router.post(
   "/:id/resources",
   withAuth,
   upload.single("file"),
-  withEnhancedAuth(uploadResource),
+  withEnhancedAuth(uploadResource)
 );
 router.get("/resources/:id/download", downloadResource);
-router.delete("/resources/:id", deleteResource);
+router.delete("/resources/:id", withAuth, withEnhancedAuth(deleteResource));
 
 export default router;

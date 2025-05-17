@@ -2,7 +2,7 @@ import request from "supertest";
 import app from "app";
 import { PrismaClient } from "@prisma/client";
 import { generateToken } from "utils";
-import { createStreamChannel } from "services/Stream";
+import { createStreamChannel } from "services/infrastructure/StreamChannelService";
 
 const prisma = new PrismaClient();
 
@@ -126,7 +126,7 @@ describe("Classroom Controller", () => {
           userId: testUserId,
           memberShipStatus: "pending",
         }),
-      ]),
+      ])
     );
   });
 

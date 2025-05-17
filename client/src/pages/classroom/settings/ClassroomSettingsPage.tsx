@@ -31,14 +31,12 @@ function ClassroomSettingsPage() {
   // todo: display tags in the classroom profile and card?
 
   return (
-    <div className="flex flex-col max-w-3xl w-full mx-auto mt-8 gap-4">
+    <div className="mx-auto mt-8 flex w-full max-w-3xl flex-col gap-4">
       <Text type="h1">Classroom Settings</Text>
 
       <Tabs
         value={edit}
-        onValueChange={(tab) =>
-          navigate(`/classroom/${classroom.id}/settings/${tab}`)
-        }
+        onValueChange={(tab) => navigate(`/classroom/${classroom.id}/settings/${tab}`)}
       >
         <TabsList>
           <TabsTrigger value="profile">Profile</TabsTrigger>

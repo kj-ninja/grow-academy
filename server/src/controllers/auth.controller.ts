@@ -1,8 +1,11 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { type Request, type Response } from "express";
+import {
+  generateStreamToken,
+  updateStreamUser,
+} from "services/infrastructure/StreamChannelService";
 import { generateRefreshToken, generateToken, verifyToken } from "utils";
-import { generateStreamToken, updateStreamUser } from "services/Stream";
 
 const prisma = new PrismaClient();
 
@@ -11,17 +14,24 @@ export const registerUser = async (req: Request, res: Response) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Create user (streamToken will get the default empty string from schema)
     const user = await prisma.user.create({
-      data: { username, password: hashedPassword },
+      data: {
+        username,
+        password: hashedPassword,
+        // Prisma will use the default empty string from schema
+      },
     });
 
+    // Generate a proper token using the new user's ID
     const streamToken = generateStreamToken(user.id);
 
-    const updatedUser = await prisma.user.update({
+    // Update the user with the proper token
+    await prisma.user.update({
       where: { id: user.id },
       data: { streamToken },
     });
-    await updateStreamUser(updatedUser);
+    await updateStreamUser(user);
 
     res.status(201).json({ message: "User registered successfully!" });
   } catch (error) {

@@ -7,9 +7,7 @@ export function setupWebSocket(io: SocketIOServer) {
     const userId = socket.handshake.query.userId;
 
     if (userId) {
-      console.log(
-        `Registering user socket: userId=${userId}, socketId=${socket.id}`,
-      );
+      console.log(`Registering user socket: userId=${userId}, socketId=${socket.id}`);
       registerUserSocket(Number(userId), socket.id);
     }
     classroomEvents(socket);

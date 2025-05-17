@@ -12,10 +12,7 @@ interface CreateClassroomModalProps {
   setIsOpen: (value: boolean) => void;
 }
 
-export function CreateClassroomModal({
-  isOpen,
-  setIsOpen,
-}: CreateClassroomModalProps) {
+export function CreateClassroomModal({ isOpen, setIsOpen }: CreateClassroomModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>

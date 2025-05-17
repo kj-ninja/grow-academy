@@ -2,7 +2,7 @@ import { ClassroomWithDetailsResponse } from "@/features/classroom/api/classroom
 import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 
 export function useClassroomPolicy(
-  classroom: ClassroomWithDetailsResponse | undefined | null,
+  classroom: ClassroomWithDetailsResponse | undefined | null
 ) {
   const { currentUser } = useCurrentUser();
 
@@ -23,9 +23,7 @@ export function useClassroomPolicy(
 
   const mustRequestToJoin = () => {
     return (
-      !isMember &&
-      classroom?.accessType === "Private" &&
-      !classroom.isPendingRequest
+      !isMember && classroom?.accessType === "Private" && !classroom.isPendingRequest
     );
   };
 

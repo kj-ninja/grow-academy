@@ -7,7 +7,7 @@ interface BadgeDisplayProps {
 
 export function Badge({ icon, text }: BadgeDisplayProps) {
   return (
-    <div className="flex gap-1 bg-backgroundSecondary rounded-full items-center px-2 py-1">
+    <div className="bg-backgroundSecondary flex items-center gap-1 rounded-full px-2 py-1">
       {icon}
       {text}
     </div>

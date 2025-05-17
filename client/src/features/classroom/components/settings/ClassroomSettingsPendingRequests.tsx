@@ -23,7 +23,7 @@ export function ClassroomSettingsPendingRequests() {
           />
         ))
       ) : (
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2">
           <Text type="body">You have no pending request yet.</Text>
         </div>
       )}

@@ -1,7 +1,7 @@
 import type { Response } from "express";
-import type { AuthenticatedRequest } from "types/types";
 import { ClassroomMembershipService } from "services/application/ClassroomMembershipService";
 import { errorResponse } from "utils";
+import type { EnhancedAuthRequest } from "../types/infrastructure/express/requests";
 
 // Initialize service
 const membershipService = new ClassroomMembershipService();
@@ -10,10 +10,10 @@ const membershipService = new ClassroomMembershipService();
  * Create a request to join a classroom
  */
 export const createClassroomMembership = async (
-  req: AuthenticatedRequest,
-  res: Response,
+  req: EnhancedAuthRequest,
+  res: Response
 ) => {
-  const userId = req.user!.id;
+  const userId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
 
   if (isNaN(classroomId)) {
@@ -21,17 +21,14 @@ export const createClassroomMembership = async (
   }
 
   try {
-    const result = await membershipService.createJoinRequest(
-      classroomId,
-      userId,
-    );
+    const result = await membershipService.createJoinRequest(classroomId, userId);
     return res.status(201).json(result);
   } catch (error: any) {
     console.error("Error creating membership request:", error);
     return errorResponse(
       res,
       error.message || "Failed to join classroom",
-      error.statusCode || 500,
+      error.statusCode || 500
     );
   }
 };
@@ -40,10 +37,10 @@ export const createClassroomMembership = async (
  * Cancel a pending join request
  */
 export const cancelClassroomMembershipRequest = async (
-  req: AuthenticatedRequest,
-  res: Response,
+  req: EnhancedAuthRequest,
+  res: Response
 ) => {
-  const userId = req.user!.id;
+  const userId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
 
   if (isNaN(classroomId)) {
@@ -53,7 +50,7 @@ export const cancelClassroomMembershipRequest = async (
   try {
     const result = await membershipService.cancelJoinRequest(
       { classroomId, userId },
-      userId,
+      userId
     );
     return res.status(200).json(result);
   } catch (error: any) {
@@ -61,7 +58,7 @@ export const cancelClassroomMembershipRequest = async (
     return errorResponse(
       res,
       error.message || "Failed to cancel request",
-      error.statusCode || 500,
+      error.statusCode || 500
     );
   }
 };
@@ -70,10 +67,10 @@ export const cancelClassroomMembershipRequest = async (
  * Leave a classroom (delete own membership)
  */
 export const deleteClassroomMembership = async (
-  req: AuthenticatedRequest,
-  res: Response,
+  req: EnhancedAuthRequest,
+  res: Response
 ) => {
-  const userId = req.user!.id;
+  const userId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
 
   if (isNaN(classroomId)) {
@@ -88,7 +85,7 @@ export const deleteClassroomMembership = async (
     return errorResponse(
       res,
       error.message || "Failed to leave classroom",
-      error.statusCode || 500,
+      error.statusCode || 500
     );
   }
 };
@@ -97,10 +94,10 @@ export const deleteClassroomMembership = async (
  * Get all pending join requests for a classroom
  */
 export const getClassroomPendingRequests = async (
-  req: AuthenticatedRequest,
-  res: Response,
+  req: EnhancedAuthRequest,
+  res: Response
 ) => {
-  const adminId = req.user!.id;
+  const adminId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
 
   if (isNaN(classroomId)) {
@@ -110,7 +107,7 @@ export const getClassroomPendingRequests = async (
   try {
     const pendingRequests = await membershipService.getPendingRequests(
       classroomId,
-      adminId,
+      adminId
     );
     return res.status(200).json(pendingRequests);
   } catch (error: any) {
@@ -118,7 +115,7 @@ export const getClassroomPendingRequests = async (
     return errorResponse(
       res,
       error.message || "Failed to fetch pending requests",
-      error.statusCode || 500,
+      error.statusCode || 500
     );
   }
 };
@@ -127,10 +124,10 @@ export const getClassroomPendingRequests = async (
  * Approve a join request
  */
 export const approveClassroomMembershipRequest = async (
-  req: AuthenticatedRequest,
-  res: Response,
+  req: EnhancedAuthRequest,
+  res: Response
 ) => {
-  const adminId = req.user!.id;
+  const adminId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
   const userId = Number(req.params.userId);
 
@@ -141,7 +138,7 @@ export const approveClassroomMembershipRequest = async (
   try {
     const result = await membershipService.approveJoinRequest(
       { classroomId, userId },
-      adminId,
+      adminId
     );
     return res.status(200).json(result);
   } catch (error: any) {
@@ -149,7 +146,7 @@ export const approveClassroomMembershipRequest = async (
     return errorResponse(
       res,
       error.message || "Failed to approve request",
-      error.statusCode || 500,
+      error.statusCode || 500
     );
   }
 };
@@ -158,10 +155,10 @@ export const approveClassroomMembershipRequest = async (
  * Reject a join request
  */
 export const rejectClassroomMembershipRequest = async (
-  req: AuthenticatedRequest,
-  res: Response,
+  req: EnhancedAuthRequest,
+  res: Response
 ) => {
-  const adminId = req.user!.id;
+  const adminId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
   const userId = Number(req.params.userId);
 
@@ -172,7 +169,7 @@ export const rejectClassroomMembershipRequest = async (
   try {
     const result = await membershipService.rejectJoinRequest(
       { classroomId, userId },
-      adminId,
+      adminId
     );
     return res.status(200).json(result);
   } catch (error: any) {
@@ -180,7 +177,7 @@ export const rejectClassroomMembershipRequest = async (
     return errorResponse(
       res,
       error.message || "Failed to reject request",
-      error.statusCode || 500,
+      error.statusCode || 500
     );
   }
 };
@@ -188,11 +185,8 @@ export const rejectClassroomMembershipRequest = async (
 /**
  * Remove a member from a classroom (admin operation)
  */
-export const removeClassroomMember = async (
-  req: AuthenticatedRequest,
-  res: Response,
-) => {
-  const adminId = req.user!.id;
+export const removeClassroomMember = async (req: EnhancedAuthRequest, res: Response) => {
+  const adminId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
   const memberId = Number(req.params.userId);
 
@@ -201,18 +195,14 @@ export const removeClassroomMember = async (
   }
 
   try {
-    const result = await membershipService.removeMember(
-      classroomId,
-      memberId,
-      adminId,
-    );
+    const result = await membershipService.removeMember(classroomId, memberId, adminId);
     return res.status(200).json(result);
   } catch (error: any) {
     console.error("Error removing member:", error);
     return errorResponse(
       res,
       error.message || "Failed to remove member",
-      error.statusCode || 500,
+      error.statusCode || 500
     );
   }
 };

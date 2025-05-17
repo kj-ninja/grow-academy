@@ -16,7 +16,7 @@ export function UserSettingsClassroomTile({
 
   return (
     <div
-      className="flex gap-4 my-2 p-2 rounded-lg cursor-pointer hover:bg-background"
+      className="hover:bg-background my-2 flex cursor-pointer gap-4 rounded-lg p-2"
       onClick={() => navigate(`/classroom/${classroom.id}/settings/profile`)}
     >
       <Avatar size="xl">
@@ -33,7 +33,7 @@ export function UserSettingsClassroomTile({
         </Text>
       </div>
 
-      <div className="flex gap-2 items-start">
+      <div className="flex items-start gap-2">
         <Badge
           icon={<User size={14} fill="black" />}
           text={<Text type="bodySmallBold">{classroom.membersCount || 0}</Text>}

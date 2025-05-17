@@ -15,17 +15,11 @@ export interface AuthCredentials {
 
 export const authApi = {
   register: async (credentials: AuthCredentials) => {
-    const response = await ApiClient.post<AuthCredentials>(
-      "/auth/register",
-      credentials,
-    );
+    const response = await ApiClient.post<AuthCredentials>("/auth/register", credentials);
     return response.data;
   },
   login: async (credentials: AuthCredentials) => {
-    const response = await ApiClient.post<LoginResponse>(
-      "/auth/login",
-      credentials,
-    );
+    const response = await ApiClient.post<LoginResponse>("/auth/login", credentials);
     return response.data;
   },
   validate: async (): Promise<User> => {

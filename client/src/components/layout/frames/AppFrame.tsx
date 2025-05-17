@@ -11,7 +11,7 @@ export const AppFrame = ({ header, children, navbar }: AppFrameProps) => {
     <>
       <ScrollRestoration getKey={(location) => location.pathname} />
       {header}
-      <main className="min-h-[100vh] flex flex-row">
+      <main className="flex min-h-[100vh] flex-row">
         {navbar}
         {children ?? <Outlet />}
       </main>

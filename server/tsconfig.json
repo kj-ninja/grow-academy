@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node", "jest"],
     // Enable latest features
     "lib": ["ESNext", "DOM"],
     "target": "ESNext",
@@ -25,12 +26,8 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
 
-    "baseUrl": "./src",
-    "paths": {
-      "@controllers/*": ["controllers/*"],
-      "@middleware/*": ["middleware/*"],
-      "@routes/*": ["routes/*"],
-      "@config/*": ["config/*"]
-    }
-  }
+    "baseUrl": "./src"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["tests/**/*", "**/*.test.ts", "**/*.spec.ts", "node_modules"]
 }

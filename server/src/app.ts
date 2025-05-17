@@ -2,13 +2,13 @@ import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import cors from "cors";
-import { errorHandler } from "middlewares/errorHandler";
+import { errorHandler } from "middlewares/error/errorHandler";
 import path from "path";
 import passport from "passport";
-import authRouter from "@routes/auth.router";
-import userRouter from "@routes/user.router";
-import "@config/passportConfig";
-import classroomRouter from "@routes/classroom.router";
+import authRouter from "routes/auth.router";
+import userRouter from "routes/user.router";
+import "config/passportConfig";
+import classroomRouter from "routes/classroom.router";
 
 dotenv.config();
 
@@ -21,7 +21,7 @@ app.use(passport.initialize());
 app.use(
   cors({
     origin: "http://localhost:5173",
-  }),
+  })
 );
 
 app.use(express.json());

@@ -32,10 +32,11 @@ import { isEqual } from "lodash";
 export function UpdateClassroomForm() {
   const { classroom } = useClassroom();
   const { image: avatarImage, setImage: setAvatarImage } = useBinaryImage(
-    classroom.avatarImage,
+    classroom.avatarImage
   );
-  const { image: backgroundImage, setImage: setBackgroundImage } =
-    useBinaryImage(classroom.backgroundImage);
+  const { image: backgroundImage, setImage: setBackgroundImage } = useBinaryImage(
+    classroom.backgroundImage
+  );
 
   const updateClassroomMutation = useUpdateClassroomMutation();
   const navigate = useNavigate();
@@ -70,13 +71,13 @@ export function UpdateClassroomForm() {
       formData,
       "avatarImage",
       values.avatarImage,
-      classroom.avatarImage?.data,
+      classroom.avatarImage?.data
     );
     appendImageToFormData(
       formData,
       "backgroundImage",
       values.backgroundImage,
-      classroom.backgroundImage?.data,
+      classroom.backgroundImage?.data
     );
 
     try {
@@ -132,7 +133,7 @@ export function UpdateClassroomForm() {
           />
         </div>
 
-        <div className="px-6 pt-6 pb-2 mt-8">
+        <div className="mt-8 px-6 pb-2 pt-6">
           <FormField
             control={form.control}
             name="classroomName"
@@ -198,18 +199,13 @@ export function UpdateClassroomForm() {
               <FormItem>
                 <FormLabel>Access</FormLabel>
                 <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormItem className="flex items-start gap-3 mb-1">
+                  <RadioGroup onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormItem className="mb-1 flex items-start gap-3">
                       <FormControl>
                         <RadioGroupItem value="Private" />
                       </FormControl>
                       <div className="flex flex-col">
-                        <FormLabel className="!text-bodyBold">
-                          Private
-                        </FormLabel>
+                        <FormLabel className="!text-bodyBold">Private</FormLabel>
                         <FormDescription>
                           Members requires approval to join.
                         </FormDescription>
@@ -222,9 +218,7 @@ export function UpdateClassroomForm() {
                       </FormControl>
                       <div className="flex flex-col">
                         <FormLabel className="!text-bodyBold">Public</FormLabel>
-                        <FormDescription>
-                          Any user is free to join.
-                        </FormDescription>
+                        <FormDescription>Any user is free to join.</FormDescription>
                       </div>
                     </FormItem>
                   </RadioGroup>

@@ -1,28 +1,11 @@
 import { ClassroomRepository } from "services/infrastructure/ClassroomRepository";
-import { createStreamChannel } from "services/Stream";
-import { ApplicationError, validateHandle } from "utils";
+import { createStreamChannel } from "services/infrastructure/StreamChannelService";
+import type { ClassroomCreateParams, ClassroomUpdateData } from "types/domain/classroom";
+import { ApplicationError, ConflictError, validateHandle } from "utils";
 
-export interface ClassroomCreateData {
-  userId: number;
-  classroomName: string;
-  handle: string;
-  description?: string;
-  accessType?: string;
-  tags?: string[];
-  avatarImage?: any;
-  backgroundImage?: any;
-}
-
-export interface ClassroomUpdateData {
-  classroomName?: string;
-  handle?: string;
-  description?: string;
-  accessType?: string;
-  tags?: string[];
-  avatarImage?: any;
-  backgroundImage?: any;
-}
-
+// todo: pass whole data object to repository instead of individual params
+// todo: think about: DEPENDENCY INJECTION PATTERN and
+// Factory Pattern: Creates and configures instances with their dependencies
 export class ClassroomService {
   private repository: ClassroomRepository;
 
@@ -33,7 +16,7 @@ export class ClassroomService {
   /**
    * Create a new classroom
    */
-  async createClassroom(data: ClassroomCreateData) {
+  async createClassroom(data: ClassroomCreateParams) {
     const {
       userId,
       classroomName,
@@ -50,26 +33,19 @@ export class ClassroomService {
     }
 
     // Validate handle format
-    validateHandle(handle);
+    validateHandle(data.handle);
 
-    // Check if classroom name is available
-    const existingClassroomByName =
-      await this.repository.findClassroomByName(classroomName);
-    if (existingClassroomByName) {
-      throw new ApplicationError(
-        "A classroom with this name already exists",
-        409,
+    // Check for existing classroom
+    const existingName = await this.repository.findClassroomByName(data.classroomName);
+    if (existingName) {
+      throw new ConflictError(
+        `A classroom with name "${data.classroomName}" already exists`
       );
     }
 
-    // Check if handle is available
-    const existingClassroomByHandle =
-      await this.repository.findClassroomByHandle(handle);
-    if (existingClassroomByHandle) {
-      throw new ApplicationError(
-        "A classroom with this handle already exists",
-        409,
-      );
+    const existingHandle = await this.repository.findClassroomByHandle(data.handle);
+    if (existingHandle) {
+      throw new ConflictError(`A classroom with handle "${data.handle}" already exists`);
     }
 
     const channelId = handle;
@@ -102,8 +78,10 @@ export class ClassroomService {
       throw new ApplicationError("Classroom not found", 404);
     }
 
-    const { isMember, isPendingRequest } =
-      await this.repository.getUserMembershipStatus(userId, classroom.id);
+    const { isMember, isPendingRequest } = await this.repository.getUserMembershipStatus(
+      userId,
+      classroom.id
+    );
 
     // Transform the response
     const { _count, members, ...classroomData } = classroom;
@@ -128,24 +106,20 @@ export class ClassroomService {
     userId: number,
     page: number,
     limit: number,
-    filterByOwner: boolean,
+    filterByOwner: boolean
   ) {
     return await this.repository.getClassroomsWithPagination(
       userId,
       page,
       limit,
-      filterByOwner,
+      filterByOwner
     );
   }
 
   /**
    * Update an existing classroom
    */
-  async updateClassroom(
-    classroomId: number,
-    userId: number,
-    data: ClassroomUpdateData,
-  ) {
+  async updateClassroom(classroomId: number, userId: number, data: ClassroomUpdateData) {
     const classroom = await this.repository.findClassroomById(classroomId);
 
     if (!classroom) {
@@ -153,52 +127,41 @@ export class ClassroomService {
     }
 
     if (classroom.ownerId !== userId) {
-      throw new ApplicationError(
-        "Only the owner can update the classroom",
-        403,
-      );
+      throw new ApplicationError("Only the owner can update the classroom", 403);
     }
 
     // Check if new classroom name is available
     if (data.classroomName && data.classroomName !== classroom.classroomName) {
       const existingClassroom = await this.repository.findClassroomByName(
-        data.classroomName,
+        data.classroomName
       );
       if (existingClassroom) {
-        throw new ApplicationError(
-          "A classroom with this name already exists",
-          409,
-        );
+        throw new ApplicationError("A classroom with this name already exists", 409);
       }
     }
 
     // Check if new handle is available
     if (data.handle && data.handle !== classroom.handle) {
-      const existingClassroomByHandle =
-        await this.repository.findClassroomByHandle(data.handle);
+      const existingClassroomByHandle = await this.repository.findClassroomByHandle(
+        data.handle
+      );
       if (existingClassroomByHandle) {
-        throw new ApplicationError(
-          "A classroom with this handle already exists",
-          409,
-        );
+        throw new ApplicationError("A classroom with this handle already exists", 409);
       }
 
       // Validate handle format
       validateHandle(data.handle);
     }
 
-    const updatedClassroom = await this.repository.updateClassroomInDB(
-      classroomId,
-      {
-        classroomName: data.classroomName || classroom.classroomName,
-        handle: data.handle || classroom.handle,
-        description: data.description ?? classroom.description,
-        accessType: data.accessType || classroom.accessType,
-        avatarImage: data.avatarImage,
-        backgroundImage: data.backgroundImage,
-        tags: data.tags ?? JSON.parse(classroom.tags || "[]"),
-      },
-    );
+    const updatedClassroom = await this.repository.updateClassroomInDB(classroomId, {
+      classroomName: data.classroomName || classroom.classroomName,
+      handle: data.handle || classroom.handle,
+      description: data.description ?? classroom.description,
+      accessType: data.accessType || classroom.accessType,
+      avatarImage: data.avatarImage,
+      backgroundImage: data.backgroundImage,
+      tags: data.tags ?? JSON.parse(classroom.tags || "[]"),
+    });
 
     return updatedClassroom;
   }
@@ -214,10 +177,7 @@ export class ClassroomService {
     }
 
     if (classroom.ownerId !== userId) {
-      throw new ApplicationError(
-        "Only the owner can delete the classroom",
-        403,
-      );
+      throw new ApplicationError("Only the owner can delete the classroom", 403);
     }
 
     await this.repository.deleteClassroomInDB(classroomId);

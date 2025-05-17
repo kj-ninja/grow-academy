@@ -13,7 +13,7 @@ export const useBinaryImage = (image?: BinaryImage) => {
     if (image && isBinaryAvatarImage(image)) {
       const binary = new Uint8Array(image.data);
       const base64String = btoa(
-        binary.reduce((data, byte) => data + String.fromCharCode(byte), ""),
+        binary.reduce((data, byte) => data + String.fromCharCode(byte), "")
       );
       setImagePreview(`data:image/jpeg;base64,${base64String}`);
     }

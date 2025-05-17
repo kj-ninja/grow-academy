@@ -1,7 +1,7 @@
+import { setupWebSocket } from "config/setupWebSocket";
 import app from "./app";
 import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
-import { setupWebSocket } from "@config/setupWebSocket";
 
 const PORT = process.env.PORT || 4000;
 

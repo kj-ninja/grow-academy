@@ -10,10 +10,7 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import {
-  LoginFormValues,
-  LoginFormSchema,
-} from "@/features/auth/forms/LoginForm.schema";
+import { LoginFormValues, LoginFormSchema } from "@/features/auth/forms/LoginForm.schema";
 import ErrorHandler from "@/services/ErrorHandler";
 import { useToast } from "@/hooks/useToast";
 import { queryClient } from "@/services/ReactQuery";
@@ -44,10 +41,7 @@ export function LoginForm() {
         username: values.username,
         password: values.password,
       });
-      queryClient.setQueryData(
-        UserQueries.getCurrentUser().queryKey,
-        loginResponse.user,
-      );
+      queryClient.setQueryData(UserQueries.getCurrentUser().queryKey, loginResponse.user);
       setAuthStatus("authenticated");
 
       if (loginResponse.user.isActive) {
@@ -100,7 +94,7 @@ export function LoginForm() {
         />
         <FormRootError />
 
-        <Button type="submit" className="w-full mt-8">
+        <Button type="submit" className="mt-8 w-full">
           Submit
         </Button>
       </form>

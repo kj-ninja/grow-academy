@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build --outDir ../server/public --emptyOutDir",
-    "lint": "eslint --max-warnings 0",
+    "lint": "eslint .",
     "check-types": "tsc --noEmit",
     "preview": "vite preview",
     "component": "./scripts/create_component.sh",
@@ -31,7 +31,6 @@
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "common": "file:../common",
     "dayjs": "^1.11.13",
     "lodash": "^4.17.21",
     "lucide-react": "^0.445.0",

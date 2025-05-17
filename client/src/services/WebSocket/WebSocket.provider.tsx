@@ -46,8 +46,6 @@ export const WebSocketProvider = ({ children }: PropsWithChildren) => {
   }, [currentUser]);
 
   return (
-    <WebSocketContext.Provider value={socketClient}>
-      {children}
-    </WebSocketContext.Provider>
+    <WebSocketContext.Provider value={socketClient}>{children}</WebSocketContext.Provider>
   );
 };

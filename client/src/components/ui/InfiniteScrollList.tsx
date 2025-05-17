@@ -66,9 +66,7 @@ export function InfiniteScrollList<T>({
       <div className={cn("flex flex-col gap-4", className)}>
         {data.map((item, index) => {
           const key = keyExtractor(item);
-          return (
-            <React.Fragment key={key}>{renderItem(item, index)}</React.Fragment>
-          );
+          return <React.Fragment key={key}>{renderItem(item, index)}</React.Fragment>;
         })}
         {data.length > 0 && <div ref={ref} style={{ height: 1 }} />}
       </div>

@@ -7,18 +7,21 @@
   "scripts": {
     "install-server": "cd server && bun install",
     "install-client": "cd client && bun install",
-    "install": "bun run install-server && bun run install-client",
+    "postinstall": "bun run install-server && bun run install-client",
     "server": "cd server && bun run watch",
     "client": "cd client && bun run dev",
     "dev": "bun run server & bun run client",
     "deploy": "cd client && bun run build && cd ../server && bun run start",
-    "prepare": "husky",
-    "format": "prettier --config ./common/.prettierrc --write \"./**/*.{js,jsx,ts,tsx}\""
+    "format": "prettier --write \"./client/src/**/*.{js,jsx,ts,tsx}\" \"./server/src/**/*.{ts,js}\"",
+    "format:check": "prettier --check \"./client/src/**/*.{js,jsx,ts,tsx}\" \"./server/src/**/*.{ts,js}\"",
+    "lint": "cd client && bun run lint && cd ../server && bun run lint",
+    "type-check": "cd client && bun run check-types && cd ../server && bun run check-types"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "husky": "^9.1.6",
     "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "pretty-quick": "^4.0.0"
   },
   "peerDependencies": {

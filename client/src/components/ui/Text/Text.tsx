@@ -56,7 +56,7 @@ const Text = React.forwardRef<HTMLElement, TextProps>(
       style,
       ...props,
     });
-  },
+  }
 );
 
 Text.displayName = "Text";

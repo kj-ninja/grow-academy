@@ -37,7 +37,7 @@ export const BackgroundImage = ({
 
   // todo: extract bg-primary/20 to var
   return (
-    <div className={cn("w-full relative bg-primary/20", className)}>
+    <div className={cn("bg-primary/20 relative w-full", className)}>
       {changeBackgroundImage && (
         <>
           {image ? (
@@ -45,14 +45,14 @@ export const BackgroundImage = ({
               role="button"
               tabIndex={0}
               onClick={handleImageRemove}
-              className="p-0 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-8 w-8 bg-primary rounded-full flex items-center justify-center hover:opacity-80 cursor-pointer"
+              className="bg-primary absolute left-1/2 top-1/2 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 transform cursor-pointer items-center justify-center rounded-full p-0 hover:opacity-80"
             >
               <ImageMinus width={18} />
             </div>
           ) : (
             <Label
               htmlFor="background-image-upload"
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-8 w-8 bg-primary rounded-full flex items-center justify-center hover:opacity-80 cursor-pointer"
+              className="bg-primary absolute left-1/2 top-1/2 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 transform cursor-pointer items-center justify-center rounded-full hover:opacity-80"
             >
               <ImagePlus width={18} />
 
@@ -68,16 +68,12 @@ export const BackgroundImage = ({
         </>
       )}
       {isLoading ? (
-        <div className="w-full h-full flex items-center justify-center">
+        <div className="flex h-full w-full items-center justify-center">
           <Spinner />
         </div>
       ) : (
         image && (
-          <img
-            src={image}
-            alt=""
-            className="w-full h-full object-cover object-center"
-          />
+          <img src={image} alt="" className="h-full w-full object-cover object-center" />
         )
       )}
     </div>

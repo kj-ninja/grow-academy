@@ -16,7 +16,7 @@ function UserSettingsPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col max-w-3xl w-full mx-auto mt-8 gap-4">
+    <div className="mx-auto mt-8 flex w-full max-w-3xl flex-col gap-4">
       <Text type="h1">User Settings</Text>
 
       <Tabs

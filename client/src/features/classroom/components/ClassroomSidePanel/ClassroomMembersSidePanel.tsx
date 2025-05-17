@@ -7,13 +7,13 @@ import { Button } from "@/components/ui/Button";
 import { Calendar, User } from "lucide-react";
 
 const SidePanelLoader = () => (
-  <div className="flex items-center justify-center w-full h-full">
+  <div className="flex h-full w-full items-center justify-center">
     <Spinner />
   </div>
 );
 
 function Separator() {
-  return <div className="border-b-[1px] mx-4 border-tints-white-10" />;
+  return <div className="border-tints-white-10 mx-4 border-b-[1px]" />;
 }
 
 function InfoTile({
@@ -26,7 +26,7 @@ function InfoTile({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-new-grey2 text-new-grey1">
+      <div className="bg-new-grey2 text-new-grey1 flex h-8 w-8 items-center justify-center rounded-full">
         <Calendar size={16} />
       </div>
       <div className="flex flex-row gap-1">
@@ -47,41 +47,38 @@ export const ClassroomMembersSidePanel = () => {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent className="w-[369px] overflow-y-auto mb-16 border-tints-gigaverseDarkBlue-75 b-l-[1px] bg-primary-gigaverseBlack">
-        <div className="flex flex-col h-full pb-4 gap-4">
+      <SheetContent className="b-l-[1px] mb-16 w-[369px] overflow-y-auto">
+        <div className="flex h-full flex-col gap-4 pb-4">
           {isLoading ? (
             <SidePanelLoader />
           ) : (
             <>
-              <SheetHeader className="p-2 flex-col items-center pt-16">
+              <SheetHeader className="flex-col items-center p-2 pt-16">
                 <div
-                  className="flex h-[120px] rounded-2 p-2 bg-cover bg-center absolute top-2 left-2 right-2"
+                  className="rounded-2 absolute left-2 right-2 top-2 flex h-[120px] bg-cover bg-center p-2"
                   style={{}}
                 />
-                <Avatar
-                  size="5xl"
-                  className="border-[4px] border-primary-gigaverseBlack"
-                >
+                <Avatar size="5xl" className="border-[4px]">
                   <AvatarImage src={undefined} />
                   <AvatarFallback type="user" />
                 </Avatar>
               </SheetHeader>
-              <div className="flex flex-col items-center px-4 gap-1">
-                <Text type="h2" className="!text-white pt-[12px]">
+              <div className="flex flex-col items-center gap-1 px-4">
+                <Text type="h2" className="pt-[12px] !text-white">
                   Name
                 </Text>
                 <Text type="body" className="!text-gray-500">
                   @Username
                 </Text>
               </div>
-              <div className="flex gap-3 w-full px-4 pb-2 justify-center">
+              <div className="flex w-full justify-center gap-3 px-4 pb-2">
                 <Button onClick={() => {}} className="flex-1">
                   <User size={16} />
                   <Text type="bodySmallBold">See Profile</Text>
                 </Button>
               </div>
               <Separator />
-              <div className="flex gap-3 p-4 w-full justify-center">
+              <div className="flex w-full justify-center gap-3 p-4">
                 <div className="flex-1 text-center">
                   <Text type="bodySmall" className="!text-new-grey1">
                     Followers
@@ -95,7 +92,7 @@ export const ClassroomMembersSidePanel = () => {
               </div>
               <Separator />
               <Separator />
-              <div className="flex flex-col gap-6 w-full px-4 pt-2 pb-4">
+              <div className="flex w-full flex-col gap-6 px-4 pb-4 pt-2">
                 <InfoTile
                   iconName="calendar-regular"
                   title="Joined: "

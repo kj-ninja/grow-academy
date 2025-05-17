@@ -1,8 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import {
-  classroomApi,
-  ClassroomResponse,
-} from "@/features/classroom/api/classroomApi";
+import { classroomApi, ClassroomResponse } from "@/features/classroom/api/classroomApi";
 import { queryClient } from "@/services/ReactQuery";
 import { ClassroomInfiniteQueries } from "@/features/classroom/api/infiniteQueryKeys";
 import { ClassroomQueries } from "@/features/classroom/api/queryKeys";
@@ -50,8 +47,7 @@ export const useJoinClassroomMutation = () => {
   const { sendJoinRequest } = useClassroomWebSocketActions();
 
   return useMutation({
-    mutationFn: (classroomId: number) =>
-      classroomApi.joinClassroom(classroomId),
+    mutationFn: (classroomId: number) => classroomApi.joinClassroom(classroomId),
     onSuccess: ({
       message,
       data,
@@ -62,7 +58,7 @@ export const useJoinClassroomMutation = () => {
       if (message === "Join request submitted") {
         queryClient.setQueryData(
           ClassroomQueries.details(classroomId).queryKey,
-          (prev) => (prev ? { ...prev, isPendingRequest: true } : prev),
+          (prev) => (prev ? { ...prev, isPendingRequest: true } : prev)
         );
         sendJoinRequest(data.classroomId);
       } else {
@@ -77,8 +73,7 @@ export const useLeaveClassroomMutation = () => {
   const { classroomId } = useClassroom();
 
   return useMutation({
-    mutationFn: (classroomId: number) =>
-      classroomApi.leaveClassroom(classroomId),
+    mutationFn: (classroomId: number) => classroomApi.leaveClassroom(classroomId),
     onSuccess: () => {
       invalidateClassroomDetails(classroomId);
       invalidateInfiniteClassrooms();
@@ -90,12 +85,10 @@ export const useCancelJoinRequestMutation = () => {
   const { classroomId } = useClassroom();
 
   return useMutation({
-    mutationFn: (classroomId: number) =>
-      classroomApi.cancelJoinClassroom(classroomId),
+    mutationFn: (classroomId: number) => classroomApi.cancelJoinClassroom(classroomId),
     onSuccess: () => {
-      queryClient.setQueryData(
-        ClassroomQueries.details(classroomId).queryKey,
-        (prev) => (prev ? { ...prev, isPendingRequest: false } : prev),
+      queryClient.setQueryData(ClassroomQueries.details(classroomId).queryKey, (prev) =>
+        prev ? { ...prev, isPendingRequest: false } : prev
       );
     },
   });
@@ -103,13 +96,8 @@ export const useCancelJoinRequestMutation = () => {
 
 export const useApprovePendingRequestMutation = () => {
   return useMutation({
-    mutationFn: ({
-      classroomId,
-      userId,
-    }: {
-      classroomId: number;
-      userId: number;
-    }) => classroomApi.approvePendingRequest(classroomId, userId),
+    mutationFn: ({ classroomId, userId }: { classroomId: number; userId: number }) =>
+      classroomApi.approvePendingRequest(classroomId, userId),
     onSuccess: ({ data }) => {
       queryClient.invalidateQueries({
         queryKey: ClassroomQueries.pendingRequests(data.classroomId).queryKey,
@@ -123,13 +111,8 @@ export const useApprovePendingRequestMutation = () => {
 
 export const useRejectPendingRequestMutation = () => {
   return useMutation({
-    mutationFn: ({
-      classroomId,
-      userId,
-    }: {
-      classroomId: number;
-      userId: number;
-    }) => classroomApi.rejectPendingRequest(classroomId, userId),
+    mutationFn: ({ classroomId, userId }: { classroomId: number; userId: number }) =>
+      classroomApi.rejectPendingRequest(classroomId, userId),
     onSuccess: ({ data }) => {
       queryClient.invalidateQueries({
         queryKey: ClassroomQueries.pendingRequests(data.classroomId).queryKey,

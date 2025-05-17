@@ -6,7 +6,7 @@ export const validateHandle = (handle: string) => {
   if (!isValid) {
     throw new ApplicationError(
       "Handle must only contain letters, numbers, and underscores",
-      400,
+      400
     );
   }
 

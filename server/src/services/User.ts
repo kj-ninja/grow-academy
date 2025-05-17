@@ -2,10 +2,7 @@ import { PrismaClient, type User } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const updateUserData = async (
-  userId: number,
-  updateData: Partial<User>,
-) => {
+export const updateUserData = async (userId: number, updateData: Partial<User>) => {
   return prisma.user.update({
     where: { id: userId },
     data: updateData,

@@ -31,8 +31,7 @@ const OnboardingPage = () => import("./user/OnboardingPage");
 const ClassroomListPage = () => import("./classroom/ClassroomListPage");
 const UserProfilePage = () => import("./user/profile/UserProfilePage");
 const UserSettingsEditPage = () => import("./user/settings/UserSettingsPage");
-const ClassroomProfilePage = () =>
-  import("./classroom/profile/ClassroomProfilePage");
+const ClassroomProfilePage = () => import("./classroom/profile/ClassroomProfilePage");
 const ClassroomSettingsEditPage = () =>
   import("./classroom/settings/ClassroomSettingsPage");
 
@@ -56,9 +55,7 @@ export const RouterProvider = () => {
         </Route>
 
         {/*Private routes*/}
-        <Route
-          element={<AppFrame header={<AppHeader />} navbar={<AppNavbar />} />}
-        >
+        <Route element={<AppFrame header={<AppHeader />} navbar={<AppNavbar />} />}>
           <Route element={<AuthenticationGuard />}>
             <Route element={<ActiveUserGuard />}>
               {/*Home page*/}
@@ -101,8 +98,8 @@ export const RouterProvider = () => {
             </Route>
           </Route>
         </Route>
-      </Route>,
-    ),
+      </Route>
+    )
   );
 
   return <RouterProviderDom router={router} />;

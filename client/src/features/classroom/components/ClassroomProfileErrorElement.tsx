@@ -14,7 +14,7 @@ export const ClassroomProfileErrorElement = () => {
         : "Unknown error";
 
   return (
-    <div className="flex flex-col gap-4 items-center justify-center w-full h-screen">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-4">
       <Text type="h1">{errorMessage}</Text>
       <Button onClick={() => navigate("/")}>Go to home</Button>
     </div>

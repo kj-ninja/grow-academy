@@ -1,17 +1,13 @@
 import express from "express";
-import {
-  getCurrentUser,
-  getUser,
-  updateUser,
-} from "@controllers/user.controller";
-import { uploadMultiple } from "middlewares/uploadMiddleware";
-import { authenticateJWT } from "middlewares/authenticateJWT";
+import { getCurrentUser, getUser, updateUser } from "controllers/user.controller";
+import { uploadMultiple } from "middlewares/upload/uploadMiddleware";
+import { withAuth } from "./middleware/classroom.middleware";
+import { withEnhancedAuth } from "middlewares/auth/enhancedAuth";
 
 const router = express.Router();
 
-router.get("/me", authenticateJWT, getCurrentUser);
-router.patch("/update", authenticateJWT, uploadMultiple, updateUser);
-
-router.get("/profile/:username", authenticateJWT, getUser);
+router.get("/me", withAuth, withEnhancedAuth(getCurrentUser));
+router.patch("/update", withAuth, uploadMultiple, withEnhancedAuth(updateUser));
+router.get("/profile/:username", withAuth, getUser);
 
 export default router;

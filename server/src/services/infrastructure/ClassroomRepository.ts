@@ -59,7 +59,7 @@ export class ClassroomRepository {
       avatarImage?: Buffer | null;
       backgroundImage?: Buffer | null;
       tags?: string[] | null;
-    },
+    }
   ) {
     return this.prisma.classroom.update({
       where: { id: classroomId },
@@ -144,7 +144,7 @@ export class ClassroomRepository {
     userId: number,
     page: number,
     limit: number,
-    filterByOwner: boolean,
+    filterByOwner: boolean
   ) {
     const skip = (page - 1) * limit;
 

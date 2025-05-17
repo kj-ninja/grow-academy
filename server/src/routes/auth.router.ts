@@ -4,8 +4,8 @@ import {
   refreshToken,
   registerUser,
   validateToken,
-} from "@controllers/auth.controller";
-import { loginLimiter } from "middlewares/rateLimiter";
+} from "controllers/auth.controller";
+import { loginLimiter } from "middlewares/auth/rateLimiter";
 
 const router = Router();
 

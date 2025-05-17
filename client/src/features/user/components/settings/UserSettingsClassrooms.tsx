@@ -18,8 +18,7 @@ export function UserSettingsClassrooms() {
     return data?.pages.flatMap((page) => page.classrooms) || [];
   }, [data]);
 
-  const [isCreateClassroomModalOpen, setIsCreateClassroomModalOpen] =
-    useState(false);
+  const [isCreateClassroomModalOpen, setIsCreateClassroomModalOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-2 p-4">
@@ -28,14 +27,9 @@ export function UserSettingsClassrooms() {
           <UserSettingsClassroomTile key={classroom.id} classroom={classroom} />
         ))
       ) : (
-        <div className="flex gap-2 items-center">
-          <Text type="body">
-            You have no Classrooms yet. Feel free to create one
-          </Text>
-          <Button
-            variant="outline"
-            onClick={() => setIsCreateClassroomModalOpen(true)}
-          >
+        <div className="flex items-center gap-2">
+          <Text type="body">You have no Classrooms yet. Feel free to create one</Text>
+          <Button variant="outline" onClick={() => setIsCreateClassroomModalOpen(true)}>
             Create Classroom
           </Button>
         </div>

@@ -5,7 +5,7 @@ export const UserProfileErrorElement = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-4 items-center justify-center h-screen">
+    <div className="flex h-screen flex-col items-center justify-center gap-4">
       <p>User not found 😞</p>
       <Button onClick={() => navigate("/")}>Go to home</Button>
     </div>

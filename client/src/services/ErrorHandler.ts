@@ -8,11 +8,7 @@ interface ErrorHandlerOptions<T extends FieldValues> {
 }
 
 class ErrorHandler {
-  static handle<T extends FieldValues>({
-    error,
-    form,
-    onToast,
-  }: ErrorHandlerOptions<T>) {
+  static handle<T extends FieldValues>({ error, form, onToast }: ErrorHandlerOptions<T>) {
     if (axios.isAxiosError(error)) {
       const data = error.response?.data;
 

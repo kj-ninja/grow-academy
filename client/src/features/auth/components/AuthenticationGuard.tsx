@@ -20,13 +20,7 @@ export const AuthenticationGuard: FC<AuthenticationGuardProps> = ({
 
   const isAllowed = authState.status === "authenticated";
 
-  return (
-    <ProtectedRoute
-      redirectPath={redirectPath}
-      isAllowed={isAllowed}
-      {...props}
-    />
-  );
+  return <ProtectedRoute redirectPath={redirectPath} isAllowed={isAllowed} {...props} />;
 };
 
 export const UnAuthenticationGuard: FC<AuthenticationGuardProps> = ({
@@ -41,11 +35,5 @@ export const UnAuthenticationGuard: FC<AuthenticationGuardProps> = ({
 
   const isAllowed = authState.status !== "authenticated";
 
-  return (
-    <ProtectedRoute
-      redirectPath={redirectPath}
-      isAllowed={isAllowed}
-      {...props}
-    />
-  );
+  return <ProtectedRoute redirectPath={redirectPath} isAllowed={isAllowed} {...props} />;
 };

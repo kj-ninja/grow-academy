@@ -24,7 +24,7 @@ type FormFieldContextValue<
 };
 
 const FormFieldContext = React.createContext<FormFieldContextValue>(
-  {} as FormFieldContextValue,
+  {} as FormFieldContextValue
 );
 
 const FormField = <
@@ -68,21 +68,20 @@ type FormItemContextValue = {
 };
 
 const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue,
+  {} as FormItemContextValue
 );
 
-const FormItem = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
-  const id = React.useId();
+const FormItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => {
+    const id = React.useId();
 
-  return (
-    <FormItemContext.Provider value={{ id }}>
-      <div ref={ref} className={cn("w-full mb-4", className)} {...props} />
-    </FormItemContext.Provider>
-  );
-});
+    return (
+      <FormItemContext.Provider value={{ id }}>
+        <div ref={ref} className={cn("mb-4 w-full", className)} {...props} />
+      </FormItemContext.Provider>
+    );
+  }
+);
 FormItem.displayName = "FormItem";
 
 const FormLabel = React.forwardRef<
@@ -106,17 +105,14 @@ const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
 >(({ ...props }, ref) => {
-  const { error, formItemId, formDescriptionId, formMessageId } =
-    useFormField();
+  const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
 
   return (
     <Slot
       ref={ref}
       id={formItemId}
       aria-describedby={
-        !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`
+        !error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`
       }
       aria-invalid={!!error}
       {...props}
@@ -159,7 +155,7 @@ const FormMessage = React.forwardRef<
       ref={ref}
       type="bodyXSmall"
       id={formMessageId}
-      className={cn("font-medium !text-error", className)}
+      className={cn("!text-error font-medium", className)}
       {...props}
     >
       {body}
@@ -183,7 +179,7 @@ const FormRootError = React.forwardRef<
     <Text
       ref={ref}
       type="bodyXSmall"
-      className={cn("font-medium text-error mt-2", className)}
+      className={cn("text-error mt-2 font-medium", className)}
       {...props}
     >
       {rootError}

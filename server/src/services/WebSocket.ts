@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import { getUserById } from "services/User";
 import { ClassroomRepository } from "./infrastructure/ClassroomRepository";
-import { addUserToStreamChannel } from "services/Stream";
+import { addUserToStreamChannel } from "./infrastructure/StreamChannelService";
 
 interface ActiveUsers {
   [userId: number]: string;
@@ -21,12 +21,10 @@ export function getUserSocketId(userId: number) {
 
 export async function handleJoinRequest(
   socket: Socket,
-  data: { classroomId: number; userId: number },
+  data: { classroomId: number; userId: number }
 ) {
   const user = await getUserById(data.userId);
-  const classroom = await classroomRepository.findClassroomById(
-    data.classroomId,
-  );
+  const classroom = await classroomRepository.findClassroomById(data.classroomId);
 
   if (classroom && user) {
     const ownerSocketId = getUserSocketId(classroom.ownerId);
@@ -51,12 +49,10 @@ export async function handleJoinRequest(
 
 export async function handleApproveJoinRequest(
   socket: Socket,
-  data: { classroomId: number; userId: number },
+  data: { classroomId: number; userId: number }
 ) {
   const user = await getUserById(data.userId);
-  const classroom = await classroomRepository.findClassroomById(
-    data.classroomId,
-  );
+  const classroom = await classroomRepository.findClassroomById(data.classroomId);
 
   if (classroom && user) {
     const userSocketId = getUserSocketId(data.userId);
@@ -75,12 +71,10 @@ export async function handleApproveJoinRequest(
 
 export async function rejectJoinRequest(
   socket: Socket,
-  data: { classroomId: number; userId: number },
+  data: { classroomId: number; userId: number }
 ) {
   const user = await getUserById(data.userId);
-  const classroom = await classroomRepository.findClassroomById(
-    data.classroomId,
-  );
+  const classroom = await classroomRepository.findClassroomById(data.classroomId);
 
   if (classroom && user) {
     const userSocketId = getUserSocketId(data.userId);

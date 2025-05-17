@@ -37,8 +37,7 @@ enum FormStep {
 
 export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
   const { image: avatarImage, setImage: setAvatarImage } = useBinaryImage();
-  const { image: backgroundImage, setImage: setBackgroundImage } =
-    useBinaryImage();
+  const { image: backgroundImage, setImage: setBackgroundImage } = useBinaryImage();
   const [formStep, setFormStep] = useState(FormStep.INFO);
 
   const createClassroomMutation = useCreateClassroomMutation();
@@ -64,12 +63,12 @@ export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
   const [debouncedHandle] = useDebounce(classroomHandle);
 
   const classroomNameQuery = useQuery({
-    ...ClassroomQueries.checkClassroomName(debouncedClassroomName),
+    ...ClassroomQueries.validateName(debouncedClassroomName),
     enabled: debouncedClassroomName !== "" && debouncedClassroomName.length > 1,
   });
 
   const classroomHandleQuery = useQuery({
-    ...ClassroomQueries.checkClassroomHandle(debouncedHandle),
+    ...ClassroomQueries.validateHandle(debouncedHandle),
     enabled: debouncedHandle !== "" && debouncedHandle.length > 1,
   });
 
@@ -176,7 +175,7 @@ export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
                   )}
                 />
               </div>
-              <div className="p-6 mt-8">
+              <div className="mt-8 p-6">
                 <FormField
                   control={form.control}
                   name="classroomName"
@@ -215,9 +214,7 @@ export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
                         />
                       </FormControl>
                       <FormMessage />
-                      <FormDescription>
-                        Your classroom unique identifier
-                      </FormDescription>
+                      <FormDescription>Your classroom unique identifier</FormDescription>
                     </FormItem>
                   )}
                 />
@@ -228,10 +225,7 @@ export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
                     <FormItem>
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Textarea
-                          placeholder="Describe your Classroom"
-                          {...field}
-                        />
+                        <Textarea placeholder="Describe your Classroom" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -240,7 +234,7 @@ export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
 
                 <Button
                   type="button"
-                  className="w-full mt-8"
+                  className="mt-8 w-full"
                   onClick={() => {
                     setFormStep(FormStep.PRIVACY);
                   }}
@@ -251,7 +245,7 @@ export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
               </div>
             </>
           ) : (
-            <div className="p-6 mt-4">
+            <div className="mt-4 p-6">
               <FormField
                 control={form.control}
                 name="tags"
@@ -280,14 +274,12 @@ export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        <FormItem className="flex items-start gap-3 mb-1">
+                        <FormItem className="mb-1 flex items-start gap-3">
                           <FormControl>
                             <RadioGroupItem value="Private" />
                           </FormControl>
                           <div className="flex flex-col">
-                            <FormLabel className="!text-bodyBold">
-                              Private
-                            </FormLabel>
+                            <FormLabel className="!text-bodyBold">Private</FormLabel>
                             <FormDescription>
                               Members requires approval to join.
                             </FormDescription>
@@ -299,12 +291,8 @@ export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
                             <RadioGroupItem value="Public" />
                           </FormControl>
                           <div className="flex flex-col">
-                            <FormLabel className="!text-bodyBold">
-                              Public
-                            </FormLabel>
-                            <FormDescription>
-                              Any user is free to join.
-                            </FormDescription>
+                            <FormLabel className="!text-bodyBold">Public</FormLabel>
+                            <FormDescription>Any user is free to join.</FormDescription>
                           </div>
                         </FormItem>
                       </RadioGroup>
@@ -319,17 +307,15 @@ export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full mt-4"
+                  className="mt-4 w-full"
                   onClick={() => setFormStep(FormStep.INFO)}
                 >
                   Go Back
                 </Button>
                 <Button
                   type="submit"
-                  className="w-full mt-4"
-                  disabled={
-                    !form.formState.isValid || form.formState.isSubmitting
-                  }
+                  className="mt-4 w-full"
+                  disabled={!form.formState.isValid || form.formState.isSubmitting}
                 >
                   Create Classroom
                 </Button>

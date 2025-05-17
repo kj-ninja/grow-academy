@@ -1,7 +1,7 @@
 import type { Response } from "express";
 import { ClassroomMembershipService } from "services/application/ClassroomMembershipService";
-import type { EnhancedAuthRequest } from "types/auth.types";
 import { errorResponse } from "utils";
+import type { EnhancedAuthRequest } from "../types/infrastructure/express/requests";
 
 // Initialize service
 const membershipService = new ClassroomMembershipService();

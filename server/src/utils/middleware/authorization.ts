@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import type { Response, NextFunction } from "express";
-import type { EnhancedAuthRequest } from "types/auth.types";
 import { errorResponse } from "utils";
+import type { EnhancedAuthRequest } from "../../types/infrastructure/express/requests";
 
 const prisma = new PrismaClient();
 

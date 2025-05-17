@@ -1,5 +1,4 @@
 import type { Request } from "express";
-import type { User } from "@prisma/client";
 import type { AuthenticatedUser } from "types/domain/user";
 
 /**
@@ -8,13 +7,6 @@ import type { AuthenticatedUser } from "types/domain/user";
 export interface Images {
   avatarImage?: Express.Multer.File[];
   backgroundImage?: Express.Multer.File[];
-}
-
-/**
- * Request with JWT user
- */
-export interface AuthenticatedRequest extends Request {
-  user?: User;
 }
 
 /**

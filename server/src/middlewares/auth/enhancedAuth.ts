@@ -3,7 +3,7 @@ import passport from "passport";
 import type { User } from "@prisma/client";
 import { authenticatedUserSchema } from "validations/schemas/auth.schema";
 import { errorResponse } from "utils";
-import type { EnhancedAuthRequest } from "types/auth.types";
+import type { EnhancedAuthRequest } from "../../types/infrastructure/express/requests";
 
 export const enhancedAuth = (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate("jwt", { session: false }, (err: unknown, user: User | false) => {

@@ -46,7 +46,7 @@ jobs:
         run: cd client && bun install
 
       - name: Code formatting check
-        run: bun run format --check
+        run: bunx prettier --check "./client/src/**/*.{js,jsx,ts,tsx}" "./server/src/**/*.{ts,js}"
 
       - name: Lint server
         run: cd server && bun run lint

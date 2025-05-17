@@ -4,8 +4,8 @@ import {
   getUser,
   updateUser,
 } from "@controllers/user.controller";
-import { uploadMultiple } from "middlewares/uploadMiddleware";
-import { authenticateJWT } from "middlewares/authenticateJWT";
+import { uploadMultiple } from "middlewares/upload/uploadMiddleware";
+import { authenticateJWT } from "middlewares/auth/authenticateJWT";
 
 const router = express.Router();
 

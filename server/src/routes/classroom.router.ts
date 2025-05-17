@@ -1,10 +1,8 @@
-import { authenticateJWT } from "middlewares/authenticateJWT";
+import { authenticateJWT } from "middlewares/auth/authenticateJWT";
 import { Router } from "express";
 import { checkOwner } from "utils";
 import {
   // Core classroom controllers
-  createClassroom,
-  updateClassroom,
   deleteClassroom,
   getClassroom,
   getClassrooms,
@@ -23,36 +21,44 @@ import {
   removeClassroomMember,
 } from "@controllers/classroom-membership.controller";
 
-import { uploadMultiple, upload } from "middlewares/uploadMiddleware";
+import { upload } from "middlewares/upload/uploadMiddleware";
 import {
   deleteResource,
   downloadResource,
   getResources,
   uploadResource,
 } from "@controllers/resource.controller";
+import {
+  enhancedAuth,
+  withEnhancedAuth,
+  withEnhancedAuthMiddleware,
+} from "middlewares/auth/enhancedAuth";
+import {
+  handleCreateClassroom,
+  handleUpdateClassroom,
+  withAuth,
+} from "./middleware/classroom.middleware";
 
 const router = Router();
 
 // Validation endpoints
 router.get(
   "/check-name/:classroomName",
-  authenticateJWT,
-  validateClassroomName,
+  withAuth,
+  withEnhancedAuth(validateClassroomName),
 );
-router.get("/check-handle/:handle", authenticateJWT, validateClassroomHandle);
+router.get(
+  "/check-handle/:handle",
+  withAuth,
+  withEnhancedAuth(validateClassroomHandle),
+);
 
 // Core classroom CRUD
-router.get("/", authenticateJWT, getClassrooms);
-router.get("/:id", authenticateJWT, getClassroom);
-router.post("/", authenticateJWT, uploadMultiple, createClassroom);
-router.patch(
-  "/:id",
-  authenticateJWT,
-  checkOwner,
-  uploadMultiple,
-  updateClassroom,
-);
-router.delete("/:id", authenticateJWT, deleteClassroom);
+router.get("/", withAuth, withEnhancedAuth(getClassrooms));
+router.get("/:id", withAuth, withEnhancedAuth(getClassroom));
+router.post("/", handleCreateClassroom); // Single middleware instead of 4
+router.patch("/:id", handleUpdateClassroom); // Single middleware instead of 5
+router.delete("/:id", withAuth, withEnhancedAuth(deleteClassroom));
 
 // Membership management
 router.post("/:id/memberships", authenticateJWT, createClassroomMembership);
@@ -66,26 +72,26 @@ router.delete("/:id/memberships", authenticateJWT, deleteClassroomMembership);
 // Membership request management (admin)
 router.get(
   "/:id/memberships/requests",
-  authenticateJWT,
-  checkOwner,
+  enhancedAuth,
+  withEnhancedAuthMiddleware(checkOwner),
   getClassroomPendingRequests,
 );
 router.patch(
   "/:id/memberships/requests/:userId/approve",
-  authenticateJWT,
-  checkOwner,
+  enhancedAuth,
+  withEnhancedAuthMiddleware(checkOwner),
   approveClassroomMembershipRequest,
 );
 router.patch(
   "/:id/memberships/requests/:userId/reject",
-  authenticateJWT,
-  checkOwner,
+  enhancedAuth,
+  withEnhancedAuthMiddleware(checkOwner),
   rejectClassroomMembershipRequest,
 );
 router.delete(
   "/:id/memberships/:userId",
-  authenticateJWT,
-  checkOwner,
+  enhancedAuth,
+  withEnhancedAuthMiddleware(checkOwner),
   removeClassroomMember,
 );
 
@@ -93,11 +99,11 @@ router.delete(
 router.get("/:id/resources", authenticateJWT, getResources);
 router.post(
   "/:id/resources",
-  authenticateJWT,
+  enhancedAuth,
   upload.single("file"),
   uploadResource,
 );
-router.get("/resources/:id/download", authenticateJWT, downloadResource);
-router.delete("/resources/:id", authenticateJWT, deleteResource);
+router.get("/resources/:id/download", enhancedAuth, downloadResource);
+router.delete("/resources/:id", enhancedAuth, deleteResource);
 
 export default router;

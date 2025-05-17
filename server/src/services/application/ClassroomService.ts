@@ -1,28 +1,13 @@
 import { ClassroomRepository } from "services/infrastructure/ClassroomRepository";
-import { createStreamChannel } from "services/Stream";
-import { ApplicationError, validateHandle } from "utils";
+import { createStreamChannel } from "services/infrastructure/StreamChannelService";
+import type {
+  ClassroomCreateParams,
+  ClassroomUpdateData,
+} from "types/domain/classroom";
+import { ApplicationError, ConflictError, validateHandle } from "utils";
 
-export interface ClassroomCreateData {
-  userId: number;
-  classroomName: string;
-  handle: string;
-  description?: string;
-  accessType?: string;
-  tags?: string[];
-  avatarImage?: any;
-  backgroundImage?: any;
-}
-
-export interface ClassroomUpdateData {
-  classroomName?: string;
-  handle?: string;
-  description?: string;
-  accessType?: string;
-  tags?: string[];
-  avatarImage?: any;
-  backgroundImage?: any;
-}
-
+// todo: think about: DEPENDENCY INJECTION PATTERN and
+// Factory Pattern: Creates and configures instances with their dependencies
 export class ClassroomService {
   private repository: ClassroomRepository;
 
@@ -33,7 +18,7 @@ export class ClassroomService {
   /**
    * Create a new classroom
    */
-  async createClassroom(data: ClassroomCreateData) {
+  async createClassroom(data: ClassroomCreateParams) {
     const {
       userId,
       classroomName,
@@ -50,25 +35,24 @@ export class ClassroomService {
     }
 
     // Validate handle format
-    validateHandle(handle);
+    validateHandle(data.handle);
 
-    // Check if classroom name is available
-    const existingClassroomByName =
-      await this.repository.findClassroomByName(classroomName);
-    if (existingClassroomByName) {
-      throw new ApplicationError(
-        "A classroom with this name already exists",
-        409,
+    // Check for existing classroom
+    const existingName = await this.repository.findClassroomByName(
+      data.classroomName,
+    );
+    if (existingName) {
+      throw new ConflictError(
+        `A classroom with name "${data.classroomName}" already exists`,
       );
     }
 
-    // Check if handle is available
-    const existingClassroomByHandle =
-      await this.repository.findClassroomByHandle(handle);
-    if (existingClassroomByHandle) {
-      throw new ApplicationError(
-        "A classroom with this handle already exists",
-        409,
+    const existingHandle = await this.repository.findClassroomByHandle(
+      data.handle,
+    );
+    if (existingHandle) {
+      throw new ConflictError(
+        `A classroom with handle "${data.handle}" already exists`,
       );
     }
 

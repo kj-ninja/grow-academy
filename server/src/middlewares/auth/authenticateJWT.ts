@@ -1,6 +1,7 @@
 import passport from "passport";
 import { type User } from "@prisma/client";
-import { type RequestHandler } from "express";
+import type { RequestHandler, Response, Request, NextFunction } from "express";
+import type { AuthenticatedRequest } from "types/auth.types";
 
 export const authenticateJWT: RequestHandler = (req, res, next) => {
   passport.authenticate(

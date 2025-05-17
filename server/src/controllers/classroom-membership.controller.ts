@@ -1,6 +1,6 @@
 import type { Response } from "express";
-import type { AuthenticatedRequest } from "types/types";
 import { ClassroomMembershipService } from "services/application/ClassroomMembershipService";
+import type { AuthenticatedRequest } from "types/auth.types";
 import { errorResponse } from "utils";
 
 // Initialize service

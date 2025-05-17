@@ -1,8 +1,11 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { type Request, type Response } from "express";
+import {
+  generateStreamToken,
+  updateStreamUser,
+} from "services/infrastructure/StreamChannelService";
 import { generateRefreshToken, generateToken, verifyToken } from "utils";
-import { generateStreamToken, updateStreamUser } from "services/Stream";
 
 const prisma = new PrismaClient();
 

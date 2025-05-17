@@ -1,8 +1,8 @@
 import type { Response } from "express";
-import type { AuthenticatedRequest } from "types/types";
 import { ClassroomService } from "services/application/ClassroomService";
-import { errorResponse } from "utils";
-import type { Images } from "types/types";
+import { controllerHandler, errorResponse } from "utils";
+import type { EnhancedAuthRequest } from "types/auth.types";
+import type { Images } from "types/infrastructure/express/requests";
 
 // Initialize service
 const classroomService = new ClassroomService();
@@ -10,91 +10,57 @@ const classroomService = new ClassroomService();
 /**
  * Create a new classroom
  */
-export const createClassroom = async (
-  req: AuthenticatedRequest,
-  res: Response,
-) => {
-  const { id: userId } = req.user!;
-  const { classroomName, handle, description, accessType, tags } = req.body;
-  const files = req.files as Images;
-  const avatarImage = files?.avatarImage?.[0];
-  const backgroundImage = files?.backgroundImage?.[0];
+export const createClassroom = controllerHandler(
+  async (req: EnhancedAuthRequest, res: Response) => {
+    const userId = req.authenticatedUser.id;
+    const files = req.files as Images;
 
-  try {
     const classroom = await classroomService.createClassroom({
       userId,
-      classroomName,
-      handle,
-      description,
-      accessType,
-      tags,
-      avatarImage: avatarImage ? avatarImage.buffer : null,
-      backgroundImage: backgroundImage ? backgroundImage.buffer : null,
+      ...req.body,
+      avatarImage: files?.avatarImage?.[0]?.buffer || null,
+      backgroundImage: files?.backgroundImage?.[0]?.buffer || null,
     });
 
     return res.status(201).json(classroom);
-  } catch (error: any) {
-    console.error("Error creating classroom:", error);
-    return errorResponse(
-      res,
-      error.message || "Failed to create classroom",
-      error.statusCode || 500,
-    );
-  }
-};
+  },
+);
 
 /**
  * Update an existing classroom
  */
-export const updateClassroom = async (
-  req: AuthenticatedRequest,
-  res: Response,
-) => {
-  const userId = req.user!.id;
-  const classroomId = Number(req.params.id);
-  const { classroomName, handle, description, accessType, tags } = req.body;
-  const files = req.files as Images;
-  const avatarImage = files?.avatarImage?.[0];
-  const backgroundImage = files?.backgroundImage?.[0];
+export const updateClassroom = controllerHandler(
+  async (req: EnhancedAuthRequest, res: Response) => {
+    const userId = req.authenticatedUser.id;
+    const classroomId = Number(req.params.id);
+    const files = req.files as Images;
 
-  if (isNaN(classroomId)) {
-    return errorResponse(res, "Invalid classroom ID", 400);
-  }
+    if (isNaN(classroomId)) {
+      return errorResponse(res, "Invalid classroom ID", 400);
+    }
 
-  try {
     const updatedClassroom = await classroomService.updateClassroom(
       classroomId,
       userId,
       {
-        classroomName,
-        handle,
-        description,
-        accessType,
-        tags,
-        avatarImage: avatarImage ? avatarImage.buffer : null,
-        backgroundImage: backgroundImage ? backgroundImage.buffer : null,
+        ...req.body,
+        avatarImage: files?.avatarImage?.[0]?.buffer || null,
+        backgroundImage: files?.backgroundImage?.[0]?.buffer || null,
       },
     );
 
     return res.status(200).json(updatedClassroom);
-  } catch (error: any) {
-    console.error("Error updating classroom:", error);
-    return errorResponse(
-      res,
-      error.message || "Failed to update classroom",
-      error.statusCode || 500,
-    );
-  }
-};
+  },
+);
 
 /**
  * Delete a classroom
  */
 export const deleteClassroom = async (
-  req: AuthenticatedRequest,
+  req: EnhancedAuthRequest,
   res: Response,
 ) => {
-  const { id: userId } = req.user!;
+  const userId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
 
   if (isNaN(classroomId)) {
@@ -118,10 +84,10 @@ export const deleteClassroom = async (
  * Get all classrooms with pagination
  */
 export const getClassrooms = async (
-  req: AuthenticatedRequest,
+  req: EnhancedAuthRequest,
   res: Response,
 ) => {
-  const userId = req.user!.id;
+  const userId = req.authenticatedUser.id;
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
   const filterByOwner = req.query.owner === "true";
@@ -148,11 +114,8 @@ export const getClassrooms = async (
 /**
  * Get a single classroom by ID
  */
-export const getClassroom = async (
-  req: AuthenticatedRequest,
-  res: Response,
-) => {
-  const userId = req.user!.id;
+export const getClassroom = async (req: EnhancedAuthRequest, res: Response) => {
+  const userId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
 
   try {
@@ -175,7 +138,7 @@ export const getClassroom = async (
  * Validate if classroom name is available
  */
 export const validateClassroomName = async (
-  req: AuthenticatedRequest,
+  req: EnhancedAuthRequest,
   res: Response,
 ) => {
   const classroomName = req.params.classroomName as string | undefined;
@@ -215,7 +178,7 @@ export const validateClassroomName = async (
  * Validate if classroom handle is available
  */
 export const validateClassroomHandle = async (
-  req: AuthenticatedRequest,
+  req: EnhancedAuthRequest,
   res: Response,
 ) => {
   const handle = req.params.handle as string | undefined;

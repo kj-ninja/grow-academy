@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import { getUserById } from "services/User";
 import { ClassroomRepository } from "./infrastructure/ClassroomRepository";
-import { addUserToStreamChannel } from "services/Stream";
+import { addUserToStreamChannel } from "./infrastructure/StreamChannelService";
 
 interface ActiveUsers {
   [userId: number]: string;

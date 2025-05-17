@@ -1,8 +1,9 @@
 import type { Request, Response } from "express";
 import { PrismaClient, type User } from "@prisma/client";
-import type { AuthenticatedRequest, Images } from "types/types";
-import { updateStreamUser } from "services/Stream";
+import type { Images } from "types/types";
 import { errorResponse } from "utils";
+import type { AuthenticatedRequest } from "types/auth.types";
+import { updateStreamUser } from "services/infrastructure/StreamChannelService";
 
 const prisma = new PrismaClient();
 

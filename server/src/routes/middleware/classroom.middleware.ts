@@ -4,7 +4,7 @@ import {
   withEnhancedAuth,
   withEnhancedAuthMiddleware,
 } from "middlewares/auth/enhancedAuth";
-import { validateRequest } from "middlewares/validation/validate.middleware";
+import { validateRequest } from "middlewares/validation/validateRequest";
 import {
   createClassroomSchema,
   updateClassroomSchema,

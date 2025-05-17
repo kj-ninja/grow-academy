@@ -1,11 +1,16 @@
 import type { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import type { EnhancedAuthRequest } from "types/auth.types";
 
 const prisma = new PrismaClient();
 
-export const uploadResource = async (req: Request, res: Response) => {
-  const { id: classroomId } = req.params; // Classroom ID from route
-  const userId = req.user?.id; // Authenticated user ID from JWT middlewares
+// controller todo:
+export const uploadResource = async (
+  req: EnhancedAuthRequest,
+  res: Response,
+) => {
+  const { id: classroomId } = req.params;
+  const userId = req.authenticatedUser.id;
 
   if (!userId || !req.file) {
     return res.status(400).json({ message: "Invalid request" });

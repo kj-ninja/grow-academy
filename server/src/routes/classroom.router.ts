@@ -43,12 +43,12 @@ const router = Router();
 
 // Validation endpoints
 router.get(
-  "/check-name/:classroomName",
+  "/validate-name/:classroomName",
   withAuth,
   withEnhancedAuth(validateClassroomName),
 );
 router.get(
-  "/check-handle/:handle",
+  "/validate-handle/:handle",
   withAuth,
   withEnhancedAuth(validateClassroomHandle),
 );
@@ -60,50 +60,55 @@ router.post("/", handleCreateClassroom); // Single middleware instead of 4
 router.patch("/:id", handleUpdateClassroom); // Single middleware instead of 5
 router.delete("/:id", withAuth, withEnhancedAuth(deleteClassroom));
 
+// todo: add compose middleware for classroom memberships
 // Membership management
-router.post("/:id/memberships", authenticateJWT, createClassroomMembership);
+router.post(
+  "/:id/memberships",
+  withAuth,
+  withEnhancedAuth(createClassroomMembership),
+);
 router.delete(
   "/:id/memberships/requests",
-  authenticateJWT,
-  cancelClassroomMembershipRequest,
+  withAuth,
+  withEnhancedAuth(cancelClassroomMembershipRequest),
 );
 router.delete("/:id/memberships", authenticateJWT, deleteClassroomMembership);
 
 // Membership request management (admin)
 router.get(
   "/:id/memberships/requests",
-  enhancedAuth,
+  withAuth,
   withEnhancedAuthMiddleware(checkOwner),
-  getClassroomPendingRequests,
+  withEnhancedAuth(getClassroomPendingRequests),
 );
 router.patch(
   "/:id/memberships/requests/:userId/approve",
-  enhancedAuth,
+  withAuth,
   withEnhancedAuthMiddleware(checkOwner),
-  approveClassroomMembershipRequest,
+  withEnhancedAuth(approveClassroomMembershipRequest),
 );
 router.patch(
   "/:id/memberships/requests/:userId/reject",
-  enhancedAuth,
+  withAuth,
   withEnhancedAuthMiddleware(checkOwner),
-  rejectClassroomMembershipRequest,
+  withEnhancedAuth(rejectClassroomMembershipRequest),
 );
 router.delete(
   "/:id/memberships/:userId",
   enhancedAuth,
   withEnhancedAuthMiddleware(checkOwner),
-  removeClassroomMember,
+  withEnhancedAuth(removeClassroomMember),
 );
 
-// Resources
-router.get("/:id/resources", authenticateJWT, getResources);
+// Resources todo...
+router.get("/:id/resources", getResources);
 router.post(
   "/:id/resources",
-  enhancedAuth,
+  withAuth,
   upload.single("file"),
-  uploadResource,
+  withEnhancedAuth(uploadResource),
 );
-router.get("/resources/:id/download", enhancedAuth, downloadResource);
-router.delete("/resources/:id", enhancedAuth, deleteResource);
+router.get("/resources/:id/download", downloadResource);
+router.delete("/resources/:id", deleteResource);
 
 export default router;

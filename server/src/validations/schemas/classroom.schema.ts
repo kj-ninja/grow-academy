@@ -5,7 +5,6 @@ export const classroomBaseSchema = {
     .string()
     .min(3, "Classroom name must be at least 3 characters")
     .max(50, "Classroom name cannot exceed 50 characters"),
-
   handle: z
     .string()
     .min(3, "Handle must be at least 3 characters")
@@ -14,12 +13,9 @@ export const classroomBaseSchema = {
       /^[A-Za-z0-9_]+$/,
       "Handle can only contain letters, numbers and underscores",
     ),
-
   description: z.string().max(500).optional(),
-
   accessType: z.enum(["Public", "Private"]).default("Public"),
-
-  tags: z.array(z.string()).default([]),
+  tags: z.string().optional(),
 };
 
 export const createClassroomSchema = z.object({

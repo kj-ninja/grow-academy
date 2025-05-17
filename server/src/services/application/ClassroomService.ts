@@ -131,6 +131,7 @@ export class ClassroomService {
     data: ClassroomUpdateData,
   ) {
     const classroom = await this.repository.findClassroomById(classroomId);
+    console.log("123", "data", data);
 
     if (!classroom) {
       throw new ApplicationError("Classroom not found", 404);

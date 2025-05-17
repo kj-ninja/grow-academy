@@ -2,16 +2,16 @@ import { classroomApi } from "@/features/classroom/api/classroomApi";
 import { queryOptions } from "@tanstack/react-query";
 
 export const ClassroomQueries = {
-  checkClassroomName: (name: string) =>
+  validateClassroomName: (name: string) =>
     queryOptions({
       queryKey: ["checkClassroomName", name],
-      queryFn: () => classroomApi.checkClassroomName(name),
+      queryFn: () => classroomApi.validateClassroomName(name),
       retry: false,
     }),
-  checkClassroomHandle: (handle: string) =>
+  validateClassroomHandle: (handle: string) =>
     queryOptions({
       queryKey: ["checkClassroomHandle", handle],
-      queryFn: () => classroomApi.checkClassroomHandle(handle),
+      queryFn: () => classroomApi.validateClassroomHandle(handle),
       retry: false,
     }),
   details: (id: number) =>

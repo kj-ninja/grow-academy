@@ -1,6 +1,9 @@
 import type { Response } from "express";
 import { ClassroomMembershipService } from "services/application/ClassroomMembershipService";
-import type { AuthenticatedRequest } from "types/auth.types";
+import type {
+  AuthenticatedRequest,
+  EnhancedAuthRequest,
+} from "types/auth.types";
 import { errorResponse } from "utils";
 
 // Initialize service
@@ -40,10 +43,10 @@ export const createClassroomMembership = async (
  * Cancel a pending join request
  */
 export const cancelClassroomMembershipRequest = async (
-  req: AuthenticatedRequest,
+  req: EnhancedAuthRequest,
   res: Response,
 ) => {
-  const userId = req.user!.id;
+  const userId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
 
   if (isNaN(classroomId)) {
@@ -97,10 +100,10 @@ export const deleteClassroomMembership = async (
  * Get all pending join requests for a classroom
  */
 export const getClassroomPendingRequests = async (
-  req: AuthenticatedRequest,
+  req: EnhancedAuthRequest,
   res: Response,
 ) => {
-  const adminId = req.user!.id;
+  const adminId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
 
   if (isNaN(classroomId)) {
@@ -127,10 +130,10 @@ export const getClassroomPendingRequests = async (
  * Approve a join request
  */
 export const approveClassroomMembershipRequest = async (
-  req: AuthenticatedRequest,
+  req: EnhancedAuthRequest,
   res: Response,
 ) => {
-  const adminId = req.user!.id;
+  const adminId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
   const userId = Number(req.params.userId);
 
@@ -158,10 +161,10 @@ export const approveClassroomMembershipRequest = async (
  * Reject a join request
  */
 export const rejectClassroomMembershipRequest = async (
-  req: AuthenticatedRequest,
+  req: EnhancedAuthRequest,
   res: Response,
 ) => {
-  const adminId = req.user!.id;
+  const adminId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
   const userId = Number(req.params.userId);
 
@@ -189,10 +192,10 @@ export const rejectClassroomMembershipRequest = async (
  * Remove a member from a classroom (admin operation)
  */
 export const removeClassroomMember = async (
-  req: AuthenticatedRequest,
+  req: EnhancedAuthRequest,
   res: Response,
 ) => {
-  const adminId = req.user!.id;
+  const adminId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
   const memberId = Number(req.params.userId);
 

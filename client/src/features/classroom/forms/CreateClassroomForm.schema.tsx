@@ -1,6 +1,7 @@
 import { createFormSchema } from "@/lib/forms";
 import * as zod from "zod";
 
+// todo: add update schema
 const createClassroomFormSchema = zod.object({
   classroomName: zod
     .string()

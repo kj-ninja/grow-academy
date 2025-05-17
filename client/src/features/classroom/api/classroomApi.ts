@@ -51,12 +51,14 @@ export const classroomApi = {
     });
     return response.data;
   },
-  checkClassroomName: async (name: string) => {
-    const response = await ApiClient.get(`/classroom/check-name/${name}`);
+  validateClassroomName: async (name: string) => {
+    const response = await ApiClient.get(`/classroom/validate-name/${name}`);
     return response.data;
   },
-  checkClassroomHandle: async (handle: string) => {
-    const response = await ApiClient.get(`/classroom/check-handle/${handle}`);
+  validateClassroomHandle: async (handle: string) => {
+    const response = await ApiClient.get(
+      `/classroom/validate-handle/${handle}`,
+    );
     return response.data;
   },
   getClassroomDetails: async (id: number) => {

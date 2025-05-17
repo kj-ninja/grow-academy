@@ -29,7 +29,7 @@ export function UserProfile() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex w-full flex-col">
       <div className="border-b-2 bg-white pb-6">
         <ProfilePageWrapper>
           <div className="relative h-[300px]">
@@ -37,14 +37,14 @@ export function UserProfile() {
               <img
                 src={backgroundImage}
                 alt="User banner image"
-                className="w-full h-full object-cover object-center"
+                className="h-full w-full object-cover object-center"
               />
             ) : (
-              <div className="w-full h-full bg-red bg-primary/20" />
+              <div className="bg-red bg-primary/20 h-full w-full" />
             )}
 
             <Avatar
-              className="border-2 border-white bg-background absolute left-4 bottom-[-32px]"
+              className="bg-background absolute bottom-[-32px] left-4 border-2 border-white"
               size="5xl"
             >
               <AvatarImage src={avatarImage} alt="User profile image" />
@@ -64,16 +64,16 @@ export function UserProfile() {
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <Badge
-                  icon={<span className="font-bold text-sm">0</span>}
+                  icon={<span className="text-sm font-bold">0</span>}
                   text={<Text type="bodySmall">Followers</Text>}
                 />
                 <Badge
-                  icon={<span className="font-bold text-sm">0</span>}
+                  icon={<span className="text-sm font-bold">0</span>}
                   text={<Text type="bodySmall">Following</Text>}
                 />
                 <Badge
                   icon={
-                    <span className="font-bold text-sm">
+                    <span className="text-sm font-bold">
                       {user?.ownedClassroomCount || 0}
                     </span>
                   }

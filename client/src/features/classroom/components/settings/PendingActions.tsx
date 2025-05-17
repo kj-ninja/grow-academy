@@ -12,8 +12,7 @@ export function PendingActions({ member }: { member: SimpleUser }) {
   const rejectMember = useRejectPendingRequestMutation();
 
   const { classroom } = useClassroom();
-  const { approveJoinRequest, rejectJoinRequest } =
-    useClassroomWebSocketActions();
+  const { approveJoinRequest, rejectJoinRequest } = useClassroomWebSocketActions();
 
   const handleApprove = async (id: number, event: React.MouseEvent) => {
     event.stopPropagation();
@@ -43,13 +42,8 @@ export function PendingActions({ member }: { member: SimpleUser }) {
 
   return (
     <>
-      <Button onClick={(event) => handleApprove(member.id, event)}>
-        Approve
-      </Button>
-      <Button
-        variant="outline"
-        onClick={(event) => handleReject(member.id, event)}
-      >
+      <Button onClick={(event) => handleApprove(member.id, event)}>Approve</Button>
+      <Button variant="outline" onClick={(event) => handleReject(member.id, event)}>
         Reject
       </Button>
     </>

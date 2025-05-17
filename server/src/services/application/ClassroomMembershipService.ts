@@ -20,8 +20,7 @@ export class ClassroomMembershipService {
    */
   async createJoinRequest(classroomId: number, userId: number) {
     // Check if the classroom exists
-    const classroom =
-      await this.classroomRepository.findClassroomById(classroomId);
+    const classroom = await this.classroomRepository.findClassroomById(classroomId);
     if (!classroom) {
       throw new ApplicationError("Classroom not found", 404);
     }
@@ -33,16 +32,10 @@ export class ClassroomMembershipService {
 
     // Check if the user is already a member or has a pending request
     const { isMember, isPendingRequest } =
-      await this.classroomRepository.getUserMembershipStatus(
-        userId,
-        classroomId,
-      );
+      await this.classroomRepository.getUserMembershipStatus(userId, classroomId);
 
     if (isMember) {
-      throw new ApplicationError(
-        "You are already a member of this classroom",
-        409,
-      );
+      throw new ApplicationError("You are already a member of this classroom", 409);
     }
 
     if (isPendingRequest) {
@@ -50,12 +43,11 @@ export class ClassroomMembershipService {
     }
 
     // Create the join request
-    const membershipStatus =
-      classroom.accessType === "Public" ? "approved" : "pending";
+    const membershipStatus = classroom.accessType === "Public" ? "approved" : "pending";
     await this.membershipRepository.createMembership(
       classroomId,
       userId,
-      membershipStatus,
+      membershipStatus
     );
 
     // Add user to stream channel if approved immediately (public classroom)
@@ -78,18 +70,14 @@ export class ClassroomMembershipService {
    */
   async getPendingRequests(classroomId: number, adminId: number) {
     // Check if the classroom exists
-    const classroom =
-      await this.classroomRepository.findClassroomById(classroomId);
+    const classroom = await this.classroomRepository.findClassroomById(classroomId);
     if (!classroom) {
       throw new ApplicationError("Classroom not found", 404);
     }
 
     // Check if user has permission to view requests
     if (classroom.ownerId !== adminId) {
-      throw new ApplicationError(
-        "Only the owner can view pending requests",
-        403,
-      );
+      throw new ApplicationError("Only the owner can view pending requests", 403);
     }
 
     // Get the pending requests
@@ -104,13 +92,12 @@ export class ClassroomMembershipService {
    */
   async approveJoinRequest(
     requestId: { classroomId: number; userId: number },
-    adminId: number,
+    adminId: number
   ) {
     const { classroomId, userId } = requestId;
 
     // Check if the classroom exists
-    const classroom =
-      await this.classroomRepository.findClassroomById(classroomId);
+    const classroom = await this.classroomRepository.findClassroomById(classroomId);
     if (!classroom) {
       throw new ApplicationError("Classroom not found", 404);
     }
@@ -129,7 +116,7 @@ export class ClassroomMembershipService {
     const result = await this.membershipRepository.updateMembershipStatus(
       classroomId,
       userId,
-      "approved",
+      "approved"
     );
 
     if (result === 0) {
@@ -147,13 +134,12 @@ export class ClassroomMembershipService {
    */
   async rejectJoinRequest(
     requestId: { classroomId: number; userId: number },
-    adminId: number,
+    adminId: number
   ) {
     const { classroomId, userId } = requestId;
 
     // Check if the classroom exists
-    const classroom =
-      await this.classroomRepository.findClassroomById(classroomId);
+    const classroom = await this.classroomRepository.findClassroomById(classroomId);
     if (!classroom) {
       throw new ApplicationError("Classroom not found", 404);
     }
@@ -166,7 +152,7 @@ export class ClassroomMembershipService {
     // Delete the pending request
     const result = await this.membershipRepository.deletePendingMembership(
       classroomId,
-      userId,
+      userId
     );
 
     if (result === 0) {
@@ -181,7 +167,7 @@ export class ClassroomMembershipService {
    */
   async cancelJoinRequest(
     requestId: { classroomId: number; userId: number },
-    requestUserId: number,
+    requestUserId: number
   ) {
     const { classroomId, userId } = requestId;
 
@@ -193,7 +179,7 @@ export class ClassroomMembershipService {
     // Delete the pending request
     const result = await this.membershipRepository.deletePendingMembership(
       classroomId,
-      userId,
+      userId
     );
 
     if (result === 0) {
@@ -208,8 +194,7 @@ export class ClassroomMembershipService {
    */
   async leaveClassroom(classroomId: number, userId: number) {
     // Check if the classroom exists
-    const classroom =
-      await this.classroomRepository.findClassroomById(classroomId);
+    const classroom = await this.classroomRepository.findClassroomById(classroomId);
     if (!classroom) {
       throw new ApplicationError("Classroom not found", 404);
     }
@@ -221,17 +206,11 @@ export class ClassroomMembershipService {
 
     // Check if user is the owner
     if (classroom.ownerId === userId) {
-      throw new ApplicationError(
-        "Owners cannot leave their own classroom",
-        403,
-      );
+      throw new ApplicationError("Owners cannot leave their own classroom", 403);
     }
 
     // Leave the classroom
-    const result = await this.membershipRepository.leaveClassroom(
-      classroomId,
-      userId,
-    );
+    const result = await this.membershipRepository.leaveClassroom(classroomId, userId);
 
     if (!result.success) {
       throw new ApplicationError(result.message, 400);
@@ -248,8 +227,7 @@ export class ClassroomMembershipService {
    */
   async removeMember(classroomId: number, memberId: number, adminId: number) {
     // Check if the classroom exists
-    const classroom =
-      await this.classroomRepository.findClassroomById(classroomId);
+    const classroom = await this.classroomRepository.findClassroomById(classroomId);
     if (!classroom) {
       throw new ApplicationError("Classroom not found", 404);
     }
@@ -273,14 +251,11 @@ export class ClassroomMembershipService {
     const result = await this.membershipRepository.deleteClassroomMember(
       classroomId,
       memberId,
-      adminId,
+      adminId
     );
 
     if (result === 0) {
-      throw new ApplicationError(
-        "Member not found or could not be removed",
-        404,
-      );
+      throw new ApplicationError("Member not found or could not be removed", 404);
     }
 
     // Remove user from stream channel

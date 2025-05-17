@@ -1,6 +1,6 @@
 export function WelcomePage() {
   return (
-    <div className="flex justify-center mt-20 w-full">
+    <div className="mt-20 flex w-full justify-center">
       <h2>Welcome! Please authenticate yourself.</h2>
     </div>
   );

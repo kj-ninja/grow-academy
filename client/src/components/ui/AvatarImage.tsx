@@ -33,8 +33,8 @@ export const AvatarImage = ({
   return (
     <div
       className={cn(
-        "absolute w-[64px] h-[64px] left-6 bottom-[-32px] rounded-full border-2 border-white bg-backgroundSecondary group",
-        className,
+        "bg-backgroundSecondary group absolute bottom-[-32px] left-6 h-[64px] w-[64px] rounded-full border-2 border-white",
+        className
       )}
     >
       {changeAvatarImage && (
@@ -44,16 +44,16 @@ export const AvatarImage = ({
               role="button"
               tabIndex={0}
               onClick={onImageRemove}
-              className="p-0 absolute right-[-6px] bottom-[-8px] h-8 w-8 bg-primary rounded-full flex items-center justify-center hover:opacity-80 cursor-pointer"
+              className="bg-primary absolute bottom-[-8px] right-[-6px] flex h-8 w-8 cursor-pointer items-center justify-center rounded-full p-0 hover:opacity-80"
             >
               <ImageMinus width={18} />
             </div>
           ) : (
             <>
-              <User className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+              <User className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform" />
               <Label
                 htmlFor="avatar-image-upload"
-                className="p-0 absolute right-[-6px] bottom-[-8px] h-8 w-8 bg-primary rounded-full flex items-center justify-center hover:opacity-80 cursor-pointer"
+                className="bg-primary absolute bottom-[-8px] right-[-6px] flex h-8 w-8 cursor-pointer items-center justify-center rounded-full p-0 hover:opacity-80"
               >
                 <ImagePlus width={18} />
 
@@ -70,16 +70,12 @@ export const AvatarImage = ({
         </>
       )}
       {isLoading ? (
-        <div className="w-full h-full flex items-center justify-center">
+        <div className="flex h-full w-full items-center justify-center">
           <Spinner />
         </div>
       ) : (
         image && (
-          <img
-            src={image}
-            alt=""
-            className="w-full h-full object-center rounded-full"
-          />
+          <img src={image} alt="" className="h-full w-full rounded-full object-center" />
         )
       )}
     </div>

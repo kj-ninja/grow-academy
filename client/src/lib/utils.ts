@@ -10,7 +10,7 @@ export function appendImageToFormData(
   fieldName: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   image: any,
-  currentImageData?: number[],
+  currentImageData?: number[]
 ) {
   if (image instanceof File) {
     formData.append(fieldName, image);

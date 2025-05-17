@@ -12,7 +12,7 @@ export function ClassroomSettingsMembers() {
           <ClassroomSettingsMember key={member.id} member={member} />
         ))
       ) : (
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2">
           <Text type="body">You have no Members yet.</Text>
         </div>
       )}

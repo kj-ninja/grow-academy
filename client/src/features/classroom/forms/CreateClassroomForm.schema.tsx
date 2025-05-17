@@ -10,8 +10,7 @@ const createClassroomFormSchema = zod.object({
     .string()
     .min(2, { message: "Classroom Handle be at least 2 characters." })
     .regex(/^[A-Za-z0-9_]+$/, {
-      message:
-        "Classroom Handle must only contain letters, numbers and underscores",
+      message: "Classroom Handle must only contain letters, numbers and underscores",
     }),
   description: zod.string().optional(),
   tags: zod.array(zod.string()).optional(),
@@ -32,10 +31,6 @@ const createClassroomFormSchema = zod.object({
   ]),
 });
 
-export const CreateClassroomFormSchema = createFormSchema(
-  createClassroomFormSchema,
-);
+export const CreateClassroomFormSchema = createFormSchema(createClassroomFormSchema);
 
-export type CreateClassroomFormValues = zod.infer<
-  typeof createClassroomFormSchema
->;
+export type CreateClassroomFormValues = zod.infer<typeof createClassroomFormSchema>;

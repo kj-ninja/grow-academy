@@ -5,7 +5,7 @@ export const NotFoundPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-4 items-center justify-center h-screen space-y-4">
+    <div className="flex h-screen flex-col items-center justify-center gap-4 space-y-4">
       <h2>Nothing to see here!</h2>
       <Button variant="link" onClick={() => navigate(-1)}>
         Go back

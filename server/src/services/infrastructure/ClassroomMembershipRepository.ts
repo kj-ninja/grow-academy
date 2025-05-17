@@ -13,7 +13,7 @@ export class ClassroomMembershipRepository {
   async createMembership(
     classroomId: number,
     userId: number,
-    memberShipStatus: "approved" | "pending" = "approved",
+    memberShipStatus: "approved" | "pending" = "approved"
   ) {
     return this.prisma.classroomsMembers.create({
       data: {
@@ -50,11 +50,7 @@ export class ClassroomMembershipRepository {
   /**
    * Update the status of a membership request
    */
-  async updateMembershipStatus(
-    classroomId: number,
-    userId: number,
-    status: string,
-  ) {
+  async updateMembershipStatus(classroomId: number, userId: number, status: string) {
     const membership = await this.prisma.classroomsMembers.updateMany({
       where: {
         classroomId,
@@ -124,11 +120,7 @@ export class ClassroomMembershipRepository {
   /**
    * Remove a member from a classroom (admin operation)
    */
-  async deleteClassroomMember(
-    classroomId: number,
-    memberId: number,
-    ownerId: number,
-  ) {
+  async deleteClassroomMember(classroomId: number, memberId: number, ownerId: number) {
     const member = await this.prisma.classroomsMembers.findUnique({
       where: {
         userId_classroomId: {

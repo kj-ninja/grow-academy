@@ -55,8 +55,6 @@ export function ClassroomGuestView() {
   );
 
   return (
-    <ClassroomDetailsLayout
-      button={isPendingRequest ? cancelJoinButton : joinButton}
-    />
+    <ClassroomDetailsLayout button={isPendingRequest ? cancelJoinButton : joinButton} />
   );
 }

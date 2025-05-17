@@ -12,24 +12,21 @@ interface ClassroomCardProps {
   onClassroomClick: (handle: string) => void;
 }
 
-export function ClassroomCard({
-  classroom,
-  onClassroomClick,
-}: ClassroomCardProps) {
+export function ClassroomCard({ classroom, onClassroomClick }: ClassroomCardProps) {
   const { image: avatarImage } = useBinaryImage(classroom.avatarImage);
   const { image: backgroundImage } = useBinaryImage(classroom.backgroundImage);
   const { image: ownerImage } = useBinaryImage(classroom.owner.avatarImage);
 
   return (
     <Card
-      className="flex flex-col bg-white w-full cursor-pointer group"
+      className="group flex w-full cursor-pointer flex-col bg-white"
       onClick={() => onClassroomClick(classroom.handle)}
     >
       <CardContent>
         <img
           src={backgroundImage || "/fallback_banner.jpg"}
           alt={"Community background picture"}
-          className="w-full h-48 object-cover rounded-t-lg bg-background-secondary group-hover:opacity-80"
+          className="bg-background-secondary h-48 w-full rounded-t-lg object-cover group-hover:opacity-80"
         />
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-4 pt-6">
@@ -40,14 +37,10 @@ export function ClassroomCard({
           </Avatar>
 
           <div className="flex flex-col gap-1">
-            <div className="flex gap-2 items-start">
+            <div className="flex items-start gap-2">
               <Badge
                 icon={<User size={12} fill="black" />}
-                text={
-                  <Text type="bodyXSmallBold">
-                    {classroom.membersCount || 0}
-                  </Text>
-                }
+                text={<Text type="bodyXSmallBold">{classroom.membersCount || 0}</Text>}
               />
               <Badge
                 icon={<Earth size={12} />}
@@ -62,7 +55,7 @@ export function ClassroomCard({
         </div>
 
         <div className="flex gap-4">
-          <div className="flex gap-1.5 items-center">
+          <div className="flex items-center gap-1.5">
             <Avatar size="2xs">
               <AvatarImage src={ownerImage} />
               <AvatarFallback type="user" size={14} className="bg-background" />
@@ -72,10 +65,10 @@ export function ClassroomCard({
             </Text>
             <Text type="bodyXSmall">Owner</Text>
           </div>
-          <div className="flex gap-1.5 items-center"></div>
+          <div className="flex items-center gap-1.5"></div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mt-4">
+        <div className="mt-4 flex flex-wrap gap-2">
           {classroom.tags.map((tag) => (
             <Badge
               key={tag}

@@ -9,12 +9,11 @@ import { useClassroomWebSocketListener } from "@/features/classroom/websockets/u
 const ClassroomListPage = () => {
   const navigate = useNavigate();
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      ...ClassroomInfiniteQueries.classrooms({
-        pageSize: 10,
-      }),
-    });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    ...ClassroomInfiniteQueries.classrooms({
+      pageSize: 10,
+    }),
+  });
 
   const pages = useMemo(() => {
     return data?.pages.flatMap((page) => page.classrooms) || [];
@@ -36,7 +35,7 @@ const ClassroomListPage = () => {
       keyExtractor={(classroom) => classroom.id.toString()}
       isLoading={isFetchingNextPage}
       hasNextPage={hasNextPage}
-      className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-8"
+      className="grid grid-cols-1 gap-4 p-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
     />
   );
 };

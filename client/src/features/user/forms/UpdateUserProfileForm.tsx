@@ -33,10 +33,11 @@ export function UpdateUserProfileForm({
 }) {
   const { currentUser, refetchUserProfile } = useCurrentUser();
   const { image: avatarImage, setImage: setAvatarImage } = useBinaryImage(
-    currentUser?.avatarImage,
+    currentUser?.avatarImage
   );
-  const { image: backgroundImage, setImage: setBackgroundImage } =
-    useBinaryImage(currentUser?.backgroundImage);
+  const { image: backgroundImage, setImage: setBackgroundImage } = useBinaryImage(
+    currentUser?.backgroundImage
+  );
 
   const updateUserMutation = useUpdateUserMutation();
   const navigate = useNavigate();
@@ -69,13 +70,13 @@ export function UpdateUserProfileForm({
         formData,
         "avatarImage",
         values.avatarImage,
-        currentUser.avatarImage?.data,
+        currentUser.avatarImage?.data
       );
       appendImageToFormData(
         formData,
         "backgroundImage",
         values.backgroundImage,
-        currentUser.backgroundImage?.data,
+        currentUser.backgroundImage?.data
       );
 
       try {
@@ -130,7 +131,7 @@ export function UpdateUserProfileForm({
               )}
             />
           </div>
-          <div className="p-6 mt-8">
+          <div className="mt-8 p-6">
             <FormField
               control={form.control}
               name="username"
@@ -145,7 +146,7 @@ export function UpdateUserProfileForm({
                 </FormItem>
               )}
             />
-            <div className="flex gap-4 justify-stretch">
+            <div className="flex justify-stretch gap-4">
               <FormField
                 control={form.control}
                 name="firstName"
@@ -193,9 +194,7 @@ export function UpdateUserProfileForm({
                 <Button
                   type="submit"
                   className="w-[120px]"
-                  disabled={
-                    !form.formState.isValid || form.formState.isSubmitting
-                  }
+                  disabled={!form.formState.isValid || form.formState.isSubmitting}
                 >
                   Submit
                 </Button>
@@ -211,10 +210,8 @@ export function UpdateUserProfileForm({
             ) : (
               <Button
                 type="submit"
-                className="w-full mt-8"
-                disabled={
-                  !form.formState.isValid || form.formState.isSubmitting
-                }
+                className="mt-8 w-full"
+                disabled={!form.formState.isValid || form.formState.isSubmitting}
               >
                 Submit
               </Button>

@@ -17,7 +17,7 @@ export function useCurrentUser() {
     if (response.data?.username) {
       queryClient.setQueryData(
         UserQueries.getUser(response.data.username).queryKey,
-        response.data,
+        response.data
       );
     }
   };

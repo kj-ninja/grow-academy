@@ -50,18 +50,18 @@ export const TagsInput: React.FC<TagsInputProps> = ({
         onChange={handleInputChange}
       />
 
-      <div className="flex flex-wrap gap-2 mt-2">
+      <div className="mt-2 flex flex-wrap gap-2">
         {value.map((tag) => (
           <Text
             type="bodyXXSmallBold"
             key={tag}
-            className="flex items-center justify-center border rounded-sm px-2.5 py-1 border-gray-500 bg-background"
+            className="bg-background flex items-center justify-center rounded-sm border border-gray-500 px-2.5 py-1"
           >
             {tag}
             <button
               type="button"
               onClick={() => handleRemoveTag(tag)}
-              className="ml-1 text-error hover:text-error/80"
+              className="text-error hover:text-error/80 ml-1"
             >
               <X size={10} />
             </button>

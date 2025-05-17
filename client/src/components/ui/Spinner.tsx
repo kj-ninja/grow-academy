@@ -15,7 +15,7 @@ const spinnerVariants = cva("flex-col items-center justify-center", {
   },
 });
 
-const loaderVariants = cva("animate-spin text-primary", {
+const loaderVariants = cva("text-primary animate-spin", {
   variants: {
     size: {
       small: "size-6",
@@ -35,12 +35,7 @@ interface SpinnerContentProps
   children?: React.ReactNode;
 }
 
-export function Spinner({
-  size,
-  show,
-  children,
-  className,
-}: SpinnerContentProps) {
+export function Spinner({ size, show, children, className }: SpinnerContentProps) {
   return (
     <span className={spinnerVariants({ show })}>
       <Loader2 className={cn(loaderVariants({ size }), className)} />

@@ -2,7 +2,7 @@ export class ApplicationError extends Error {
   constructor(
     public message: string,
     public statusCode: number = 500,
-    public details?: any,
+    public details?: any
   ) {
     super(message);
     this.name = this.constructor.name;

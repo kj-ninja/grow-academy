@@ -8,7 +8,7 @@ export const FullPageLoader = ({ name }: { name?: string }) => {
   }
 
   return (
-    <div className="fixed top-0 w-full flex justify-center items-center h-full bg-black bg-opacity-30 z-50">
+    <div className="fixed top-0 z-50 flex h-full w-full items-center justify-center bg-black bg-opacity-30">
       <Spinner />
     </div>
   );

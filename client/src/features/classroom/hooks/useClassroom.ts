@@ -8,9 +8,7 @@ export const useClassroom = () => {
   const { classroom, classroomQuery, classroomId } = useMaybeClassroom();
 
   if (!classroom) {
-    throw new Error(
-      "useClassroom must be used with a classroom data already in cache.",
-    );
+    throw new Error("useClassroom must be used with a classroom data already in cache.");
   }
 
   return {

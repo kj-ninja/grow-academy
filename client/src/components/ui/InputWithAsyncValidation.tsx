@@ -25,7 +25,7 @@ export const InputWithAsyncValidation = React.forwardRef<
 
   if (isLoading) {
     iconRight = (
-      <div className="right-4 w-4 h-4 rounded-full overflow-hidden">
+      <div className="right-4 h-4 w-4 overflow-hidden rounded-full">
         <Spinner />
       </div>
     );

@@ -16,13 +16,13 @@ export function AppNavbarLink({ path, avatarImage }: AppNavbarLinkProps) {
       to={path}
       className={({ isActive }) =>
         cn(
-          "w-10 h-10 rounded-2xl flex justify-center items-center overflow-hidden border-2 border-transparent hover:shadow-appNavbarLink",
-          isActive && "!shadow-appNavbarLinkActive",
+          "hover:shadow-appNavbarLink flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border-2 border-transparent",
+          isActive && "!shadow-appNavbarLinkActive"
         )
       }
     >
       {image ? (
-        <img src={image} alt="bgImg" className="w-full h-full object-cover" />
+        <img src={image} alt="bgImg" className="h-full w-full object-cover" />
       ) : (
         // TODO: replace temporary fallback with a proper fallback
         <Image className="text-black" />

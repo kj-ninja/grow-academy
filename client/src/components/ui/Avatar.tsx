@@ -32,11 +32,7 @@ const Avatar = React.forwardRef<
   return (
     <AvatarPrimitive.Root
       ref={ref}
-      className={cn(
-        "relative flex shrink-0 overflow-hidden",
-        shapeClass,
-        className,
-      )}
+      className={cn("relative flex shrink-0 overflow-hidden", shapeClass, className)}
       style={{ width: sizeVariants[size], height: sizeVariants[size] }}
       {...props}
     />
@@ -66,12 +62,12 @@ const AvatarFallback = React.forwardRef<
   <AvatarPrimitive.Fallback
     ref={ref}
     className={cn(
-      "flex h-full w-full items-center justify-center rounded-full bg-backgroundSecondary",
-      className,
+      "bg-backgroundSecondary flex h-full w-full items-center justify-center rounded-full",
+      className
     )}
     {...props}
   >
-    <div className="flex justify-center items-center">
+    <div className="flex items-center justify-center">
       {type === "user" ? <User size={size} /> : <Image size={size} />}
     </div>
   </AvatarPrimitive.Fallback>

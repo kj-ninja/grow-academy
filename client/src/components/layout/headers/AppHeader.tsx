@@ -21,14 +21,13 @@ export const AppHeader = () => {
   const { logout } = useAuthState();
   const { image } = useBinaryImage(currentUser?.avatarImage);
 
-  const [isCreateClassroomModalOpen, setIsCreateClassroomModalOpen] =
-    useState(false);
+  const [isCreateClassroomModalOpen, setIsCreateClassroomModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
   return (
     <header className="w-full border-b-2 bg-white">
-      <div className="w-full max-w-6xl mx-auto flex justify-between p-4">
+      <div className="mx-auto flex w-full max-w-6xl justify-between p-4">
         <Link to="/" className="flex flex-row items-center">
           <Text type="h1" className="hover:opacity-80">
             <span className="text-primary">Grow</span>{" "}
@@ -70,9 +69,7 @@ export const AppHeader = () => {
 
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem
-                onClick={() => setIsCreateClassroomModalOpen(true)}
-              >
+              <DropdownMenuItem onClick={() => setIsCreateClassroomModalOpen(true)}>
                 Create Classroom
                 <DropdownMenuShortcut>⌘Q</DropdownMenuShortcut>
               </DropdownMenuItem>

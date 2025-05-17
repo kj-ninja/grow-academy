@@ -23,8 +23,8 @@ export function ClassroomSettingsMember({
   return (
     <div
       className={cn(
-        "flex items-center gap-4 my-2 p-2 rounded-lg cursor-pointer hover:bg-background",
-        className,
+        "hover:bg-background my-2 flex cursor-pointer items-center gap-4 rounded-lg p-2",
+        className
       )}
       onClick={() => navigate(`/user/${member.username}`)}
     >
@@ -45,7 +45,7 @@ export function ClassroomSettingsMember({
       </div>
 
       {ActionsComponent && (
-        <div className="flex gap-2 ml-auto">
+        <div className="ml-auto flex gap-2">
           <ActionsComponent member={member} />
         </div>
       )}

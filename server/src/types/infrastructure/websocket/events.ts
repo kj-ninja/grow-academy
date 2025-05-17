@@ -29,7 +29,4 @@ export interface JoinRequestNotificationData {
 /**
  * Event handler type for WebSocket events
  */
-export type WebSocketEventHandler<T = any> = (
-  socket: Socket,
-  data: T,
-) => Promise<void>;
+export type WebSocketEventHandler<T = any> = (socket: Socket, data: T) => Promise<void>;

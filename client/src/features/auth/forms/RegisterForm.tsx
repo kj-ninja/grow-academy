@@ -49,10 +49,7 @@ export function RegisterForm() {
         username: values.username,
         password: values.password,
       });
-      queryClient.setQueryData(
-        UserQueries.getCurrentUser().queryKey,
-        loginResponse.user,
-      );
+      queryClient.setQueryData(UserQueries.getCurrentUser().queryKey, loginResponse.user);
       setAuthStatus("authenticated");
     } catch (error) {
       ErrorHandler.handle({
@@ -105,11 +102,7 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Confirm Password"
-                  type="password"
-                  {...field}
-                />
+                <Input placeholder="Confirm Password" type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -117,7 +110,7 @@ export function RegisterForm() {
         />
         <FormRootError />
 
-        <Button type="submit" className="w-full mt-8">
+        <Button type="submit" className="mt-8 w-full">
           Submit
         </Button>
       </form>

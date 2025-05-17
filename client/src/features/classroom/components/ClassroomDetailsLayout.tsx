@@ -38,14 +38,14 @@ export function ClassroomDetailsLayout({
               <img
                 src={backgroundImage}
                 alt="User banner image"
-                className="w-full h-full object-cover object-center"
+                className="h-full w-full object-cover object-center"
               />
             ) : (
-              <div className="w-full h-full bg-red bg-primary/20" />
+              <div className="bg-red bg-primary/20 h-full w-full" />
             )}
 
             <Avatar
-              className="border-2 border-white bg-background absolute left-4 bottom-[-32px]"
+              className="bg-background absolute bottom-[-32px] left-4 border-2 border-white"
               size="5xl"
             >
               <AvatarImage src={avatarImage} alt="User profile image" />
@@ -61,11 +61,11 @@ export function ClassroomDetailsLayout({
               </Text>
             </div>
 
-            <div className="flex justify-between mb-2">
-              <div className="flex gap-2 mb-2">
+            <div className="mb-2 flex justify-between">
+              <div className="mb-2 flex gap-2">
                 <Badge
                   icon={
-                    <span className="font-bold text-sm">
+                    <span className="text-sm font-bold">
                       {classroom?.membersCount || 0}
                     </span>
                   }
@@ -73,15 +73,13 @@ export function ClassroomDetailsLayout({
                 />
                 <Badge
                   icon={<Earth size={14} />}
-                  text={
-                    <Text type="bodySmallBold">{classroom.accessType}</Text>
-                  }
+                  text={<Text type="bodySmallBold">{classroom.accessType}</Text>}
                 />
               </div>
             </div>
 
             {/*todo: add info about members*/}
-            <div className="flex justify-between items-end">
+            <div className="flex items-end justify-between">
               <div className="flex items-center gap-2">
                 <Avatar size="xs">
                   <AvatarImage src={ownerImage} alt="Classroom profile image" />
@@ -96,10 +94,8 @@ export function ClassroomDetailsLayout({
                   </Text>
                   <Text
                     type="bodySmallBold"
-                    className="!text-secondary hover:opacity-80 cursor-pointer grow-0"
-                    onClick={() =>
-                      navigate(`/user/${classroom.owner.username}`)
-                    }
+                    className="!text-secondary grow-0 cursor-pointer hover:opacity-80"
+                    onClick={() => navigate(`/user/${classroom.owner.username}`)}
                   >
                     @{classroom.owner.username}
                   </Text>

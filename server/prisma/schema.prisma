@@ -3,8 +3,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["omitApi"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -28,7 +27,7 @@ model User {
   classrooms        ClassroomsMembers[]
   ownedClassrooms   Classroom[]
   uploadedResources Resource[]
-  streamToken       String              @unique
+  streamToken       String              @unique @default("")
 }
 
 model ClassroomsMembers {

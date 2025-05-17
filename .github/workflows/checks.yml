@@ -39,6 +39,9 @@ jobs:
         with:
           bun-version: 1.1.32
 
+      - name: Install root dependencies
+        run: bun install
+
       - name: Install server dependencies
         run: cd server && bun install
 
@@ -46,7 +49,7 @@ jobs:
         run: cd client && bun install
 
       - name: Code formatting check
-        run: bunx prettier --check "./client/src/**/*.{js,jsx,ts,tsx}" "./server/src/**/*.{ts,js}"
+        run: bun run format:check
 
       - name: Lint server
         run: cd server && bun run lint

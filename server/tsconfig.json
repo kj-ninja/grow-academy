@@ -27,5 +27,7 @@
     "noPropertyAccessFromIndexSignature": false,
 
     "baseUrl": "./src"
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["tests/**/*", "**/*.test.ts", "**/*.spec.ts", "node_modules"]
 }

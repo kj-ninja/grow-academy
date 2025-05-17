@@ -13,6 +13,7 @@ export const errorResponse = (
   });
 };
 
+// todo: add it
 export const successResponse = (
   res: Response,
   data: any,

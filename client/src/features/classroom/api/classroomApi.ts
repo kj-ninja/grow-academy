@@ -52,13 +52,11 @@ export const classroomApi = {
     return response.data;
   },
   validateClassroomName: async (name: string) => {
-    const response = await ApiClient.get(`/classroom/validate-name/${name}`);
+    const response = await ApiClient.get(`/classroom/validate/${name}`);
     return response.data;
   },
   validateClassroomHandle: async (handle: string) => {
-    const response = await ApiClient.get(
-      `/classroom/validate-handle/${handle}`,
-    );
+    const response = await ApiClient.get(`/classroom/validate/${handle}`);
     return response.data;
   },
   getClassroomDetails: async (id: number) => {

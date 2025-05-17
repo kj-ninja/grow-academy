@@ -14,7 +14,7 @@ import { checkOwner } from "utils/middleware/authorization";
 import {
   createClassroom,
   updateClassroom,
-} from "@controllers/classroom.controller";
+} from "controllers/classroom.controller";
 
 /**
  * Authentication middleware for routes requiring enhanced authentication

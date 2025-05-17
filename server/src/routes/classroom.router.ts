@@ -1,4 +1,3 @@
-import { authenticateJWT } from "middlewares/auth/authenticateJWT";
 import { Router } from "express";
 import { checkOwner } from "utils";
 import {
@@ -8,7 +7,7 @@ import {
   getClassrooms,
   validateClassroomName,
   validateClassroomHandle,
-} from "@controllers/classroom.controller";
+} from "controllers/classroom.controller";
 
 import {
   // Membership management controllers
@@ -19,7 +18,7 @@ import {
   rejectClassroomMembershipRequest,
   getClassroomPendingRequests,
   removeClassroomMember,
-} from "@controllers/classroom-membership.controller";
+} from "controllers/classroom-membership.controller";
 
 import { upload } from "middlewares/upload/uploadMiddleware";
 import {
@@ -27,7 +26,7 @@ import {
   downloadResource,
   getResources,
   uploadResource,
-} from "@controllers/resource.controller";
+} from "controllers/resource.controller";
 import {
   enhancedAuth,
   withEnhancedAuth,
@@ -43,12 +42,12 @@ const router = Router();
 
 // Validation endpoints
 router.get(
-  "/validate-name/:classroomName",
+  "/validate/:classroomName",
   withAuth,
   withEnhancedAuth(validateClassroomName),
 );
 router.get(
-  "/validate-handle/:handle",
+  "/validate/:handle",
   withAuth,
   withEnhancedAuth(validateClassroomHandle),
 );
@@ -72,7 +71,11 @@ router.delete(
   withAuth,
   withEnhancedAuth(cancelClassroomMembershipRequest),
 );
-router.delete("/:id/memberships", authenticateJWT, deleteClassroomMembership);
+router.delete(
+  "/:id/memberships",
+  withAuth,
+  withEnhancedAuth(deleteClassroomMembership),
+);
 
 // Membership request management (admin)
 router.get(

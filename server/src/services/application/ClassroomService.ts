@@ -6,6 +6,7 @@ import type {
 } from "types/domain/classroom";
 import { ApplicationError, ConflictError, validateHandle } from "utils";
 
+// todo: pass whole data object to repository instead of individual params
 // todo: think about: DEPENDENCY INJECTION PATTERN and
 // Factory Pattern: Creates and configures instances with their dependencies
 export class ClassroomService {
@@ -131,7 +132,6 @@ export class ClassroomService {
     data: ClassroomUpdateData,
   ) {
     const classroom = await this.repository.findClassroomById(classroomId);
-    console.log("123", "data", data);
 
     if (!classroom) {
       throw new ApplicationError("Classroom not found", 404);

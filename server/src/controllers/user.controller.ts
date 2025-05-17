@@ -1,14 +1,17 @@
 import type { Request, Response } from "express";
 import { PrismaClient, type User } from "@prisma/client";
 import { errorResponse } from "utils";
-import type { AuthenticatedRequest } from "types/auth.types";
+import type {
+  AuthenticatedRequest,
+  EnhancedAuthRequest,
+} from "types/auth.types";
 import { updateStreamUser } from "services/infrastructure/StreamChannelService";
 import type { Images } from "types/infrastructure/express/requests";
 
 const prisma = new PrismaClient();
 
-export const updateUser = async (req: AuthenticatedRequest, res: Response) => {
-  const { id: userId } = req.user!;
+export const updateUser = async (req: EnhancedAuthRequest, res: Response) => {
+  const userId = req.authenticatedUser.id;
   const { firstName, lastName, bio } = req.body;
 
   const files = req.files as Images;
@@ -68,10 +71,10 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 export const getCurrentUser = async (
-  req: AuthenticatedRequest,
+  req: EnhancedAuthRequest,
   res: Response,
 ) => {
-  const { id: userId } = req.user!;
+  const userId = req.authenticatedUser.id;
 
   try {
     const user = await prisma.user.findUnique({

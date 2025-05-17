@@ -40,7 +40,9 @@ export enum MembershipStatus {
   REJECTED = "rejected",
 }
 
-// Domain operation parameters
+/**
+ * Domain operation parameters
+ */
 export interface ClassroomCreateParams {
   userId: number;
   classroomName: string;

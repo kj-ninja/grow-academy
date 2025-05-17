@@ -73,10 +73,10 @@ export const cancelClassroomMembershipRequest = async (
  * Leave a classroom (delete own membership)
  */
 export const deleteClassroomMembership = async (
-  req: AuthenticatedRequest,
+  req: EnhancedAuthRequest,
   res: Response,
 ) => {
-  const userId = req.user!.id;
+  const userId = req.authenticatedUser.id;
   const classroomId = Number(req.params.id);
 
   if (isNaN(classroomId)) {

@@ -1,4 +1,4 @@
-import streamClient from "@config/streamChat";
+import streamClient from "config/streamChat";
 import type { User } from "@prisma/client";
 import { ApplicationError } from "utils";
 

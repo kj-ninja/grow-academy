@@ -64,12 +64,12 @@ export function CreateClassroomForm({ onSuccess }: { onSuccess: () => void }) {
   const [debouncedHandle] = useDebounce(classroomHandle);
 
   const classroomNameQuery = useQuery({
-    ...ClassroomQueries.validateClassroomName(debouncedClassroomName),
+    ...ClassroomQueries.validateName(debouncedClassroomName),
     enabled: debouncedClassroomName !== "" && debouncedClassroomName.length > 1,
   });
 
   const classroomHandleQuery = useQuery({
-    ...ClassroomQueries.validateClassroomHandle(debouncedHandle),
+    ...ClassroomQueries.validateHandle(debouncedHandle),
     enabled: debouncedHandle !== "" && debouncedHandle.length > 1,
   });
 

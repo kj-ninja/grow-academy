@@ -5,10 +5,10 @@ import cors from "cors";
 import { errorHandler } from "middlewares/error/errorHandler";
 import path from "path";
 import passport from "passport";
-import authRouter from "@routes/auth.router";
-import userRouter from "@routes/user.router";
-import "@config/passportConfig";
-import classroomRouter from "@routes/classroom.router";
+import authRouter from "routes/auth.router";
+import userRouter from "routes/user.router";
+import "config/passportConfig";
+import classroomRouter from "routes/classroom.router";
 
 dotenv.config();
 

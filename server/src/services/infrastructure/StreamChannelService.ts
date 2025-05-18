@@ -1,6 +1,6 @@
 import streamClient from "config/streamChat";
 import type { User } from "@prisma/client";
-import { ApplicationError } from "utils";
+import { ApplicationError } from "../../utils/errors";
 
 /**
  * Add a user to a stream channel

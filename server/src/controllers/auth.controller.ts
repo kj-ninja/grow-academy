@@ -5,7 +5,7 @@ import {
   generateStreamToken,
   updateStreamUser,
 } from "services/infrastructure/StreamChannelService";
-import { generateRefreshToken, generateToken, verifyToken } from "utils";
+import { generateRefreshToken, generateToken, verifyToken } from "../utils/jwt";
 
 const prisma = new PrismaClient();
 

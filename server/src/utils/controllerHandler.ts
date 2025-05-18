@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { errorResponse } from "../responses";
+import { errorResponse } from "./errors";
 
 export function controllerHandler<T extends Request>(
   controller: (req: T, res: Response) => Promise<any>

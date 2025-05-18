@@ -1,3 +1,6 @@
+import type { Response } from "express";
+
+// Error Services handling utilities
 export class ApplicationError extends Error {
   constructor(
     public message: string,
@@ -33,3 +36,17 @@ export class ConflictError extends ApplicationError {
     super(message, 409, details);
   }
 }
+
+// Error controllers handling utility
+export const errorResponse = (
+  res: Response,
+  message = "An error occurred",
+  status = 500,
+  details?: any
+) => {
+  res.status(status).json({
+    success: false,
+    message,
+    ...(details && { details }),
+  });
+};

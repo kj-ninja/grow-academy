@@ -1,8 +1,9 @@
 import type { Response } from "express";
 import { ClassroomService } from "services/application/ClassroomService";
-import { controllerHandler, errorResponse } from "utils";
 
 import type { EnhancedAuthRequest, Images } from "types/infrastructure/express/requests";
+import { controllerHandler } from "../utils/controllerHandler";
+import { errorResponse } from "../utils/errors";
 
 // Initialize service
 const classroomService = new ClassroomService();

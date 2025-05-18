@@ -2,9 +2,17 @@ import type { Request, Response, NextFunction } from "express";
 import passport from "passport";
 import type { User } from "@prisma/client";
 import { authenticatedUserSchema } from "validations/schemas/auth.schema";
-import { errorResponse } from "utils";
 import type { EnhancedAuthRequest } from "../../types/infrastructure/express/requests";
+import { errorResponse } from "../../utils/errors";
 
+/**
+ * Middleware to authenticate users using JWT strategy
+ * and validate the user data with Zod schema.
+ *
+ * @param req - Express request object
+ * @param res - Express response object
+ * @param next - Next middleware function
+ */
 export const enhancedAuth = (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate("jwt", { session: false }, (err: unknown, user: User | false) => {
     if (err || !user) {
@@ -29,6 +37,14 @@ export const enhancedAuth = (req: Request, res: Response, next: NextFunction) =>
   })(req, res, next);
 };
 
+// Decorator Pattern
+/**
+ * Higher-order function to wrap route handlers with enhanced authentication
+ * and user validation.
+ *
+ * @param handler - The route handler function
+ * @returns A new function that applies enhanced authentication
+ */
 export const withEnhancedAuth = <ResBody = any, ReqBody = any, ReqQuery = any>(
   handler: (req: EnhancedAuthRequest, res: Response<ResBody>) => Promise<any>
 ) => {

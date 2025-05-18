@@ -5,7 +5,7 @@ import {
   registerUser,
   validateToken,
 } from "controllers/auth.controller";
-import { loginLimiter } from "middlewares/auth/rateLimiter";
+import { loginLimiter } from "middleware/auth/rateLimiter";
 
 const router = Router();
 

@@ -1,7 +1,8 @@
 import { ClassroomRepository } from "services/infrastructure/ClassroomRepository";
 import { createStreamChannel } from "services/infrastructure/StreamChannelService";
 import type { ClassroomCreateParams, ClassroomUpdateData } from "types/domain/classroom";
-import { ApplicationError, ConflictError, validateHandle } from "utils";
+import { ApplicationError, ConflictError } from "../../utils/errors";
+import { validateHandle } from "../../validations";
 
 // todo: pass whole data object to repository instead of individual params
 // todo: think about: DEPENDENCY INJECTION PATTERN and

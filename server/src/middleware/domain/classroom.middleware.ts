@@ -1,17 +1,17 @@
-import { compose } from "utils/middleware/compose";
+import { compose } from "middleware/composition/compose";
 import {
   enhancedAuth,
   withEnhancedAuth,
   withEnhancedAuthMiddleware,
-} from "middlewares/auth/enhancedAuth";
-import { validateRequest } from "middlewares/validation/validateRequest";
+} from "middleware/auth/enhancedAuth";
+import { validateRequest } from "middleware/validation/validateRequest";
 import {
   createClassroomSchema,
   updateClassroomSchema,
 } from "validations/schemas/classroom.schema";
-import { uploadMultiple } from "middlewares/upload/uploadMiddleware";
-import { checkOwner } from "utils/middleware/authorization";
+import { uploadMultiple } from "middleware/upload/uploadMiddleware";
 import { createClassroom, updateClassroom } from "controllers/classroom.controller";
+import { checkOwner } from "../auth/permissions";
 
 /**
  * Authentication middleware for routes requiring enhanced authentication

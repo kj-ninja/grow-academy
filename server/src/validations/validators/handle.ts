@@ -1,4 +1,4 @@
-import { ApplicationError } from "./errors";
+import { ApplicationError } from "../../utils/errors";
 
 export const validateHandle = (handle: string) => {
   // Check for letters, numbers, and underscores

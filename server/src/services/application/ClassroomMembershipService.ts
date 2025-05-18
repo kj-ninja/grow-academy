@@ -1,10 +1,10 @@
 import { ClassroomMembershipRepository } from "services/infrastructure/ClassroomMembershipRepository";
 import { ClassroomRepository } from "services/infrastructure/ClassroomRepository";
-import { ApplicationError } from "utils";
 import {
   addUserToStreamChannel,
   removeUserFromStreamChannel,
 } from "services/infrastructure/StreamChannelService";
+import { ApplicationError } from "../../utils/errors";
 
 export class ClassroomMembershipService {
   private membershipRepository: ClassroomMembershipRepository;

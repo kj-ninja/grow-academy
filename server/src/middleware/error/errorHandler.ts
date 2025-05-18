@@ -9,7 +9,7 @@ export const errorHandler = (
   _next: NextFunction
 ) => {
   // Log error for debugging
-  console.error(`[ERROR] ${err.name}: ${err.message}`, err.stack);
+  console.error(`Debbuger [ERROR]: ${err.name}: ${err.message}`, err.stack);
 
   // Application errors (our custom error classes)
   if (err instanceof ApplicationError) {

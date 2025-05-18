@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { checkOwner } from "utils";
 import {
   // Core classroom controllers
   deleteClassroom,
@@ -20,7 +19,7 @@ import {
   removeClassroomMember,
 } from "controllers/classroom-membership.controller";
 
-import { upload } from "middlewares/upload/uploadMiddleware";
+import { upload } from "middleware/upload/uploadMiddleware";
 import {
   deleteResource,
   downloadResource,
@@ -31,12 +30,13 @@ import {
   enhancedAuth,
   withEnhancedAuth,
   withEnhancedAuthMiddleware,
-} from "middlewares/auth/enhancedAuth";
+} from "middleware/auth/enhancedAuth";
 import {
   handleCreateClassroom,
   handleUpdateClassroom,
   withAuth,
-} from "./middleware/classroom.middleware";
+} from "../middleware/domain/classroom.middleware";
+import { checkOwner } from "../middleware/auth/permissions";
 
 const router = Router();
 

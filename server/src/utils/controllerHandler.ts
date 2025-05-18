@@ -1,6 +1,11 @@
 import type { Request, Response } from "express";
 import { errorResponse } from "./errors";
 
+/**
+ * A higher-order function that wraps a controller function to handle errors.
+ * @param controller - The controller function to wrap.
+ * @returns A new function that handles errors and calls the original controller.
+ */
 export function controllerHandler<T extends Request>(
   controller: (req: T, res: Response) => Promise<any>
 ) {

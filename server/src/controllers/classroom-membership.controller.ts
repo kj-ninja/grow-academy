@@ -1,10 +1,10 @@
 import type { Response } from "express";
 import { ClassroomMembershipService } from "services/application/ClassroomMembershipService";
+import { controllerHandler } from "../utils/controllerHandler";
 import type {
   ClassroomRequest,
   ClassroomUserRequest,
-} from "../types/infrastructure/express/requests";
-import { controllerHandler } from "../utils/controllerHandler";
+} from "../types/http/request-extensions";
 
 const membershipService = new ClassroomMembershipService();
 

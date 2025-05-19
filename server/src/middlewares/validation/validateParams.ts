@@ -1,7 +1,7 @@
 import { param, validationResult } from "express-validator";
 import type { NextFunction, Response } from "express";
 import { errorResponse } from "../../utils/errors";
-import type { EnhancedRequest } from "../../types/infrastructure/express/requests";
+import type { EnhancedRequest } from "../../types/http/request-extensions";
 
 /**
  * Validates multiple route parameters

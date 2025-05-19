@@ -2,11 +2,11 @@ import type { Request, Response, NextFunction } from "express";
 import passport from "passport";
 import type { User } from "@prisma/client";
 import { authenticatedUserSchema } from "validations/schemas/auth.schema";
+import { errorResponse } from "../../utils/errors";
 import type {
   EnhancedAuthRequest,
   EnhancedRequest,
-} from "../../types/infrastructure/express/requests";
-import { errorResponse } from "../../utils/errors";
+} from "../../types/http/request-extensions";
 
 /**
  * Middleware to authenticate users using JWT strategy

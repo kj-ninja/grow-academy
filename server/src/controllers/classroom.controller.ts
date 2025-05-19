@@ -1,13 +1,12 @@
 import type { Response } from "express";
 import { ClassroomService } from "services/application/ClassroomService";
 
+import { controllerHandler } from "../utils/controllerHandler";
 import type {
-  ClassroomRequest,
   EnhancedAuthRequest,
   Images,
-} from "types/infrastructure/express/requests";
-import { controllerHandler } from "../utils/controllerHandler";
-import { errorResponse } from "../utils/errors";
+  ClassroomRequest,
+} from "../types/http/request-extensions";
 
 const classroomService = new ClassroomService();
 

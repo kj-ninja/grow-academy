@@ -15,7 +15,7 @@ import {
   handleRejectMembership,
   handleGetPendingRequests,
   handleRemoveMember,
-} from "../middlewares/domain/classroom-membership";
+} from "../middlewares/domain/classroomMembership";
 
 import { upload } from "middlewares/upload/uploadMiddleware";
 import {

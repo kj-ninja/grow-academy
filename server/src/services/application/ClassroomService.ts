@@ -1,11 +1,15 @@
 import { ClassroomRepository } from "services/infrastructure/ClassroomRepository";
 import { createStreamChannel } from "services/infrastructure/StreamChannelService";
 import type { ClassroomCreateParams, ClassroomUpdateData } from "types/domain/classroom";
-import { ApplicationError, ConflictError } from "../../utils/errors";
+import {
+  ValidationError,
+  AuthorizationError,
+  NotFoundError,
+  ConflictError,
+} from "../../utils/errors";
 import { validateHandle } from "../../validations";
 
-// todo: pass whole data object to repository instead of individual params
-// todo: think about: DEPENDENCY INJECTION PATTERN and
+// todo: think about: DEPENDENCY INJECTION PATTERN
 // Factory Pattern: Creates and configures instances with their dependencies
 export class ClassroomService {
   private repository: ClassroomRepository;
@@ -14,9 +18,6 @@ export class ClassroomService {
     this.repository = new ClassroomRepository();
   }
 
-  /**
-   * Create a new classroom
-   */
   async createClassroom(data: ClassroomCreateParams) {
     const {
       userId,
@@ -30,7 +31,7 @@ export class ClassroomService {
     } = data;
 
     if (!classroomName || !handle) {
-      throw new ApplicationError("Classroom Name and Handle are required", 400);
+      throw new ValidationError("Classroom Name and Handle are required");
     }
 
     // Validate handle format
@@ -69,6 +70,53 @@ export class ClassroomService {
     return newClassroom;
   }
 
+  async updateClassroom(classroomId: number, userId: number, data: ClassroomUpdateData) {
+    const classroom = await this.repository.findClassroomById(classroomId);
+
+    if (!classroom) {
+      throw new NotFoundError("Classroom");
+    }
+
+    if (classroom.ownerId !== userId) {
+      throw new AuthorizationError("Only the owner can update the classroom");
+    }
+
+    // Check if new handle is available
+    if (data.handle && data.handle !== classroom.handle) {
+      const existingClassroomByHandle = await this.repository.findClassroomByHandle(
+        data.handle
+      );
+      if (existingClassroomByHandle) {
+        throw new ConflictError("A classroom with this handle already exists");
+      }
+
+      // Validate handle format
+      validateHandle(data.handle);
+    }
+
+    // Check if new classroom name is available
+    if (data.classroomName && data.classroomName !== classroom.classroomName) {
+      const existingClassroom = await this.repository.findClassroomByName(
+        data.classroomName
+      );
+      if (existingClassroom) {
+        throw new ConflictError("A classroom with this name already exists");
+      }
+    }
+
+    const updatedClassroom = await this.repository.updateClassroomInDB(classroomId, {
+      classroomName: data.classroomName || classroom.classroomName,
+      handle: data.handle || classroom.handle,
+      description: data.description ?? classroom.description,
+      accessType: data.accessType || classroom.accessType,
+      avatarImage: data.avatarImage,
+      backgroundImage: data.backgroundImage,
+      tags: data.tags ?? JSON.parse(classroom.tags || "[]"),
+    });
+
+    return updatedClassroom;
+  }
+
   /**
    * Get classroom details with membership status
    */
@@ -76,7 +124,7 @@ export class ClassroomService {
     const classroom = await this.repository.getClassroomDetails(classroomId);
 
     if (!classroom) {
-      throw new ApplicationError("Classroom not found", 404);
+      throw new NotFoundError("Classroom");
     }
 
     const { isMember, isPendingRequest } = await this.repository.getUserMembershipStatus(
@@ -101,7 +149,7 @@ export class ClassroomService {
   }
 
   /**
-   * Get classrooms with pagination
+   * Get classroom list with pagination
    */
   async getClassrooms(
     userId: number,
@@ -117,68 +165,15 @@ export class ClassroomService {
     );
   }
 
-  /**
-   * Update an existing classroom
-   */
-  async updateClassroom(classroomId: number, userId: number, data: ClassroomUpdateData) {
-    const classroom = await this.repository.findClassroomById(classroomId);
-
-    if (!classroom) {
-      throw new ApplicationError("Classroom not found", 404);
-    }
-
-    if (classroom.ownerId !== userId) {
-      throw new ApplicationError("Only the owner can update the classroom", 403);
-    }
-
-    // Check if new classroom name is available
-    if (data.classroomName && data.classroomName !== classroom.classroomName) {
-      const existingClassroom = await this.repository.findClassroomByName(
-        data.classroomName
-      );
-      if (existingClassroom) {
-        throw new ApplicationError("A classroom with this name already exists", 409);
-      }
-    }
-
-    // Check if new handle is available
-    if (data.handle && data.handle !== classroom.handle) {
-      const existingClassroomByHandle = await this.repository.findClassroomByHandle(
-        data.handle
-      );
-      if (existingClassroomByHandle) {
-        throw new ApplicationError("A classroom with this handle already exists", 409);
-      }
-
-      // Validate handle format
-      validateHandle(data.handle);
-    }
-
-    const updatedClassroom = await this.repository.updateClassroomInDB(classroomId, {
-      classroomName: data.classroomName || classroom.classroomName,
-      handle: data.handle || classroom.handle,
-      description: data.description ?? classroom.description,
-      accessType: data.accessType || classroom.accessType,
-      avatarImage: data.avatarImage,
-      backgroundImage: data.backgroundImage,
-      tags: data.tags ?? JSON.parse(classroom.tags || "[]"),
-    });
-
-    return updatedClassroom;
-  }
-
-  /**
-   * Delete a classroom
-   */
   async deleteClassroom(classroomId: number, userId: number) {
     const classroom = await this.repository.findClassroomById(classroomId);
 
     if (!classroom) {
-      throw new ApplicationError("Classroom not found", 404);
+      throw new NotFoundError("Classroom");
     }
 
     if (classroom.ownerId !== userId) {
-      throw new ApplicationError("Only the owner can delete the classroom", 403);
+      throw new AuthorizationError("Only the owner can delete the classroom");
     }
 
     await this.repository.deleteClassroomInDB(classroomId);

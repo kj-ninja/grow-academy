@@ -1,15 +1,15 @@
-import { compose } from "middleware/composition/compose";
+import { compose } from "middlewares/composition/compose";
 import {
   enhancedAuth,
   withEnhancedAuth,
   withEnhancedAuthMiddleware,
-} from "middleware/auth/enhancedAuth";
-import { validateRequest } from "middleware/validation/validateRequest";
+} from "middlewares/auth/enhancedAuth";
+import { validateRequest } from "middlewares/validation/validateRequest";
 import {
   createClassroomSchema,
   updateClassroomSchema,
 } from "validations/schemas/classroom.schema";
-import { uploadMultiple } from "middleware/upload/uploadMiddleware";
+import { uploadMultiple } from "middlewares/upload/uploadMiddleware";
 import { createClassroom, updateClassroom } from "controllers/classroom.controller";
 import { checkOwner } from "../auth/permissions";
 

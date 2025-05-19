@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-  // Core classroom controllers
   deleteClassroom,
   getClassroom,
   getClassrooms,
@@ -9,34 +8,29 @@ import {
 } from "controllers/classroom.controller";
 
 import {
-  // Membership management controllers
-  createClassroomMembership,
-  cancelClassroomMembershipRequest,
-  deleteClassroomMembership,
-  approveClassroomMembershipRequest,
-  rejectClassroomMembershipRequest,
-  getClassroomPendingRequests,
-  removeClassroomMember,
-} from "controllers/classroom-membership.controller";
+  handleCreateMembership,
+  handleCancelMembershipRequest,
+  handleDeleteMembership,
+  handleApproveMembership,
+  handleRejectMembership,
+  handleGetPendingRequests,
+  handleRemoveMember,
+} from "../middlewares/domain/classroomMembership";
 
-import { upload } from "middleware/upload/uploadMiddleware";
+import { upload } from "middlewares/upload/uploadMiddleware";
 import {
   deleteResource,
   downloadResource,
   getResources,
   uploadResource,
 } from "controllers/resource.controller";
-import {
-  enhancedAuth,
-  withEnhancedAuth,
-  withEnhancedAuthMiddleware,
-} from "middleware/auth/enhancedAuth";
+import { withEnhancedAuth } from "middlewares/auth/enhancedAuth";
 import {
   handleCreateClassroom,
   handleUpdateClassroom,
   withAuth,
-} from "../middleware/domain/classroom.middleware";
-import { checkOwner } from "../middleware/auth/permissions";
+} from "../middlewares/domain/classroom";
+import { validateParams } from "../middlewares/validation/validateParams";
 
 const router = Router();
 
@@ -46,46 +40,26 @@ router.get("/validate/:handle", withAuth, withEnhancedAuth(validateClassroomHand
 
 // Core classroom CRUD
 router.get("/", withAuth, withEnhancedAuth(getClassrooms));
-router.get("/:id", withAuth, withEnhancedAuth(getClassroom));
+router.get("/:id", validateParams(["id"]), withAuth, withEnhancedAuth(getClassroom));
 router.post("/", handleCreateClassroom); // Single middleware instead of 4
-router.patch("/:id", handleUpdateClassroom); // Single middleware instead of 5
-router.delete("/:id", withAuth, withEnhancedAuth(deleteClassroom));
-
-// todo: add compose middleware for classroom memberships
-// Membership management
-router.post("/:id/memberships", withAuth, withEnhancedAuth(createClassroomMembership));
+router.patch("/:id", validateParams(["id"]), handleUpdateClassroom); // Single middleware instead of 5
 router.delete(
-  "/:id/memberships/requests",
+  "/:id",
+  validateParams(["id"]),
   withAuth,
-  withEnhancedAuth(cancelClassroomMembershipRequest)
+  withEnhancedAuth(deleteClassroom)
 );
-router.delete("/:id/memberships", withAuth, withEnhancedAuth(deleteClassroomMembership));
 
-// Membership request management (admin)
-router.get(
-  "/:id/memberships/requests",
-  withAuth,
-  withEnhancedAuthMiddleware(checkOwner),
-  withEnhancedAuth(getClassroomPendingRequests)
-);
-router.patch(
-  "/:id/memberships/requests/:userId/approve",
-  withAuth,
-  withEnhancedAuthMiddleware(checkOwner),
-  withEnhancedAuth(approveClassroomMembershipRequest)
-);
-router.patch(
-  "/:id/memberships/requests/:userId/reject",
-  withAuth,
-  withEnhancedAuthMiddleware(checkOwner),
-  withEnhancedAuth(rejectClassroomMembershipRequest)
-);
-router.delete(
-  "/:id/memberships/:userId",
-  enhancedAuth,
-  withEnhancedAuthMiddleware(checkOwner),
-  withEnhancedAuth(removeClassroomMember)
-);
+// Membership management - updated to use composed handlers
+router.post("/:id/memberships", handleCreateMembership);
+router.delete("/:id/memberships/requests", handleCancelMembershipRequest);
+router.delete("/:id/memberships", handleDeleteMembership);
+
+// Membership request management (admin) - updated to use composed handlers
+router.get("/:id/memberships/requests", handleGetPendingRequests);
+router.patch("/:id/memberships/requests/:userId/approve", handleApproveMembership);
+router.patch("/:id/memberships/requests/:userId/reject", handleRejectMembership);
+router.delete("/:id/memberships/:userId", handleRemoveMember);
 
 // Resources todo...
 router.get("/:id/resources", getResources);

@@ -1,8 +1,8 @@
 import express from "express";
 import { getCurrentUser, getUser, updateUser } from "controllers/user.controller";
-import { uploadMultiple } from "middleware/upload/uploadMiddleware";
-import { withAuth } from "../middleware/domain/classroom.middleware";
-import { withEnhancedAuth } from "middleware/auth/enhancedAuth";
+import { uploadMultiple } from "middlewares/upload/uploadMiddleware";
+import { withAuth } from "../middlewares/domain/classroom";
+import { withEnhancedAuth } from "middlewares/auth/enhancedAuth";
 
 const router = express.Router();
 

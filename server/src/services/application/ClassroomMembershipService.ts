@@ -4,7 +4,12 @@ import {
   addUserToStreamChannel,
   removeUserFromStreamChannel,
 } from "services/infrastructure/StreamChannelService";
-import { ApplicationError } from "../../utils/errors";
+import {
+  ApplicationError,
+  AuthorizationError,
+  NotFoundError,
+  ConflictError,
+} from "../../utils/errors";
 
 export class ClassroomMembershipService {
   private membershipRepository: ClassroomMembershipRepository;
@@ -22,7 +27,7 @@ export class ClassroomMembershipService {
     // Check if the classroom exists
     const classroom = await this.classroomRepository.findClassroomById(classroomId);
     if (!classroom) {
-      throw new ApplicationError("Classroom not found", 404);
+      throw new NotFoundError("Classroom");
     }
 
     // Check if the stream channel exists
@@ -35,11 +40,11 @@ export class ClassroomMembershipService {
       await this.classroomRepository.getUserMembershipStatus(userId, classroomId);
 
     if (isMember) {
-      throw new ApplicationError("You are already a member of this classroom", 409);
+      throw new ConflictError("You are already a member of this classroom");
     }
 
     if (isPendingRequest) {
-      throw new ApplicationError("You already have a pending request", 409);
+      throw new ConflictError("You already have a pending request");
     }
 
     // Create the join request
@@ -72,12 +77,12 @@ export class ClassroomMembershipService {
     // Check if the classroom exists
     const classroom = await this.classroomRepository.findClassroomById(classroomId);
     if (!classroom) {
-      throw new ApplicationError("Classroom not found", 404);
+      throw new NotFoundError("Classroom");
     }
 
     // Check if user has permission to view requests
     if (classroom.ownerId !== adminId) {
-      throw new ApplicationError("Only the owner can view pending requests", 403);
+      throw new AuthorizationError("Only the owner can view pending requests");
     }
 
     // Get the pending requests
@@ -99,7 +104,7 @@ export class ClassroomMembershipService {
     // Check if the classroom exists
     const classroom = await this.classroomRepository.findClassroomById(classroomId);
     if (!classroom) {
-      throw new ApplicationError("Classroom not found", 404);
+      throw new NotFoundError("Classroom");
     }
 
     // Check if stream channel exists
@@ -109,7 +114,7 @@ export class ClassroomMembershipService {
 
     // Check if user has permission
     if (classroom.ownerId !== adminId) {
-      throw new ApplicationError("Only the owner can approve requests", 403);
+      throw new AuthorizationError("Only the owner can approve requests");
     }
 
     // Update the request status
@@ -120,7 +125,7 @@ export class ClassroomMembershipService {
     );
 
     if (result === 0) {
-      throw new ApplicationError("Request not found or already processed", 404);
+      throw new NotFoundError("Membership request");
     }
 
     // Add user to stream channel
@@ -141,12 +146,12 @@ export class ClassroomMembershipService {
     // Check if the classroom exists
     const classroom = await this.classroomRepository.findClassroomById(classroomId);
     if (!classroom) {
-      throw new ApplicationError("Classroom not found", 404);
+      throw new NotFoundError("Classroom");
     }
 
     // Check if user has permission
     if (classroom.ownerId !== adminId) {
-      throw new ApplicationError("Only the owner can reject requests", 403);
+      throw new AuthorizationError("Only the owner can reject requests");
     }
 
     // Delete the pending request
@@ -156,7 +161,7 @@ export class ClassroomMembershipService {
     );
 
     if (result === 0) {
-      throw new ApplicationError("Request not found or already processed", 404);
+      throw new NotFoundError("Membership request");
     }
 
     return { success: true, message: "Request rejected successfully" };
@@ -173,7 +178,7 @@ export class ClassroomMembershipService {
 
     // Ensure the user is canceling their own request
     if (userId !== requestUserId) {
-      throw new ApplicationError("You can only cancel your own requests", 403);
+      throw new AuthorizationError("You can only cancel your own requests");
     }
 
     // Delete the pending request
@@ -183,7 +188,7 @@ export class ClassroomMembershipService {
     );
 
     if (result === 0) {
-      throw new ApplicationError("Request not found or already processed", 404);
+      throw new NotFoundError("Membership request");
     }
 
     return { success: true, message: "Request canceled successfully" };
@@ -196,7 +201,7 @@ export class ClassroomMembershipService {
     // Check if the classroom exists
     const classroom = await this.classroomRepository.findClassroomById(classroomId);
     if (!classroom) {
-      throw new ApplicationError("Classroom not found", 404);
+      throw new NotFoundError("Classroom");
     }
 
     // Check if stream channel exists
@@ -206,7 +211,7 @@ export class ClassroomMembershipService {
 
     // Check if user is the owner
     if (classroom.ownerId === userId) {
-      throw new ApplicationError("Owners cannot leave their own classroom", 403);
+      throw new AuthorizationError("Owners cannot leave their own classroom");
     }
 
     // Leave the classroom
@@ -229,7 +234,7 @@ export class ClassroomMembershipService {
     // Check if the classroom exists
     const classroom = await this.classroomRepository.findClassroomById(classroomId);
     if (!classroom) {
-      throw new ApplicationError("Classroom not found", 404);
+      throw new NotFoundError("Classroom");
     }
 
     // Check if stream channel exists
@@ -239,12 +244,12 @@ export class ClassroomMembershipService {
 
     // Check if user has permission
     if (classroom.ownerId !== adminId) {
-      throw new ApplicationError("Only the owner can remove members", 403);
+      throw new AuthorizationError("Only the owner can remove members");
     }
 
     // Check if the member to be removed is the owner
     if (memberId === classroom.ownerId) {
-      throw new ApplicationError("Cannot remove the classroom owner", 403);
+      throw new AuthorizationError("Cannot remove the classroom owner");
     }
 
     // Remove the member
@@ -255,7 +260,7 @@ export class ClassroomMembershipService {
     );
 
     if (result === 0) {
-      throw new ApplicationError("Member not found or could not be removed", 404);
+      throw new NotFoundError("Member");
     }
 
     // Remove user from stream channel

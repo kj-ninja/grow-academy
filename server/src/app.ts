@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import cors from "cors";
-import { errorHandler } from "middleware/error/errorHandler";
+import { errorHandler } from "middlewares/error/errorHandler";
 import path from "path";
 import passport from "passport";
 import authRouter from "routes/auth.router";

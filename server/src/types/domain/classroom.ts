@@ -66,8 +66,3 @@ export interface ClassroomUpdateData {
   avatarImage?: Buffer | null;
   backgroundImage?: Buffer | null;
 }
-
-export interface ClassroomUserParams {
-  id: number;
-  userId: number;
-}

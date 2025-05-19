@@ -1,7 +1,11 @@
 import type { Response } from "express";
 import { ClassroomService } from "services/application/ClassroomService";
 
-import type { EnhancedAuthRequest, Images } from "types/infrastructure/express/requests";
+import type {
+  ClassroomRequest,
+  EnhancedAuthRequest,
+  Images,
+} from "types/infrastructure/express/requests";
 import { controllerHandler } from "../utils/controllerHandler";
 import { errorResponse } from "../utils/errors";
 
@@ -24,14 +28,10 @@ export const createClassroom = controllerHandler(
 );
 
 export const updateClassroom = controllerHandler(
-  async (req: EnhancedAuthRequest, res: Response) => {
+  async (req: ClassroomRequest, res: Response) => {
     const userId = req.authenticatedUser.id;
-    const classroomId = Number(req.params.id);
+    const classroomId = req.validatedParams.id;
     const files = req.files as Images;
-
-    if (isNaN(classroomId)) {
-      return errorResponse(res, "Invalid classroom ID", 400);
-    }
 
     const updatedClassroom = await classroomService.updateClassroom(classroomId, userId, {
       ...req.body,
@@ -44,13 +44,9 @@ export const updateClassroom = controllerHandler(
 );
 
 export const deleteClassroom = controllerHandler(
-  async (req: EnhancedAuthRequest, res: Response) => {
+  async (req: ClassroomRequest, res: Response) => {
     const userId = req.authenticatedUser.id;
-    const classroomId = Number(req.params.id);
-
-    if (isNaN(classroomId)) {
-      return errorResponse(res, "Invalid classroom ID", 400);
-    }
+    const classroomId = req.validatedParams.id;
 
     await classroomService.deleteClassroom(classroomId, userId);
     return res.status(200).json({ message: "Classroom deleted successfully" });
@@ -82,13 +78,9 @@ export const getClassrooms = controllerHandler(
  * Get a single classroom by ID
  */
 export const getClassroom = controllerHandler(
-  async (req: EnhancedAuthRequest, res: Response) => {
+  async (req: ClassroomRequest, res: Response) => {
     const userId = req.authenticatedUser.id;
-    const classroomId = Number(req.params.id);
-
-    if (isNaN(classroomId)) {
-      return errorResponse(res, "Invalid classroom ID", 400);
-    }
+    const classroomId = req.validatedParams.id;
 
     const classroom = await classroomService.getClassroomDetails(classroomId, userId);
     return res.status(200).json(classroom);

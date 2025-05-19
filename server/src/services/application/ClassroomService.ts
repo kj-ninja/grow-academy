@@ -1,7 +1,12 @@
 import { ClassroomRepository } from "services/infrastructure/ClassroomRepository";
 import { createStreamChannel } from "services/infrastructure/StreamChannelService";
 import type { ClassroomCreateParams, ClassroomUpdateData } from "types/domain/classroom";
-import { ApplicationError, ConflictError } from "../../utils/errors";
+import {
+  ValidationError,
+  AuthorizationError,
+  NotFoundError,
+  ConflictError,
+} from "../../utils/errors";
 import { validateHandle } from "../../validations";
 
 // todo: think about: DEPENDENCY INJECTION PATTERN
@@ -26,7 +31,7 @@ export class ClassroomService {
     } = data;
 
     if (!classroomName || !handle) {
-      throw new ApplicationError("Classroom Name and Handle are required", 400);
+      throw new ValidationError("Classroom Name and Handle are required");
     }
 
     // Validate handle format
@@ -69,11 +74,11 @@ export class ClassroomService {
     const classroom = await this.repository.findClassroomById(classroomId);
 
     if (!classroom) {
-      throw new ApplicationError("Classroom not found", 404);
+      throw new NotFoundError("Classroom");
     }
 
     if (classroom.ownerId !== userId) {
-      throw new ApplicationError("Only the owner can update the classroom", 403);
+      throw new AuthorizationError("Only the owner can update the classroom");
     }
 
     // Check if new handle is available
@@ -82,7 +87,7 @@ export class ClassroomService {
         data.handle
       );
       if (existingClassroomByHandle) {
-        throw new ApplicationError("A classroom with this handle already exists", 409);
+        throw new ConflictError("A classroom with this handle already exists");
       }
 
       // Validate handle format
@@ -95,7 +100,7 @@ export class ClassroomService {
         data.classroomName
       );
       if (existingClassroom) {
-        throw new ApplicationError("A classroom with this name already exists", 409);
+        throw new ConflictError("A classroom with this name already exists");
       }
     }
 
@@ -119,7 +124,7 @@ export class ClassroomService {
     const classroom = await this.repository.getClassroomDetails(classroomId);
 
     if (!classroom) {
-      throw new ApplicationError("Classroom not found", 404);
+      throw new NotFoundError("Classroom");
     }
 
     const { isMember, isPendingRequest } = await this.repository.getUserMembershipStatus(
@@ -164,11 +169,11 @@ export class ClassroomService {
     const classroom = await this.repository.findClassroomById(classroomId);
 
     if (!classroom) {
-      throw new ApplicationError("Classroom not found", 404);
+      throw new NotFoundError("Classroom");
     }
 
     if (classroom.ownerId !== userId) {
-      throw new ApplicationError("Only the owner can delete the classroom", 403);
+      throw new AuthorizationError("Only the owner can delete the classroom");
     }
 
     await this.repository.deleteClassroomInDB(classroomId);

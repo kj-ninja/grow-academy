@@ -2,7 +2,10 @@ import type { Request, Response, NextFunction } from "express";
 import passport from "passport";
 import type { User } from "@prisma/client";
 import { authenticatedUserSchema } from "validations/schemas/auth.schema";
-import type { EnhancedAuthRequest } from "../../types/infrastructure/express/requests";
+import type {
+  EnhancedAuthRequest,
+  EnhancedRequest,
+} from "../../types/infrastructure/express/requests";
 import { errorResponse } from "../../utils/errors";
 
 /**
@@ -42,19 +45,30 @@ export const enhancedAuth = (req: Request, res: Response, next: NextFunction) =>
  * Higher-order function to wrap route handlers with enhanced authentication
  * and user validation.
  *
- * @param handler - The route handler function
+ * TYPESCRIPT GENERICS:
+ * - <T extends EnhancedRequest> allows this HOF to work with ANY request type
+ *   that extends our base EnhancedRequest interface
+ * - This provides flexible type composition in middleware chains
+ * - Controllers can specify EXACTLY what properties they need (EnhancedAuthRequest,
+ *   ClassroomRequest, etc.) and TypeScript will enforce those requirements
+ *
+ * TYPE SAFETY BENEFITS:
+ * - When a controller specifies req: ClassroomRequest, TypeScript ensures:
+ *   1. authenticatedUser is available and properly typed
+ *   2. validatedParams.id exists as a number
+ * - The double cast (req as unknown as T) bypasses TypeScript's normal
+ *   type compatibility checks, allowing middleware to progressively
+ *   enhance the request object
+ *
+ * @param handler - The route handler function with specifically typed request
  * @returns A new function that applies enhanced authentication
  */
-export const withEnhancedAuth = <ResBody = any, ReqBody = any, ReqQuery = any>(
-  handler: (req: EnhancedAuthRequest, res: Response<ResBody>) => Promise<any>
+export const withEnhancedAuth = <T extends EnhancedRequest, ResBody = any>(
+  handler: (req: T, res: Response<ResBody>) => Promise<any>
 ) => {
-  return (
-    req: Request<any, ResBody, ReqBody, ReqQuery>,
-    res: Response<ResBody>,
-    _next: NextFunction
-  ) => {
+  return (req: Request, res: Response<ResBody>, _next: NextFunction) => {
     // authenticatedUser should already exist from enhancedAuth middleware
-    return handler(req as unknown as EnhancedAuthRequest, res);
+    return handler(req as unknown as T, res);
   };
 };
 

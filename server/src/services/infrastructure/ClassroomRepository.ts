@@ -7,9 +7,7 @@ export class ClassroomRepository {
     this.prisma = prisma;
   }
 
-  /**
-   * Create a new classroom in the database
-   */
+  // todo: replace any with proper type
   async createClassroomInDB(userId: number, data: any) {
     return this.prisma.classroom.create({
       data: {
@@ -19,36 +17,24 @@ export class ClassroomRepository {
     });
   }
 
-  /**
-   * Find a classroom by its ID
-   */
   async findClassroomById(classroomId: number) {
     return this.prisma.classroom.findUnique({
       where: { id: classroomId },
     });
   }
 
-  /**
-   * Find a classroom by its name
-   */
   async findClassroomByName(classroomName: string) {
     return this.prisma.classroom.findFirst({
       where: { classroomName },
     });
   }
 
-  /**
-   * Find a classroom by its handle
-   */
   async findClassroomByHandle(handle: string) {
     return this.prisma.classroom.findFirst({
       where: { handle },
     });
   }
 
-  /**
-   * Update an existing classroom
-   */
   async updateClassroomInDB(
     classroomId: number,
     data: {
@@ -70,9 +56,6 @@ export class ClassroomRepository {
     });
   }
 
-  /**
-   * Delete a classroom from the database
-   */
   async deleteClassroomInDB(classroomId: number) {
     return this.prisma.classroom.delete({
       where: { id: classroomId },

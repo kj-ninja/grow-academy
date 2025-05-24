@@ -17,7 +17,8 @@ export function controllerHandler<T extends Request>(
       return errorResponse(
         res,
         error.message || "An unexpected error occurred",
-        error.statusCode || 500
+        error.statusCode || 500,
+        error.details
       );
     }
   };

@@ -73,3 +73,11 @@ export interface ClassroomRequest extends AuthenticatedRequestWithParams {
 export interface ClassroomUserRequest extends AuthenticatedRequestWithParams {
   validatedParams: ClassroomUserParams;
 }
+
+// todo: add login?
+export interface AuthRequest extends Request {
+  body: {
+    username: string;
+    password: string;
+  };
+}

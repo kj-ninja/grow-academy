@@ -5,7 +5,7 @@ export class ApplicationError extends Error {
   constructor(
     public message: string,
     public statusCode: number = 500,
-    public details?: any
+    public details?: { fields?: Record<string, string>; [key: string]: any }
   ) {
     super(message);
     this.name = this.constructor.name;
@@ -44,9 +44,9 @@ export const errorResponse = (
   status = 500,
   details?: any
 ) => {
-  res.status(status).json({
+  return res.status(status).json({
     success: false,
-    message,
-    ...(details && { details }),
+    error: message,
+    ...(details?.fields && { fields: details.fields }),
   });
 };

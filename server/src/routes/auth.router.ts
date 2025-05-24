@@ -1,17 +1,16 @@
 import { Router } from "express";
+import { validateToken } from "../controllers/auth.controller";
 import {
-  loginUser,
-  refreshToken,
-  registerUser,
-  validateToken,
-} from "controllers/auth.controller";
-import { loginLimiter } from "middlewares/auth/rateLimiter";
+  handleRegister,
+  handleLogin,
+  handleRefreshToken,
+} from "../middlewares/domain/auth";
 
 const router = Router();
 
-router.post("/register", registerUser);
-router.post("/login", loginLimiter, loginUser);
-router.post("/refresh", refreshToken);
+router.post("/register", handleRegister);
+router.post("/login", handleLogin);
+router.post("/refresh", handleRefreshToken);
 router.get("/validate", validateToken);
 
 export default router;

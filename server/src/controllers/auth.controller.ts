@@ -1,121 +1,93 @@
-import { Prisma, PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
 import { type Request, type Response } from "express";
-import {
-  generateStreamToken,
-  updateStreamUser,
-} from "services/infrastructure/StreamChannelService";
-import { generateRefreshToken, generateToken, verifyToken } from "../utils/jwt";
+import { AuthService } from "../services/application/AuthService";
+import { controllerHandler } from "../utils/controllerHandler";
 
-const prisma = new PrismaClient();
+const authService = new AuthService();
 
-export const registerUser = async (req: Request, res: Response) => {
+/**
+ * Registration request data
+ */
+// export interface RegisterRequest {
+//   username: string;
+//   password: string;
+// }
+
+/**
+ * Login request data
+ */
+// export interface LoginRequest {
+//   username: string;
+//   password: string;
+// }
+
+/**
+ * Token refresh request
+ */
+// export interface RefreshTokenRequest {
+//   refreshToken: string;
+// }
+
+// export interface LoginResponse {
+//   user: {
+//     id: number;
+//     username: string;
+//     role: string;
+//     createdAt: Date;
+//     updatedAt: Date;
+//     firstName: string | null;
+//     lastName: string | null;
+//     bio: string | null;
+//     avatarImage: Buffer | null;
+//     backgroundImage: Buffer | null;
+//     isActive: boolean;
+//     streamToken: string;
+//   };
+//   token: string;
+//   refreshToken: string;
+//   streamToken: string;
+// }
+
+/**
+ * Registration response
+ */
+// export interface RegisterResponse {
+//   message: string;
+// }
+
+/**
+ * Token refresh response
+ */
+// export interface RefreshTokenResponse {
+//   token: string;
+// }
+
+export const registerUser = controllerHandler(async (req: Request, res: Response) => {
   const { username, password } = req.body;
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+  const result = await authService.registerUser(username, password);
+  return res.status(201).json(result);
+});
 
-    // Create user (streamToken will get the default empty string from schema)
-    const user = await prisma.user.create({
-      data: {
-        username,
-        password: hashedPassword,
-        // Prisma will use the default empty string from schema
-      },
-    });
-
-    // Generate a proper token using the new user's ID
-    const streamToken = generateStreamToken(user.id);
-
-    // Update the user with the proper token
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { streamToken },
-    });
-    await updateStreamUser(user);
-
-    res.status(201).json({ message: "User registered successfully!" });
-  } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2002" &&
-      Array.isArray(error.meta?.target) &&
-      error.meta.target.includes("username")
-    ) {
-      return res.status(409).json({
-        message: "Username already exists",
-        fields: { username: `Username ${username} already exists` },
-      });
-    }
-    res.status(500).json({ message: "Failed to register user" });
-  }
-};
-
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = controllerHandler(async (req: Request, res: Response) => {
   const { username, password } = req.body;
-  try {
-    const user = await prisma.user.findUnique({
-      where: { username },
-    });
+  const result = await authService.loginUser(username, password);
+  return res.status(200).json(result);
+});
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(400).json({
-        message: "Invalid credentials",
-        fields: {
-          ...(user
-            ? { password: "Invalid password" }
-            : { username: `Username ${username} doesn't exist` }),
-        },
-      });
-    }
-
-    // Remove the password field before sending the response
-    const { password: _, ...userWithoutPassword } = user;
-
-    res.json({
-      user: userWithoutPassword,
-      streamToken: user.streamToken,
-      token: generateToken(user.id),
-      refreshToken: generateRefreshToken(user.id),
-    });
-  } catch {
-    res.status(500).json({ message: "Failed to login" });
-  }
-};
-
-export const refreshToken = async (req: Request, res: Response) => {
+export const refreshToken = controllerHandler(async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
-  const payload = verifyToken(refreshToken, process.env.JWT_REFRESH_SECRET!);
+  const result = await authService.refreshAuthToken(refreshToken);
+  return res.status(200).json(result);
+});
 
-  if (!payload) {
-    return res.status(403).json({ message: "Invalid Refresh Token" });
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { id: payload.userId },
-  });
-
-  if (!user) return res.status(401).json({ message: "Unauthorized" });
-
-  res.status(200).json({ token: generateToken(user.id) });
-};
-
-export const validateToken = async (req: Request, res: Response) => {
+export const validateToken = controllerHandler(async (req: Request, res: Response) => {
   const authHeader = req.headers.authorization;
+
   if (!authHeader) {
     return res.status(401).json({ message: "No token provided" });
   }
 
   const token = authHeader.split(" ")[1];
-  const payload = verifyToken(token, process.env.JWT_SECRET!);
+  const user = await authService.validateAuthToken(token);
 
-  if (!payload) return res.status(403).json({ message: "Invalid Token" });
-
-  const user = await prisma.user.findUnique({
-    omit: { password: true },
-    where: { id: payload.userId },
-  });
-
-  if (!user) return res.status(401).json({ message: "Unauthorized" });
-
-  res.status(200).json(user);
-};
+  return res.status(200).json(user);
+});

@@ -1,6 +1,7 @@
 import { type Request, type Response } from "express";
 import { AuthService } from "../services/application/AuthService";
 import { controllerHandler } from "../utils/controllerHandler";
+import type { AuthRequest } from "../types/http/request-extensions";
 
 const authService = new AuthService();
 
@@ -61,18 +62,19 @@ const authService = new AuthService();
 //   token: string;
 // }
 
-export const registerUser = controllerHandler(async (req: Request, res: Response) => {
+export const registerUser = controllerHandler(async (req: AuthRequest, res: Response) => {
   const { username, password } = req.body;
   const result = await authService.registerUser(username, password);
   return res.status(201).json(result);
 });
 
-export const loginUser = controllerHandler(async (req: Request, res: Response) => {
+export const loginUser = controllerHandler(async (req: AuthRequest, res: Response) => {
   const { username, password } = req.body;
   const result = await authService.loginUser(username, password);
   return res.status(200).json(result);
 });
 
+// todo: add typed requests
 export const refreshToken = controllerHandler(async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
   const result = await authService.refreshAuthToken(refreshToken);
